@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PostPal — The Daybook (coalesced, v6)</title>
+<title>PostPal — The Daybook (coalesced, v7)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Petrona:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -46,6 +46,14 @@
   .chip{font-size:12.5px;font-weight:600;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:9px 14px}
 
   /* page content */
+  .sect{margin-top:24px}
+  .sect h5{font-family:'Petrona',serif;font-size:18.5px;font-weight:500;font-style:italic;color:var(--ink);border-top:1px solid var(--line);padding-top:14px}
+  .factline{display:flex;align-items:baseline;gap:8px;font-size:13px;margin-top:10px;line-height:1.5}
+  .factline .k{flex:none;font-size:10.5px;letter-spacing:.12em;font-weight:700;color:var(--mut);width:74px}
+  .factline .v{font-family:'Petrona',serif;font-size:14px}
+  .factline .v b{font-family:'Albert Sans';font-size:11.5px;font-weight:700;color:var(--clay-deep)}
+  .factline .v .ok{color:var(--pine);font-weight:600}
+  .factline .go{margin-left:auto;color:var(--clay);font-weight:700;font-size:12px;white-space:nowrap}
   .entry{margin-top:16px}
   .entry .body{font-family:'Petrona',serif;font-size:15px;line-height:1.6}
   .entry .body b{font-weight:600}
@@ -73,9 +81,9 @@
 <body>
 
 <div class="intro">
-  <h1>The Daybook — coalesced, v6</h1>
-  <div class="lens">One continuous page · receipts at hero scale · no edit links — the rows themselves are the tap targets</div>
-  <p>v6 unifies the top of the page into one typographic pattern: the truncated hero and the receipts are all 24.5px Petrona rows on hairline rules. The edit links are gone — at this scale every row reads as tappable (tap the hero to re-expand it, tap a receipt to change the answer). Chip tap still completes the check-in; today's page flows in below.</p>
+  <h1>The Daybook — coalesced, v7</h1>
+  <div class="lens">v6's unified receipt pattern · today's page organized into question-led chapters (Option A)</div>
+  <p>v7 organizes today's page into four chapters headed by the questions she'd ask: <i>How today might feel</i> (the reading, with margin notes), <i>What you can do — and not yet</i> (cleared things first, then countdowns), <i>Your medicines today</i> (compact summary that opens the med sheet), and <i>What's ahead</i> (tomorrow's page, the telehealth visit). Practical chapters hold to two or three lines and link into sheets.</p>
 </div>
 
 <div class="row">
@@ -148,8 +156,8 @@
 
 <!-- ============ STATE 3: THE WHOLE PAGE ============ -->
 <div class="col">
-  <div class="statelabel">3 · The whole page</div>
-  <div class="statesub">Tapping "Nothing new" completes the check-in in place: two receipts, and today's page flows in below. One scroll, no navigation.</div>
+  <div class="statelabel">3 · The whole page, organized</div>
+  <div class="statesub">After the receipts, four question-led chapters: the reading, can/can't-yet, medicines, and what's ahead. One scroll, no navigation.</div>
   <div class="phone"><div class="screen">
     <div class="status"><span>9:41</span><span>Maya · UFE Feb 12</span></div>
 
@@ -167,20 +175,42 @@
       <span class="rtext">Noted: <em>nothing new</em></span>
     </div>
 
-    <div class="entry">
-      <p class="body"><b>Still reaching for the strong medication?</b> Many women are stepping down to ibuprofen now; needing it into week two is also within the band. Rising pain — not lingering pain — is the thing to call about.</p>
-      <span class="marginnote">Carrie, PA-C — "Day 5 tired is honest tired."</span>
+    <!-- chapter 1: the reading -->
+    <div class="sect">
+      <h5>How today might feel</h5>
+      <div class="entry">
+        <p class="body"><b>Still reaching for the strong medication?</b> Many women are stepping down to ibuprofen now; needing it into week two is also within the band. Rising pain — not lingering pain — is the thing to call about.</p>
+        <span class="marginnote">Carrie, PA-C — "Day 5 tired is honest tired."</span>
+      </div>
+      <div class="entry">
+        <p class="body"><b>Discharge may be starting.</b> Watery, brownish, sometimes for weeks — it's the fibroid breaking down, not a wound. Foul smell is the line: that's a call.</p>
+      </div>
+      <p class="turn" style="margin-top:12px">Keep reading: <b>your appetite →</b></p>
     </div>
 
-    <div class="entry">
-      <p class="body"><b>Discharge may be starting.</b> Watery, brownish, sometimes for weeks — it's the fibroid breaking down, not a wound. Foul smell is the line: that's a call.</p>
+    <!-- chapter 2: can / can't yet -->
+    <div class="sect">
+      <h5>What you can do — and not yet</h5>
+      <div class="factline"><span class="k">BACK</span><span class="v"><span class="ok">driving ✓ · showers ✓ · normal meals ✓</span></span></div>
+      <div class="factline"><span class="k">NOT YET</span><span class="v">lifting &gt;10 lb <b>2d</b> · baths &amp; pools <b>9d</b> · tampons <b>9d</b></span></div>
     </div>
 
-    <div class="scrollhint">⌄</div>
-    <p class="turn">Keep reading: <b>your appetite, and tomorrow's page →</b></p>
+    <!-- chapter 3: meds -->
+    <div class="sect">
+      <h5>Your medicines today</h5>
+      <div class="factline"><span class="k">SO FAR</span><span class="v">3 of 6 doses taken · next: ibuprofen 800 at 1:00</span><span class="go">open →</span></div>
+    </div>
 
-    <div class="resting" style="margin-top:auto;padding-top:12px">Still resting: baths <b>9d</b> · lifting <b>2d</b></div>
-    <div class="bar">
+    <!-- chapter 4: ahead -->
+    <div class="sect">
+      <h5>What's ahead</h5>
+      <div class="factline"><span class="k">TOMORROW</span><span class="v">Stepping down the medications — day 6's page</span></div>
+      <div class="factline"><span class="k">FEB 26</span><span class="v">Telehealth with Carrie, PA-C (day 14)</span><span class="go">details →</span></div>
+    </div>
+
+    <div class="scrollhint" style="margin-top:14px">⌄</div>
+
+    <div class="bar" style="margin-top:auto">
       <span class="pill"><span class="rx">Rx</span><span class="t">Ibuprofen 800<small>next · 1:00</small></span></span>
       <span class="check">Check a symptom</span>
     </div>
@@ -203,6 +233,9 @@
   <div class="ann"><b>Two receipts are the day's record.</b>
     Face and note stack as full-size journal sentences — the same artifact that feeds her trend curve and Carrie's pre-visit report. They replace v4's separate destination screen and its echo line.
     <span class="tie">→ One scroll: check-in record on top, the day's reading below, footer constant.</span></div>
+  <div class="ann"><b>The page is organized by her questions, not our modules.</b>
+    Four chapters in italic Petrona: <i>How today might feel</i> (reading + margin notes), <i>What you can do — and not yet</i> (cleared first — "driving ✓" — so restrictions read as a shrinking list), <i>Your medicines today</i> (one line, opens the med sheet), <i>What's ahead</i> (tomorrow's page + the day-14 telehealth). Each practical chapter is 1–2 fact lines with a small-caps key, never a card grid.
+    <span class="tie">→ Option A pick. Each chapter maps to a research JTBD; the old "still resting" footer line is absorbed into chapter 2.</span></div>
   <div class="ann"><b>Bottom nav: still parked.</b>
     Unchanged per Michael's earlier note. Open questions for the prototype pass: dose-pill states, post–week-2 cycle scoreboard placement, and whether "Check a symptom" remains a nav peer.
     <span class="tie">→ Deliberately untouched in v5.</span></div>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostPal — Bottom Nav Options (3 vs 4)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Petrona:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#faf6f0;--card:#fff;--ink:#2b2118;--mut:#7a6c5c;--clay:#c4674a;--clay-deep:#8a4630;--clay-soft:#f3e4d3;--pine:#3d5a4c;--pine-soft:#e4ebe6;--line:#e6ddd1}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#efe9df;font-family:'Albert Sans',sans-serif;color:var(--ink);padding:40px 20px}
+  .intro{max-width:1200px;margin:0 auto 34px}
+  .intro h1{font-family:'Petrona',serif;font-weight:500;font-size:30px}
+  .intro .lens{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--clay);font-weight:700;margin:6px 0 10px}
+  .intro p{font-size:14px;color:#5a4d40;max-width:86ch;line-height:1.55}
+  .row{display:flex;gap:44px;justify-content:center;align-items:flex-start;flex-wrap:wrap;max-width:1280px;margin:0 auto}
+  .col{width:380px}
+  .optlabel{font-family:'Petrona',serif;font-size:20px;font-weight:500;margin-bottom:4px}
+  .optsub{font-size:12.5px;color:var(--mut);margin-bottom:14px;line-height:1.45;min-height:38px}
+  .phone{width:380px;background:var(--paper);border-radius:36px;border:9px solid #2b2118;overflow:hidden;box-shadow:0 22px 54px rgba(43,33,24,.24)}
+  .screen{padding:22px 24px 14px;min-height:680px;display:flex;flex-direction:column}
+  .status{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:var(--mut)}
+  .ghost{opacity:.32;pointer-events:none}
+  .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:700;color:var(--pine)}
+  .bigtext{font-family:'Petrona',serif;font-weight:500;font-size:24.5px;line-height:1.36;margin-top:12px}
+  .bigtext em{font-style:italic;color:var(--clay)}
+  .herorow{padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .receipt{display:flex;align-items:center;gap:13px;padding:14px 2px;border-bottom:1px solid var(--line)}
+  .rtext{font-family:'Petrona',serif;font-size:22px;font-weight:500}
+  .rtext em{font-style:italic;color:var(--pine)}
+  .sect h5{font-family:'Petrona',serif;font-size:18px;font-weight:500;font-style:italic;border-top:1px solid var(--line);padding-top:12px;margin-top:20px}
+  .entrybody{font-family:'Petrona',serif;font-size:14.5px;line-height:1.55;margin-top:12px}
+
+  /* ===== Option 3: generalized Next pair ===== */
+  .pair{display:flex;gap:9px;margin-top:auto}
+  .pair .next{flex:1.5;background:var(--clay);border-radius:999px;padding:11px 16px;color:#fff;display:flex;align-items:center;gap:10px}
+  .pair .next .k{font-size:9px;letter-spacing:.16em;font-weight:700;opacity:.8}
+  .pair .next .v{font-size:13px;font-weight:700;line-height:1.25}
+  .pair .next .v small{display:block;font-weight:600;font-size:10.5px;opacity:.85}
+  .pair .feel{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--mut);border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:0 8px}
+
+  /* phase crops */
+  .crops{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+  .croplab{font-size:10.5px;letter-spacing:.14em;font-weight:700;color:var(--mut)}
+  .crop{background:var(--paper);border:1px solid #d8cfc0;border-radius:16px;padding:10px 12px;box-shadow:0 4px 14px rgba(43,33,24,.08)}
+
+  /* ===== Option 4: tab bar ===== */
+  .tabs{display:flex;margin:auto -24px 0;border-top:1px solid var(--line);padding:10px 6px 2px;background:var(--paper)}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--mut);position:relative}
+  .tab.active{color:var(--clay-deep)}
+  .tab .badge{position:absolute;top:-4px;right:18%;background:var(--clay);color:#fff;font-size:8.5px;font-weight:700;border-radius:999px;padding:2px 6px}
+  .tab.off{opacity:.35}
+
+  /* ===== expanded Next sheet ===== */
+  .dim{position:absolute;inset:0;background:rgba(43,33,24,.32)}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);border-radius:26px 26px 0 0;padding:16px 22px 18px;box-shadow:0 -12px 40px rgba(43,33,24,.25)}
+  .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 14px}
+  .sheettitle{font-family:'Petrona',serif;font-size:20px;font-weight:500}
+  .tlgroup{font-size:10px;letter-spacing:.16em;font-weight:700;color:var(--mut);margin:16px 0 2px}
+  .tl{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .tl .tm{flex:none;width:44px;font-size:11.5px;font-weight:700;color:var(--mut)}
+  .tl .med{font-family:'Petrona',serif;font-size:15.5px}
+  .tl .med small{display:block;font-family:'Albert Sans';font-size:11px;color:var(--mut);font-weight:600;margin-top:1px}
+  .tl.done{opacity:.4}
+  .tl.done .med{text-decoration:line-through;text-decoration-thickness:1px}
+  .tl.now{background:var(--clay-soft);border-radius:12px;padding:12px 12px;border-bottom:none;margin:6px -2px}
+  .tl.now .tm{color:var(--clay-deep)}
+  .tl .log{margin-left:auto;background:var(--clay);color:#fff;border-radius:999px;font-size:12px;font-weight:700;padding:9px 16px;white-space:nowrap}
+  .tl .ok{margin-left:auto;font-size:11px;font-weight:700;color:var(--pine);white-space:nowrap}
+  .meter{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .meter .lab{font-size:10px;letter-spacing:.12em;font-weight:700;color:var(--mut);white-space:nowrap}
+  .meter .bar{flex:1;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+  .meter .bar i{display:block;height:100%;width:50%;background:var(--pine)}
+  .quietline{font-family:'Petrona',serif;font-style:italic;font-size:13.5px;color:var(--pine);margin-top:14px}
+  .paired{font-size:11.5px;color:var(--mut);margin-top:8px}
+
+  /* annotations */
+  .annrow{max-width:1200px;margin:38px auto 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px}
+  .ann{background:#fff;border:1px solid var(--line);border-left:3px solid var(--clay);border-radius:10px;padding:14px 16px;font-size:13.5px;line-height:1.5}
+  .ann b{display:block;margin-bottom:3px}
+  .ann .tie{display:block;margin-top:6px;font-size:11px;color:var(--mut);font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>Bottom nav — Option 3 vs Option 4</h1>
+  <div class="lens">Same day-5 page above (dimmed); the bar is the subject · phase crops below each phone</div>
+  <p>Both carry the two agreed jobs: <b>what's next</b> and <b>what to look for</b>. Option 3 generalizes the left slot into a "Next" slot that survives every recovery phase. Option 4 is the honest conventional take: a labeled tab bar. The crops under each phone show the same bar at day 1, day 9, week 7, and month 3.</p>
+</div>
+
+<div class="row">
+
+<!-- ============ OPTION 3 ============ -->
+<div class="col">
+  <div class="optlabel">Option 3 · The generalized "Next" slot</div>
+  <div class="optsub">Two slots, weight flipped: Next carries color and countdown; the check slot goes quiet and outlined.</div>
+  <div class="phone"><div class="screen">
+    <div class="status"><span>9:41</span><span>Maya · UFE Feb 12</span></div>
+    <div class="ghost">
+      <div style="margin-top:26px">
+        <div class="eyebrow">DAY 5 · MORNING CHECK-IN</div>
+        <div class="bigtext herorow">The fog usually starts lifting around now<em>…</em></div>
+      </div>
+      <div class="receipt"><span class="rtext">Today feels: <em>a little better</em></span></div>
+      <div class="receipt"><span class="rtext">Noted: <em>nothing new</em></span></div>
+      <div class="sect"><h5>How today might feel</h5>
+        <p class="entrybody"><b>Still reaching for the strong medication?</b> Many women are stepping down to ibuprofen now; needing it into week two is also within the band.</p>
+      </div>
+    </div>
+
+    <div class="pair">
+      <span class="next">
+        <span class="k">NEXT</span>
+        <span class="v">Ibuprofen 800<small>1:00 · in 3 h</small></span>
+      </span>
+      <span class="feel">Feeling something?</span>
+    </div>
+  </div></div>
+
+  <div class="crops">
+    <div class="croplab">DAY 1 · 2:14 AM — next dose imminent</div>
+    <div class="crop"><div class="pair" style="margin-top:0">
+      <span class="next"><span class="k">NEXT</span><span class="v">Ibuprofen 800<small>in 40 min · with food</small></span></span>
+      <span class="feel">Feeling something?</span>
+    </div></div>
+    <div class="croplab">DAY 9 — meds ended; a milestone is next</div>
+    <div class="crop"><div class="pair" style="margin-top:0">
+      <span class="next" style="background:var(--pine)"><span class="k">NEXT</span><span class="v">Lifting clears<small>Sunday · 2 days</small></span></span>
+      <span class="feel">Feeling something?</span>
+    </div></div>
+    <div class="croplab">WEEK 7 — the cycle is the scoreboard</div>
+    <div class="crop"><div class="pair" style="margin-top:0">
+      <span class="next" style="background:var(--pine)"><span class="k">NEXT</span><span class="v">Cycle 2 check-in<small>when your period ends</small></span></span>
+      <span class="feel">Feeling something?</span>
+    </div></div>
+    <div class="croplab">MONTH 3 — the last page</div>
+    <div class="crop"><div class="pair" style="margin-top:0">
+      <span class="next" style="background:var(--ink)"><span class="k">NEXT</span><span class="v">Your MRI<small>Mar 12 · directions →</small></span></span>
+      <span class="feel">Feeling something?</span>
+    </div></div>
+  </div>
+</div>
+
+<!-- ============ OPTION 4 ============ -->
+<div class="col">
+  <div class="optlabel">Option 4 · The conventional tab bar</div>
+  <div class="optsub">Four labeled tabs in the concept's palette. Discoverable and testable; static by nature.</div>
+  <div class="phone"><div class="screen">
+    <div class="status"><span>9:41</span><span>Maya · UFE Feb 12</span></div>
+    <div class="ghost">
+      <div style="margin-top:26px">
+        <div class="eyebrow">DAY 5 · MORNING CHECK-IN</div>
+        <div class="bigtext herorow">The fog usually starts lifting around now<em>…</em></div>
+      </div>
+      <div class="receipt"><span class="rtext">Today feels: <em>a little better</em></span></div>
+      <div class="receipt"><span class="rtext">Noted: <em>nothing new</em></span></div>
+      <div class="sect"><h5>How today might feel</h5>
+        <p class="entrybody"><b>Still reaching for the strong medication?</b> Many women are stepping down to ibuprofen now; needing it into week two is also within the band.</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <span class="tab active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 5.5 C7 4 10 4 12 5.5 C14 4 17 4 20 5.5 V19 C17 17.5 14 17.5 12 19 C10 17.5 7 17.5 4 19 Z"/><path d="M12 5.5 V19"/></svg>
+        Today
+      </span>
+      <span class="tab">
+        <span class="badge">1:00</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="9" width="17" height="7.5" rx="3.75" transform="rotate(-35 12 12.75)"/><path d="M9.5 8.2 L14.8 15.8"/></svg>
+        Medicines
+      </span>
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16 L20 20"/></svg>
+        Check
+      </span>
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6 h12 M8 12 h12 M8 18 h12 M4 6 h.01 M4 12 h.01 M4 18 h.01"/></svg>
+        More
+      </span>
+    </div>
+  </div></div>
+
+  <div class="crops">
+    <div class="croplab">DAY 1 · 2:14 AM — dose due shows as a badge</div>
+    <div class="crop"><div class="tabs" style="margin:0;border-top:none;padding-top:2px">
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 5.5 C7 4 10 4 12 5.5 C14 4 17 4 20 5.5 V19 C17 17.5 14 17.5 12 19 C10 17.5 7 17.5 4 19 Z"/><path d="M12 5.5 V19"/></svg>
+        Today
+      </span>
+      <span class="tab active">
+        <span class="badge">now</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="9" width="17" height="7.5" rx="3.75" transform="rotate(-35 12 12.75)"/><path d="M9.5 8.2 L14.8 15.8"/></svg>
+        Medicines
+      </span>
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16 L20 20"/></svg>
+        Check
+      </span>
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6 h12 M8 12 h12 M8 18 h12 M4 6 h.01 M4 12 h.01 M4 18 h.01"/></svg>
+        More
+      </span>
+    </div></div>
+    <div class="croplab">WEEK 7 — the medicines tab outlives the medicines</div>
+    <div class="crop"><div class="tabs" style="margin:0;border-top:none;padding-top:2px">
+      <span class="tab active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 5.5 C7 4 10 4 12 5.5 C14 4 17 4 20 5.5 V19 C17 17.5 14 17.5 12 19 C10 17.5 7 17.5 4 19 Z"/><path d="M12 5.5 V19"/></svg>
+        Today
+      </span>
+      <span class="tab off">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="9" width="17" height="7.5" rx="3.75" transform="rotate(-35 12 12.75)"/><path d="M9.5 8.2 L14.8 15.8"/></svg>
+        Medicines
+      </span>
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16 L20 20"/></svg>
+        Check
+      </span>
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6 h12 M8 12 h12 M8 18 h12 M4 6 h.01 M4 12 h.01 M4 18 h.01"/></svg>
+        More
+      </span>
+    </div></div>
+  </div>
+</div>
+
+</div>
+
+<!-- ============ THE NEXT SLOT, EXPANDED ============ -->
+<div class="row" style="margin-top:48px">
+<div class="col">
+  <div class="optlabel">The Next slot, expanded</div>
+  <div class="optsub">Day 5, 12:20 PM. Tapping Next opens a sheet: the day as a rail — done doses collapse like receipts, the next dose holds the color, PRN waits below.</div>
+  <div class="phone"><div class="screen" style="position:relative">
+    <div class="status"><span>12:20</span><span>Maya · UFE Feb 12</span></div>
+    <div class="ghost">
+      <div style="margin-top:26px">
+        <div class="eyebrow">DAY 5 · TODAY'S PAGE</div>
+        <div class="bigtext herorow">The fog usually starts lifting around now<em>…</em></div>
+      </div>
+      <div class="receipt"><span class="rtext">Today feels: <em>a little better</em></span></div>
+    </div>
+    <div class="dim"></div>
+    <div class="sheet">
+      <div class="grab"></div>
+      <div class="sheettitle">Your medicines · day 5</div>
+
+      <div class="tlgroup">THIS MORNING</div>
+      <div class="tl done"><span class="tm">8:00</span><span class="med">Cyclobenzaprine 10</span><span class="ok">taken 8:05 ✓</span></div>
+      <div class="tl done"><span class="tm">8:00</span><span class="med">Ibuprofen 800</span><span class="ok">taken 8:05 ✓</span></div>
+
+      <div class="tlgroup" style="color:var(--clay-deep)">NEXT · IN 40 MIN</div>
+      <div class="tl now"><span class="tm">1:00</span><span class="med">Ibuprofen 800<small>take with food</small></span><span class="log">Log it</span></div>
+
+      <div class="tlgroup">LATER TODAY</div>
+      <div class="tl"><span class="tm">6:00</span><span class="med">Ibuprofen 800</span></div>
+      <div class="tl"><span class="tm">9:00</span><span class="med">Cyclobenzaprine 10 + stool softener</span></div>
+
+      <div class="tlgroup">IF YOU NEED MORE</div>
+      <div class="tl"><span class="tm">PRN</span><span class="med">Hydromorphone 1–2<small>for breakthrough pain</small></span><span class="ok">ok again now</span></div>
+      <div class="tl" style="border-bottom:none"><span class="tm">PRN</span><span class="med">Zofran<small>for nausea</small></span><span class="ok">available</span></div>
+
+      <div class="meter"><span class="lab">TYLENOL TODAY</span><span class="bar"><i></i></span><span class="lab">2000 / 4000 MG</span></div>
+      <div class="quietline">After the 9:00 doses, nothing until morning. Rest.</div>
+      <div class="paired">Tasha is paired and can log doses for you.</div>
+    </div>
+  </div></div>
+</div>
+
+<div class="col">
+  <div class="optlabel" style="opacity:.85">…and what "expanded" means in later phases</div>
+  <div class="optsub">The Next slot always opens the thing it names — the sheet's shape changes with the phase.</div>
+  <div class="crops" style="margin-top:0">
+    <div class="croplab">DAY 9 · "LIFTING CLEARS SUNDAY" → the can/can't sheet</div>
+    <div class="crop" style="padding:14px 16px">
+      <div style="font-family:'Petrona',serif;font-size:16px">What you can do — and not yet</div>
+      <div style="font-size:12.5px;color:var(--mut);margin-top:6px">Back: driving ✓ · showers ✓ · normal meals ✓ · exercise ✓<br>Not yet: lifting &gt;10 lb <b style="color:var(--clay-deep)">2d</b> · baths &amp; pools <b style="color:var(--clay-deep)">5d</b></div>
+    </div>
+    <div class="croplab">WEEK 7 · "CYCLE 2 CHECK-IN" → one question, faces again</div>
+    <div class="crop" style="padding:14px 16px">
+      <div style="font-family:'Petrona',serif;font-size:16px">Your second period since UFE — how did it compare?</div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <span style="flex:1;text-align:center;font-size:11.5px;font-weight:700;background:var(--pine-soft);color:var(--pine);border-radius:999px;padding:8px 0">Lighter</span>
+        <span style="flex:1;text-align:center;font-size:11.5px;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:8px 0;color:var(--mut)">Same</span>
+        <span style="flex:1;text-align:center;font-size:11.5px;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:8px 0;color:var(--mut)">Heavier</span>
+      </div>
+    </div>
+    <div class="croplab">MONTH 3 · "YOUR MRI · MAR 12" → the appointment sheet</div>
+    <div class="crop" style="padding:14px 16px">
+      <div style="font-family:'Petrona',serif;font-size:16px">Your MRI — the page that says how far you've come</div>
+      <div style="font-size:12.5px;color:var(--mut);margin-top:6px">Mar 12, 9:30 AM · Advanced Vascular Centers<br>Directions → · Add to calendar → · What it will show →</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============ ANNOTATIONS ============ -->
+<div class="annrow">
+  <div class="ann"><b>Option 3: the bar answers "what's next" forever.</b>
+    The left slot holds whatever is genuinely next in her recovery — dose (clay, urgent), milestone or cycle check-in (pine, calm), the MRI (ink, formal). The color shift quietly communicates register without new layouts. "Feeling something?" stays constant and quiet on the right.
+    <span class="tie">→ Survives all four phases with one component. The crops are the argument.</span></div>
+  <div class="ann"><b>Option 3's risk: a smart slot needs smart rules.</b>
+    "Next" must pick one thing — dose vs milestone vs appointment — and a wrong pick erodes trust. The priority logic (dose &gt; red-flag window &gt; appointment &gt; milestone &gt; cycle) is real product work hiding in a small pill.
+    <span class="tie">→ Prototype question: does she understand why "Next" changed?</span></div>
+  <div class="ann"><b>Option 4: discoverable, familiar, testable.</b>
+    Four labeled tabs — Today, Medicines (dose badge when due), Check, More. Nothing has to be inferred; everything has a place. The palette and icon weight keep it from reading fully clinical.
+    <span class="tie">→ Best for first-session orientation and for older or less app-fluent patients.</span></div>
+  <div class="ann"><b>Option 4's cost: chrome that outlives its content.</b>
+    By week 7 the Medicines tab is a dead limb (shown dimmed in the crop) and "Today" still implies daily duty in the once-a-cycle phase. Tab bars are static by nature; this product's needs aren't.
+    <span class="tie">→ Also the register risk: labeled tabs are the first genuinely portal-like element in the concept.</span></div>
+  <div class="ann"><b>Expanded Next: a day rail, not a calendar.</b>
+    The sheet is a timeline in the Daybook's grammar — grouped by this-morning / next / later-today rather than hourly slots. Done doses dim and strike through like receipts; only the next dose carries color and a Log button; PRN meds wait in their own group with availability stated in words ("ok again now"). The guardrail meter, quiet line, and support pairing close the sheet — the salvaged Night Stand engine, rehoused.
+    <span class="tie">→ Answers "is it a timeline?": yes, but a rail of moments, not a grid of hours. One decision is loud; everything else is reference.</span></div>
+  <div class="ann"><b>"Expanded" follows the slot's meaning across phases.</b>
+    Next always opens the thing it names: the med rail in the acute phase, the can/can't sheet at day 9, the one-question cycle check-in (faces again) at week 7, the MRI appointment page at month 3. One interaction contract, four sheet shapes.
+    <span class="tie">→ The slot and its sheet age together — no dead chrome at any phase.</span></div>
+  <div class="ann"><b>How to decide.</b>
+    If the prototype test shows patients hunting for things (lostness), Option 4 wins on orientation. If they find the flow naturally, Option 3 keeps the product's voice and ages with the recovery. A hybrid also exists: Option 3's pair during the acute phase, graduating to nothing but the status line after week 2.
+    <span class="tie">→ Recommend testing both in the interactive prototype with one day-3 patient and one week-7 scenario.</span></div>
+</div>
+
+</body>
+</html>

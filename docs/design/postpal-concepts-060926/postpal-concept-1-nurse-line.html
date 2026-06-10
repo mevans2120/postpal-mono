@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostPal Concept 1 — The Nurse Line (v2, simplified)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Petrona:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#faf6f0;--ink:#2b2118;--mut:#7a6c5c;--clay:#c4674a;--clay-deep:#8a4630;--clay-soft:#f3e4d3;--pine:#3d5a4c;--pine-soft:#e4ebe6;--line:#e6ddd1;--alert:#9c3a2a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#efe9df;font-family:'Albert Sans',sans-serif;color:var(--ink);display:flex;gap:40px;justify-content:center;align-items:flex-start;padding:40px 20px;flex-wrap:wrap}
+  .phone{width:390px;background:var(--paper);border-radius:38px;border:10px solid #2b2118;overflow:hidden;box-shadow:0 24px 60px rgba(43,33,24,.25)}
+  .screen{padding:24px 24px 18px;min-height:760px;display:flex;flex-direction:column;position:relative}
+  .status{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--mut)}
+
+  /* greeting = check-in */
+  .greet{margin-top:34px}
+  .greet .day{font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--pine)}
+  .greet h2{font-family:'Petrona',serif;font-weight:500;font-size:30px;line-height:1.22;margin-top:10px}
+  .greet h2 em{font-style:italic;color:var(--clay)}
+  .traj{display:flex;gap:8px;margin-top:14px}
+  .traj span{font-size:13px;font-weight:600;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:7px 16px;background:#fff}
+  .traj span.sel{background:var(--pine);border-color:var(--pine);color:#fff}
+
+  /* the question */
+  .ask{margin-top:auto;margin-bottom:auto;padding:30px 0}
+  .ask h3{font-family:'Petrona',serif;font-weight:500;font-size:23px;margin-bottom:18px}
+  .chips{display:flex;flex-direction:column;gap:10px}
+  .chip{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:600;background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 18px}
+  .chip svg{flex:none}
+  .chip.more{background:transparent;border:none;color:var(--mut);font-weight:500;font-size:13.5px;padding:6px 18px 0}
+
+  /* botanical punctuation */
+  .flora{margin:0 auto;opacity:.9}
+
+  /* bottom bar: exactly two things */
+  .bar{display:flex;gap:10px;margin-top:auto}
+  .bar .pill{flex:1.4;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:12px 16px}
+  .bar .pill .rx{width:30px;height:30px;border-radius:50%;background:var(--clay-soft);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--clay-deep);font-size:10px;flex:none}
+  .bar .pill .t{font-size:12.5px;font-weight:700;line-height:1.25}
+  .bar .pill .t small{display:block;font-weight:600;color:var(--pine);font-size:11.5px}
+  .bar .worry{flex:1;background:var(--ink);color:#f5efe6;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700}
+
+  /* ===== sheet phone ===== */
+  .dim{position:absolute;inset:0;background:rgba(43,33,24,.32)}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);border-radius:26px 26px 0 0;padding:18px 24px 24px;box-shadow:0 -12px 40px rgba(43,33,24,.25)}
+  .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 16px}
+  .tag{font-size:10.5px;font-weight:700;letter-spacing:.16em;color:var(--pine)}
+  .sheet h4{font-family:'Petrona',serif;font-size:21px;font-weight:500;line-height:1.3;margin:8px 0 10px}
+  .sheet p{font-size:14px;line-height:1.6;color:#5a4d40}
+  .threshold{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:14px;font-size:13px}
+  .threshold b{color:var(--alert)}
+  .sheetacts{display:flex;gap:10px;margin-top:16px}
+  .btn{flex:1;text-align:center;border-radius:999px;padding:13px 10px;font-weight:700;font-size:13.5px}
+  .btn.primary{background:var(--clay);color:#fff}
+  .btn.ghost{border:1.5px solid var(--line);color:var(--mut)}
+
+  /* annotations */
+  .annotations{width:380px;max-width:90vw}
+  .annotations h1{font-family:'Petrona',serif;font-weight:500;font-size:26px;margin-bottom:4px}
+  .annotations .lens{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--clay);font-weight:700;margin-bottom:18px}
+  .ann{background:#fff;border:1px solid var(--line);border-left:3px solid var(--clay);border-radius:10px;padding:14px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.5}
+  .ann b{display:block;margin-bottom:3px}
+  .ann .tie{display:block;margin-top:6px;font-size:11px;color:var(--mut);font-style:italic}
+  .caption{font-size:11.5px;color:var(--mut);text-align:center;margin-top:10px;font-style:italic}
+</style>
+</head>
+<body>
+
+<!-- ============ PHONE A: HOME (the whole home) ============ -->
+<div>
+<div class="phone"><div class="screen">
+  <div class="status"><span>9:41</span><span>PostPal · AVC</span></div>
+
+  <div class="greet">
+    <span class="day">DAY 3</span>
+    <h2>Good morning, Maya.<br><em>How was the night?</em></h2>
+    <div class="traj"><span class="sel">Better</span><span>Same</span><span>Worse</span></div>
+  </div>
+
+  <div class="ask">
+    <h3>Is something worrying you?</h3>
+    <div class="chips">
+      <span class="chip">Fever or feeling hot <svg width="16" height="16" viewBox="0 0 16 16"><path d="M5 3.5 10 8 5 12.5" stroke="#c4674a" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></span>
+      <span class="chip">Cramps got worse <svg width="16" height="16" viewBox="0 0 16 16"><path d="M5 3.5 10 8 5 12.5" stroke="#c4674a" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></span>
+      <span class="chip">Bleeding or discharge <svg width="16" height="16" viewBox="0 0 16 16"><path d="M5 3.5 10 8 5 12.5" stroke="#c4674a" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></span>
+      <span class="chip more">Something else…</span>
+    </div>
+  </div>
+
+  <svg class="flora" width="150" height="34" viewBox="0 0 150 34"><path d="M8,28 C40,8 70,24 100,12 C120,5 135,16 144,9" fill="none" stroke="#c4674a" stroke-width="1.3"/><path d="M52,17 q4,-7 9,-8 M58,20 q5,-2 8,-6 M104,11 q4,-6 10,-6" fill="none" stroke="#3d5a4c" stroke-width="1.1" stroke-linecap="round"/></svg>
+
+  <div class="bar">
+    <span class="pill"><span class="rx">Rx</span><span class="t">Ibuprofen 800<small>next · in 40 min</small></span></span>
+    <span class="worry">Worried?</span>
+  </div>
+</div></div>
+<p class="caption">Home. One question, three answers-in-waiting, two standing affordances.</p>
+</div>
+
+<!-- ============ PHONE B: THE SHEET (chip tapped) ============ -->
+<div>
+<div class="phone"><div class="screen">
+  <div class="status"><span>9:41</span><span>PostPal · AVC</span></div>
+  <div class="greet" style="opacity:.35">
+    <span class="day">DAY 3</span>
+    <h2>Good morning, Maya.<br><em>How was the night?</em></h2>
+  </div>
+  <div class="dim"></div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <span class="tag">EXPECTED ON DAY 3</span>
+    <h4>A fever of 100.4° is your body doing the work.</h4>
+    <p>As the fibroids lose their blood supply, most women run a low fever with flu-like aches through about day 3. It usually fades with the cramping.</p>
+    <div class="threshold">
+      <svg width="14" height="14" viewBox="0 0 14 14" style="flex:none;margin-top:2px"><circle cx="7" cy="7" r="6" fill="none" stroke="#9c3a2a" stroke-width="1.5"/><path d="M7 4v3.5M7 9.8v.4" stroke="#9c3a2a" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span>Your clinic's line: call if it reaches <b>101°F</b>, or if a low fever is still here past day 3.</span>
+    </div>
+    <div class="sheetacts">
+      <span class="btn ghost">That helps</span>
+      <span class="btn primary">Call Carrie, PA-C</span>
+    </div>
+  </div>
+</div></div>
+<p class="caption">The interpreter opens as a sheet: fear resolved, threshold stated, named human offered.</p>
+</div>
+
+<!-- ============ ANNOTATIONS ============ -->
+<div class="annotations">
+  <h1>Concept 1 · The Nurse Line <span style="font-size:14px;color:#7a6c5c">v2</span></h1>
+  <div class="lens">Conversational + Organic · Petrona / Albert Sans · simplified per review</div>
+
+  <div class="ann"><b>The calm budget, enforced.</b>
+    Above the fold: one question, zero cards-in-cards, two actions (a chip, or "Worried?"), under 40 words. Everything cut from v1 still exists — one tap deeper.
+    <span class="tie">→ Review feedback: "too busy." The home screen now does exactly one job.</span></div>
+
+  <div class="ann"><b>The greeting is the check-in.</b>
+    "How was the night?" takes its answer inline (Better / Same / Worse) and then disappears for the day, leaving the question screen even quieter.
+    <span class="tie">→ v1's separate check-in section deleted; trajectory data kept.</span></div>
+
+  <div class="ann"><b>Chips only, no input field.</b>
+    Three day-ranked worries plus "Something else…". The free-text box (visual weight, writing pressure) is gone; typing lives behind the fourth chip.
+    <span class="tie">→ Chips re-rank by day number: "Something passed" surfaces weeks 4–12.</span></div>
+
+  <div class="ann"><b>Answers are sheets, not page furniture.</b>
+    The reassurance card (fear → clinic's threshold → "Call Carrie, PA-C") appears only when summoned, over a dimmed home.
+    <span class="tie">→ Same content as v1, now progressive disclosure.</span></div>
+
+  <div class="ann"><b>The bottom bar replaces three sections.</b>
+    Exactly two standing affordances: next dose (opens the full med sheet) and "Worried?" (opens check-vs-call, with the 911 signs inside). The heavy dark help bar is gone.
+    <span class="tie">→ Salvaged from struck Concept 3, living inside the med sheet: quiet-hours line, PRN guardrail math, support-person pairing.</span></div>
+
+  <div class="ann"><b>Phase 3 unchanged in spirit.</b>
+    After week 2 the home question relaxes to once-a-cycle ("Your second period since UFE — how did it compare?") with the same one-question structure. No separate mockup needed; the layout is identical.
+    <span class="tie">→ Principle 6; the simplification makes the phase shift nearly free.</span></div>
+</div>
+
+</body>
+</html>

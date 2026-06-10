@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostPal Concept 2 — The Recovery Journal (v2, simplified)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#f6f1e7;--paper2:#efe7d8;--ink:#26211b;--mut:#6e6353;--ox:#7a2e2e;--line:#d8cdb8;--okband:#e3dcc6}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#e7e0d1;font-family:'Hanken Grotesk',sans-serif;color:var(--ink);display:flex;gap:40px;justify-content:center;align-items:flex-start;padding:40px 20px;flex-wrap:wrap}
+  .phone{width:390px;background:var(--paper);border-radius:38px;border:10px solid #26211b;overflow:hidden;box-shadow:0 24px 60px rgba(38,33,27,.3)}
+  .screen{padding:24px 26px 18px;min-height:760px;display:flex;flex-direction:column}
+  .status{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--mut)}
+
+  /* day heading is the only masthead */
+  .dayhead{margin-top:40px;border-top:2.5px solid var(--ink);padding-top:18px}
+  .dayhead h2{font-family:'Newsreader',serif;font-weight:500;font-size:46px;line-height:1}
+  .dayhead h2 span{font-size:19px;font-style:italic;font-weight:400;color:var(--ox)}
+  .standfirst{font-family:'Newsreader',serif;font-style:italic;font-size:17px;line-height:1.5;color:#4d4438;margin-top:12px}
+
+  /* band as input */
+  .bandwrap{margin-top:30px}
+  .bandprompt{font-size:11px;letter-spacing:.16em;font-weight:700;color:var(--ox)}
+  .bandcap{display:flex;justify-content:space-between;font-size:11px;color:var(--mut);margin-top:6px;font-style:italic;font-family:'Newsreader',serif}
+
+  /* single entry */
+  .entry{margin-top:26px;border-top:1px solid var(--ink);padding-top:14px}
+  .entry .body{font-family:'Newsreader',serif;font-size:16px;line-height:1.55}
+  .entry .body b{font-weight:600}
+  .marginnote{display:block;font-family:'Newsreader',serif;font-style:italic;font-size:13.5px;color:var(--ox);margin-top:10px;padding-left:12px;border-left:2px solid var(--ox)}
+  .turn{margin-top:16px;font-size:13px;font-weight:700;color:var(--mut)}
+  .turn b{color:var(--ox)}
+
+  /* resting line */
+  .resting{margin-top:auto;padding-top:18px;font-family:'Newsreader',serif;font-style:italic;font-size:13.5px;color:var(--mut)}
+  .resting b{font-style:normal;font-family:'Hanken Grotesk';font-size:12px;font-weight:700;color:var(--ox)}
+
+  /* footer bar: two things */
+  .bar{display:flex;gap:10px;margin-top:10px;border-top:1px solid var(--ink);padding-top:14px}
+  .bar .dose{flex:1.4;font-size:13px;display:flex;align-items:center;gap:8px}
+  .bar .dose b{font-family:'Newsreader',serif;font-size:14.5px}
+  .bar .dose .nxt{color:var(--ox);font-weight:700;margin-left:auto;white-space:nowrap}
+  .bar .worry{flex:.8;background:var(--ink);color:#f3eee3;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;padding:11px 0}
+
+  /* annotations */
+  .annotations{width:380px;max-width:90vw}
+  .annotations h1{font-family:'Newsreader',serif;font-weight:500;font-size:26px;margin-bottom:4px}
+  .annotations .lens{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ox);font-weight:700;margin-bottom:18px}
+  .ann{background:#fdfbf6;border:1px solid var(--line);border-left:3px solid var(--ox);border-radius:6px;padding:14px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.5}
+  .ann b{display:block;margin-bottom:3px}
+  .ann .tie{display:block;margin-top:6px;font-size:11px;color:var(--mut);font-style:italic}
+  .caption{font-size:11.5px;color:var(--mut);text-align:center;margin-top:10px;font-style:italic;font-family:'Newsreader',serif}
+</style>
+</head>
+<body>
+
+<!-- ============ PHONE: DAY 5 PAGE (the whole page) ============ -->
+<div>
+<div class="phone"><div class="screen">
+  <div class="status"><span>9:41</span><span>Renee · UFE Feb 12</span></div>
+
+  <div class="dayhead">
+    <h2>Day 5 <span>of about fourteen</span></h2>
+    <p class="standfirst">The fog usually starts lifting around now — though plenty of recoveries take until week two. Both are normal.</p>
+  </div>
+
+  <!-- the band IS the check-in -->
+  <div class="bandwrap">
+    <span class="bandprompt">TAP WHERE TODAY FEELS</span>
+    <svg viewBox="0 0 330 100" width="100%" height="100" role="img" aria-label="Wide normal band of recovery; tap to place yourself; your curve so far is drawn inside it" style="margin-top:8px">
+      <path d="M6,26 C90,20 200,42 324,64 L324,90 C200,76 90,62 6,70 Z" fill="#e3dcc6"/>
+      <path d="M6,48 C60,44 110,50 142,55" fill="none" stroke="#7a2e2e" stroke-width="2.5"/>
+      <circle cx="142" cy="55" r="9" fill="none" stroke="#7a2e2e" stroke-width="1.5" stroke-dasharray="2 3"/>
+      <circle cx="142" cy="55" r="4.5" fill="#7a2e2e"/>
+      <text x="156" y="50" font-size="13" font-family="Newsreader" font-style="italic" fill="#26211b">you, today</text>
+      <text x="8" y="16" font-size="10" font-family="Hanken Grotesk" font-weight="700" letter-spacing="1.5" fill="#6e6353">THE NORMAL BAND</text>
+    </svg>
+    <div class="bandcap"><span>rougher</span><span>day 1 ——— day 14</span><span>easier</span></div>
+  </div>
+
+  <!-- one entry, one margin note -->
+  <div class="entry">
+    <p class="body"><b>Still reaching for the strong medication?</b> Many women are stepping down to ibuprofen now; needing it into week two is also within the band. Rising pain — not lingering pain — is the thing to call about.</p>
+    <span class="marginnote">Carrie, PA-C — "Day 5 tired is honest tired. If you arrived anemic, it runs longer. That's the iron, not a setback."</span>
+    <p class="turn">Turn the page: <b>discharge that's starting, and what tomorrow brings →</b></p>
+  </div>
+
+  <div class="resting">Still resting: baths & pools <b>9d</b> · lifting <b>2d</b> · <span style="text-decoration:line-through">driving</span> cleared</div>
+
+  <div class="bar">
+    <span class="dose"><b>Doses</b> 3 of 6 <span class="nxt">next: ibuprofen, 1:00</span></span>
+    <span class="worry">Worried?</span>
+  </div>
+</div></div>
+<p class="caption">The whole page: heading, one honest sentence, the band she taps, one entry, one margin note.</p>
+</div>
+
+<!-- ============ ANNOTATIONS ============ -->
+<div class="annotations">
+  <h1>Concept 2 · The Recovery Journal <span style="font-size:14px;color:#6e6353">v2</span></h1>
+  <div class="lens">Editorial / Story-Driven · Newsreader / Hanken Grotesk · simplified per review</div>
+
+  <div class="ann"><b>The band is now the input.</b>
+    "Tap where today feels" — one graphic both shows the wide normal range and takes her daily placement, replacing v1's separate pain-scale section. Her tapped points draw the curve that accumulates day over day.
+    <span class="tie">→ Review option 1. Same data (trajectory + advocacy record + the PA's pre-visit report), one element instead of two.</span></div>
+
+  <div class="ann"><b>One entry per page.</b>
+    A single "on today's page" paragraph with one PA margin note. The other entries — discharge starting, appetite, tomorrow's pre-emptive expulsion page — live behind "turn the page →".
+    <span class="tie">→ Review option 2. Pre-emptive panic content keeps its power; it stops stacking.</span></div>
+
+  <div class="ann"><b>The chrome is gone.</b>
+    No masthead, no edition label, no section labels, no tomorrow teaser. "Day 5 <i>of about fourteen</i>" over a single rule is the entire apparatus; the editorial feel now comes from Newsreader, the standfirst, and the ragged margins.
+    <span class="tie">→ Review options 4–5: "newspaper cosplay" deleted.</span></div>
+
+  <div class="ann"><b>Restrictions are one italic line.</b>
+    "Still resting: baths 9d · lifting 2d · <s>driving</s> cleared" — a sentence, not three blocks. Countdown comfort kept, layout weight gone.
+    <span class="tie">→ Review option 3; principle: restrictions are context, never tasks.</span></div>
+
+  <div class="ann"><b>Same two-slot footer as Concept 1.</b>
+    Doses (opens the full med sheet) and "Worried?" (check vs call). The salvaged Concept 3 pieces — quiet-hours line, PRN guardrail math, support-person pairing — live inside the med sheet here too, so both concepts share one acute-phase engine.
+    <span class="tie">→ Keeps the two concepts comparable: the home screens differ; the safety and med layers don't.</span></div>
+
+  <div class="ann"><b>Cycle pages inherit the same one-page discipline.</b>
+    After week 2: "Cycle 3 — the one where most women feel the turn," the band redrawn with cycles on the x-axis, one entry, one tap. The MRI date is the final page.
+    <span class="tie">→ Principle 6 unchanged from v1; it just got quieter like everything else.</span></div>
+</div>
+
+</body>
+</html>

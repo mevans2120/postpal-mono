@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostPal — Mood Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Petrona:ital,wght@0,400;0,500;0,600;1,400&family=Albert+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600&family=Schibsted+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6f0; --ink:#2b2118; --clay:#c4674a; --pine:#3d5a4c; --oxblood:#7a2e2e;
+    --night:#15211c; --amber:#e8b04b; --sage:#a8bfae;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:'Albert Sans',sans-serif;line-height:1.55;padding:48px 24px;max-width:1100px;margin:0 auto}
+  header{margin-bottom:56px;border-bottom:2px solid var(--ink);padding-bottom:28px}
+  h1{font-family:'Petrona',serif;font-weight:500;font-size:44px;letter-spacing:-.01em}
+  .kicker{text-transform:uppercase;letter-spacing:.18em;font-size:12px;font-weight:600;color:var(--clay);margin-bottom:10px}
+  h2{font-family:'Petrona',serif;font-weight:500;font-size:26px;margin:64px 0 8px}
+  h3{font-size:15px;font-weight:700;margin:24px 0 8px}
+  p.lead{max-width:64ch;color:#5a4d40;font-size:15px}
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .card{background:#fff;border:1px solid #e6ddd1;border-radius:14px;padding:20px}
+  .note{font-size:13px;color:#7a6c5c}
+  /* emotional targets */
+  .targets{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px}
+  .target{font-family:'Petrona',serif;font-size:22px;font-style:italic;background:#fff;border:1px solid #e6ddd1;border-radius:999px;padding:10px 26px}
+  .anti{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .anti span{font-size:13px;border:1px dashed #b9a890;border-radius:999px;padding:5px 14px;color:#7a6c5c;text-decoration:line-through}
+  /* swatches */
+  .swatches{display:flex;gap:0;border-radius:10px;overflow:hidden;margin:14px 0 10px;height:64px}
+  .swatches div{flex:1;display:flex;align-items:flex-end;padding:6px;font-size:10px;font-family:'Spline Sans Mono',monospace}
+  /* type specimens */
+  .spec{padding:18px 0;border-top:1px solid #e6ddd1}
+  /* journey line */
+  .journey{margin:26px 0}
+  /* concept cards header strips */
+  .c1h{background:linear-gradient(135deg,#f3e4d3,#e8cdb4)}
+  .c2h{background:repeating-linear-gradient(0deg,#f6f1e7,#f6f1e7 22px,#e9e2d2 23px)}
+  .c3h{background:linear-gradient(160deg,#15211c,#1e2f27)}
+  .chead{border-radius:10px;padding:18px;margin-bottom:14px;min-height:96px;position:relative}
+  .badge{position:absolute;top:12px;right:12px;font-size:10px;font-family:'Spline Sans Mono',monospace;letter-spacing:.08em;background:rgba(0,0,0,.08);padding:4px 8px;border-radius:4px}
+  /* component samples */
+  .sample{border-radius:12px;padding:16px;margin-top:10px}
+  .btn{display:inline-block;border-radius:999px;padding:10px 20px;font-weight:600;font-size:14px;cursor:pointer;transition:transform .15s ease, box-shadow .15s ease}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+  td,th{padding:8px 10px;border-bottom:1px solid #e6ddd1;text-align:left;vertical-align:top}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#7a6c5c}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">PostPal · Design Concepts · June 2026</div>
+  <h1>Mood Board: A good nurse's house call</h1>
+  <p class="lead" style="margin-top:12px">Three directions for a clinic-prescribed UAE/UFE recovery companion. Every choice below is graded against one scene: a nurse who comes to your home, checks what matters, answers the scary question plainly, and leaves you calmer than she found you.</p>
+</header>
+
+<section>
+  <div class="kicker">Design intent</div>
+  <h2 style="margin-top:8px">How she should feel</h2>
+  <div class="targets">
+    <span class="target">reassured</span>
+    <span class="target">believed</span>
+    <span class="target">steady</span>
+  </div>
+  <h3>What this must never feel like</h3>
+  <div class="anti">
+    <span>a hospital portal (MyChart)</span>
+    <span>a cutesy period app</span>
+    <span>a productivity app</span>
+  </div>
+  <p class="note" style="margin-top:14px;max-width:70ch">Anti-references do real work here. No compliance gray and form-stacks (portal). No petals, pinks, or euphemism (period app). No streaks, scores, or progress-guilt (productivity) — the research's third principle bans grading recovery against fixed days.</p>
+</section>
+
+<section>
+  <h2>The shared motif: the recovery line</h2>
+  <p class="lead">Tia's identity uses a thin winding line for varied health journeys. PostPal borrows the idea with a stricter meaning: every recovery is a different curve through the same wide, normal band. The band-and-curve appears in all three concepts — it is the visual argument for "benchmark against the range, never grade against the day."</p>
+  <div class="journey">
+    <svg viewBox="0 0 1000 150" width="100%" height="150" role="img" aria-label="A wide shaded band narrowing over time, with three different recovery curves inside it">
+      <path d="M0,30 C250,18 600,55 1000,95 L1000,135 C600,110 250,95 0,120 Z" fill="#e8cdb4" opacity=".55"/>
+      <path d="M0,75 C200,60 450,80 700,100 C850,110 950,112 1000,114" fill="none" stroke="#c4674a" stroke-width="3"/>
+      <path d="M0,45 C220,40 500,70 1000,100" fill="none" stroke="#3d5a4c" stroke-width="2" stroke-dasharray="1 6" stroke-linecap="round"/>
+      <path d="M0,105 C300,95 600,108 820,108 C900,107 960,106 1000,108" fill="none" stroke="#7a2e2e" stroke-width="2" stroke-dasharray="8 5"/>
+      <circle cx="700" cy="100" r="6" fill="#c4674a"/>
+      <text x="715" y="92" font-size="13" font-family="Albert Sans" fill="#2b2118">you, day 5</text>
+      <text x="8" y="22" font-size="11" font-family="Spline Sans Mono" fill="#7a6c5c">THE NORMAL BAND IS WIDE</text>
+    </svg>
+  </div>
+</section>
+
+<section>
+  <h2>Three directions</h2>
+  <div class="grid g3" style="margin-top:18px">
+
+    <!-- CONCEPT 1 -->
+    <div class="card">
+      <div class="chead c1h">
+        <span class="badge" style="color:#2b2118">LENS: CONVERSATIONAL · ORGANIC</span>
+        <div style="font-family:'Petrona',serif;font-size:24px;font-weight:500;margin-top:30px">1 · The Nurse Line</div>
+      </div>
+      <p class="note">Leads with the question, not the schedule. Home screen asks <em>"Is something worrying you?"</em> The interpreter is the product.</p>
+      <h3>Palette — warm clay on cream</h3>
+      <div class="swatches">
+        <div style="background:#faf6f0;color:#7a6c5c">#FAF6F0</div>
+        <div style="background:#f3e4d3;color:#7a6c5c">#F3E4D3</div>
+        <div style="background:#c4674a;color:#fff">#C4674A</div>
+        <div style="background:#3d5a4c;color:#fff">#3D5A4C</div>
+        <div style="background:#2b2118;color:#fff">#2B2118</div>
+      </div>
+      <h3>Type — Petrona + Albert Sans</h3>
+      <div class="spec">
+        <div style="font-family:'Petrona',serif;font-size:21px;font-weight:500">A low fever today is expected.</div>
+        <div style="font-size:13.5px;margin-top:6px;color:#5a4d40">Your body is responding to the embolization — most women run warm through day 3. Call us if it reaches 101°F.</div>
+      </div>
+      <h3>Imagery & illustration</h3>
+      <p class="note">No photography in-app. Hand-traced botanical line work (single-weight, clay ink) as quiet punctuation — closer to a naturalist's notebook than a spa. Photos in marketing get a warm paper-grain overlay, never glossy.</p>
+      <svg viewBox="0 0 200 44" width="100%" height="44" style="margin-top:8px"><path d="M10,36 C40,10 70,30 100,14 C130,2 160,26 192,8" fill="none" stroke="#c4674a" stroke-width="1.5"/><path d="M52,22 q4,-8 10,-9 M58,25 q6,-2 9,-7 M120,12 q5,-6 11,-6 M126,15 q5,0 9,-4" fill="none" stroke="#3d5a4c" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <h3>Component sample</h3>
+      <div class="sample" style="background:#faf6f0;border:1px solid #e6ddd1">
+        <div style="font-size:11px;letter-spacing:.14em;color:#3d5a4c;font-weight:700">EXPECTED ON DAY 3</div>
+        <div style="font-family:'Petrona',serif;font-size:17px;margin:6px 0 10px">Fever of 100.4° — your body is doing the work.</div>
+        <span class="btn" style="background:#c4674a;color:#fff">Still worried? Call Carrie, PA-C</span>
+      </div>
+    </div>
+
+    <!-- CONCEPT 2 -->
+    <div class="card">
+      <div class="chead c2h">
+        <span class="badge" style="color:#2b2118">LENS: EDITORIAL · STORY-DRIVEN</span>
+        <div style="font-family:'Newsreader',serif;font-size:24px;font-weight:500;margin-top:30px">2 · The Recovery Journal</div>
+      </div>
+      <p class="note">Each day is a page. Honest, range-based prose with margin notes from the clinic — a friend's annotated journal, professionally fact-checked.</p>
+      <h3>Palette — ink on paper, oxblood accent</h3>
+      <div class="swatches">
+        <div style="background:#f6f1e7;color:#7a6c5c">#F6F1E7</div>
+        <div style="background:#efe7d8;color:#7a6c5c">#EFE7D8</div>
+        <div style="background:#26211b;color:#fff">#26211B</div>
+        <div style="background:#7a2e2e;color:#fff">#7A2E2E</div>
+        <div style="background:#9a8db5;color:#fff">#9A8DB5</div>
+      </div>
+      <h3>Type — Newsreader + Hanken Grotesk</h3>
+      <div class="spec">
+        <div style="font-family:'Newsreader',serif;font-size:24px;font-weight:500">Day 5 <span style="font-style:italic;font-weight:400;font-size:16px;color:#7a2e2e">of about fourteen</span></div>
+        <div style="font-family:'Hanken Grotesk';font-size:13.5px;margin-top:6px;color:#5a4d40">The fog usually starts lifting around now — though plenty of recoveries take until week two. Both are normal.</div>
+      </div>
+      <h3>Imagery & illustration</h3>
+      <p class="note">Editorial restraint: no photos in the daily pages. Diagrammatic ink illustrations (annotated curves, anatomical sketches with handwriting-style labels) in oxblood and graphite. Hairline rules and a ragged-right column do the aesthetic work.</p>
+      <svg viewBox="0 0 200 44" width="100%" height="44" style="margin-top:8px"><line x1="0" y1="8" x2="200" y2="8" stroke="#26211b" stroke-width=".75"/><path d="M0,34 C50,30 90,20 200,26" fill="none" stroke="#7a2e2e" stroke-width="1.5"/><circle cx="118" cy="23" r="3.5" fill="#7a2e2e"/><text x="126" y="20" font-size="9" font-family="Newsreader" font-style="italic" fill="#26211b">you are here</text></svg>
+      <h3>Component sample</h3>
+      <div class="sample" style="background:#f6f1e7;border-top:2px solid #26211b;border-radius:0">
+        <div style="font-family:'Hanken Grotesk';font-size:11px;letter-spacing:.14em;font-weight:700;color:#7a2e2e">TYPICAL PAIN TODAY</div>
+        <div style="font-family:'Newsreader',serif;font-size:15.5px;margin-top:6px">Most women report 2–6 out of 10. Still needing the strong medication is common too. <span style="font-style:italic">Where are you?</span></div>
+      </div>
+    </div>
+
+    <!-- CONCEPT 3 -->
+    <div class="card">
+      <div class="chead c3h">
+        <span class="badge" style="color:#e8b04b;background:rgba(255,255,255,.08)">LENS: SWISS FUNCTIONAL · NIGHT-FIRST</span>
+        <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:24px;font-weight:600;color:#f2ede2;margin-top:30px">3 · The Night Stand</div>
+      </div>
+      <p class="note">The one task-led concept — and the task list is meds only. Designed for 2 AM on opioids: dark, low-glare, one decision at a time.</p>
+      <h3>Palette — evergreen night, candle amber</h3>
+      <div class="swatches">
+        <div style="background:#15211c;color:#a8bfae">#15211C</div>
+        <div style="background:#1e2f27;color:#a8bfae">#1E2F27</div>
+        <div style="background:#a8bfae;color:#15211c">#A8BFAE</div>
+        <div style="background:#e8b04b;color:#15211c">#E8B04B</div>
+        <div style="background:#f2ede2;color:#15211c">#F2EDE2</div>
+      </div>
+      <h3>Type — Schibsted Grotesk + Spline Sans Mono</h3>
+      <div class="spec" style="background:#15211c;border-radius:10px;padding:16px;border-top:none">
+        <div style="font-family:'Spline Sans Mono',monospace;font-size:12px;color:#a8bfae;letter-spacing:.1em">NEXT DOSE · IN 42 MIN</div>
+        <div style="font-family:'Schibsted Grotesk';font-size:20px;font-weight:600;color:#f2ede2;margin-top:6px">Ibuprofen 800 mg — with food</div>
+      </div>
+      <h3>Imagery & illustration</h3>
+      <p class="note">None. The instrument aesthetic is typographic: mono timestamps, hairline progress arcs, generous dark space. The only "image" is the amber countdown arc, dimmed to candle-light luminance after 10 PM.</p>
+      <svg viewBox="0 0 200 44" width="100%" height="44" style="margin-top:8px;background:#15211c;border-radius:8px"><path d="M20,34 A60,60 0 0 1 180,34" fill="none" stroke="#2c4036" stroke-width="3"/><path d="M20,34 A60,60 0 0 1 124,12" fill="none" stroke="#e8b04b" stroke-width="3" stroke-linecap="round"/><text x="88" y="36" font-size="10" font-family="Spline Sans Mono" fill="#a8bfae">0:42</text></svg>
+      <h3>Component sample</h3>
+      <div class="sample" style="background:#15211c">
+        <div style="font-family:'Spline Sans Mono',monospace;font-size:11px;color:#a8bfae;letter-spacing:.1em">QUIET HOURS</div>
+        <div style="font-family:'Schibsted Grotesk';font-size:15px;color:#f2ede2;margin:6px 0 10px">Nothing else until 6:00 AM. Rest.</div>
+        <span class="btn" style="background:transparent;border:1px solid #e8b04b;color:#e8b04b;font-size:13px">Worried about something? →</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Non-digital references</h2>
+  <table>
+    <tr><th>Reference</th><th>Why it connects</th><th>Feeds</th></tr>
+    <tr><td><strong>A nurse's house call</strong> (the user's chosen scene)</td><td>Authority without institution. She sits down, asks first, explains in plain words, writes a note on paper, leaves a number. The product's voice is hers.</td><td>All three; tone system</td></tr>
+    <tr><td><strong>A naturalist's field notebook</strong></td><td>Careful observation rendered warmly — botanical line work, honest annotations, no decoration for its own sake. "Believed" looks like careful attention.</td><td>Concept 1 illustration</td></tr>
+    <tr><td><strong>A friend's annotated recovery journal</strong></td><td>The forums' most-thanked artifact is the day-by-day account. Margin notes, ranges, "this scared me, it was fine." Editorial honesty beats clinical caution.</td><td>Concept 2 structure</td></tr>
+    <tr><td><strong>A bedside analog clock with a candle-glow dial</strong></td><td>Made to be read half-asleep at arm's length, then ignored. Calm instrumentation; nothing demands anything.</td><td>Concept 3 entire register</td></tr>
+    <tr><td><strong>Tia's identity system</strong> (Athletics, 2022)</td><td>Proof women's health can be grown-up: literary serif + working grotesque, earth tones, a winding line for varied journeys. PostPal's hero reference, deliberately not copied — our line carries a band.</td><td>Type strategy, recovery-line motif</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>Why these choices (against the research)</h2>
+  <table>
+    <tr><th>Choice</th><th>Research insight it serves</th></tr>
+    <tr><td>Three different home screens (question / day-page / next dose) and only one is a list</td><td>Task-timeline verdict: patients compare, they don't complete; the med grid is the only true checklist</td></tr>
+    <tr><td>The band-and-curve motif everywhere</td><td>Principle 3: benchmark against the range, never grade against the day — fixed-day milestones read as failure to slow recoverers</td></tr>
+    <tr><td>Serif-led voice in concepts 1–2; nothing scored, streaked, or gamified anywhere</td><td>Anti-references (period app, productivity app); principle 5: believe her — sanitized or cutesy registers read as not being taken seriously</td></tr>
+    <tr><td>Concept 3's dark, amber, one-decision night mode</td><td>Principle 4: if it doesn't work on opioids at 2 AM, it doesn't work</td></tr>
+    <tr><td>Escalation affordance visible in every component set</td><td>Two-tier emergency criteria (call-911 / call-provider, ≥101°F) from AVC's actual packet; principle 7: the clinic's voice, made human</td></tr>
+  </table>
+  <p class="note" style="margin-top:18px">Imagery note: no suitable free photography exists for "recovering woman, dignified, non-stock" — all three concepts deliberately use illustration/typography instead. If marketing photography is needed later, commission it; do not pull stock.</p>
+</section>
+
+</body>
+</html>

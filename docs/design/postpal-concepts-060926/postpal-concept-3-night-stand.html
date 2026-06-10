@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostPal Concept 3 — The Night Stand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--night:#15211c;--panel:#1c2b24;--panel2:#22332b;--hair:#33473d;--cream:#f2ede2;--sage:#a8bfae;--amber:#e8b04b;--amber-dim:#b9883a;--alert:#e07856}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0e1714;font-family:'Schibsted Grotesk',sans-serif;color:var(--cream);display:flex;gap:40px;justify-content:center;align-items:flex-start;padding:40px 20px;flex-wrap:wrap}
+  .phone{width:390px;background:var(--night);border-radius:38px;border:10px solid #060a08;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.6)}
+  .screen{padding:22px 20px 16px;min-height:800px;display:flex;flex-direction:column}
+  .status{display:flex;justify-content:space-between;font-size:12px;font-weight:500;color:var(--sage);margin-bottom:14px;font-family:'Spline Sans Mono',monospace}
+  .daybar{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--hair);padding-bottom:12px}
+  .daybar .d{font-size:13px;font-weight:600;color:var(--cream)}
+  .daybar .mode{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--amber);border:1px solid var(--amber-dim);border-radius:4px;padding:3px 8px}
+  /* hero countdown */
+  .hero{text-align:center;padding:26px 0 8px}
+  .arcwrap{position:relative;width:230px;margin:0 auto}
+  .arclabel{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+  .arclabel .in{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--sage)}
+  .arclabel .t{font-family:'Spline Sans Mono',monospace;font-size:40px;font-weight:600;color:var(--amber);line-height:1.1}
+  .arclabel .med{font-size:14.5px;font-weight:600;color:var(--cream);margin-top:2px}
+  .arclabel .note{font-size:11.5px;color:var(--sage)}
+  .heroacts{display:flex;gap:10px;margin-top:18px}
+  .hbtn{flex:1;border-radius:14px;padding:13px 8px;font-weight:700;font-size:13.5px;text-align:center}
+  .hbtn.log{background:var(--amber);color:#15211c}
+  .hbtn.snooze{border:1px solid var(--hair);color:var(--sage)}
+  /* tonight rail -->*/
+  .rail{margin-top:22px}
+  .railhead{display:flex;justify-content:space-between;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--sage);margin-bottom:10px}
+  .slots{display:flex;gap:6px}
+  .slot{flex:1;background:var(--panel);border-radius:10px;padding:9px 6px;text-align:center;border:1px solid transparent}
+  .slot .tm{font-family:'Spline Sans Mono',monospace;font-size:10px;color:var(--sage)}
+  .slot .nm{font-size:10.5px;font-weight:600;margin-top:3px;color:var(--cream)}
+  .slot.done{opacity:.38}
+  .slot.done .nm{text-decoration:line-through}
+  .slot.next{border-color:var(--amber-dim);background:var(--panel2)}
+  .slot.prn .nm{color:var(--sage);font-style:italic}
+  /* PRN guardrail */
+  .guard{margin-top:14px;background:var(--panel);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px}
+  .guard .bar{flex:1;height:5px;border-radius:3px;background:var(--hair);overflow:hidden}
+  .guard .bar i{display:block;height:100%;width:50%;background:var(--sage)}
+  .guard .lab{font-family:'Spline Sans Mono',monospace;font-size:10.5px;color:var(--sage);white-space:nowrap}
+  /* quiet card */
+  .quiet{margin-top:22px;background:linear-gradient(170deg,var(--panel2),var(--panel));border-radius:16px;padding:18px;border:1px solid var(--hair)}
+  .quiet .k{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;color:var(--amber)}
+  .quiet h4{font-size:17px;font-weight:600;margin-top:6px}
+  .quiet p{font-size:12.5px;color:var(--sage);margin-top:4px;line-height:1.5}
+  /* handoff -->*/
+  .handoff{margin-top:14px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--sage)}
+  .handoff .dotperson{width:26px;height:26px;border-radius:50%;background:var(--panel2);border:1px solid var(--hair);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--amber)}
+  /* worry + escalation -->*/
+  .worry{margin-top:auto;display:flex;gap:10px}
+  .wbtn{flex:1;border-radius:14px;padding:13px 10px;text-align:center;font-weight:700;font-size:13px}
+  .wbtn.check{border:1px solid var(--amber-dim);color:var(--amber)}
+  .wbtn.call{background:var(--alert);color:#1c120c}
+  /* annotations */
+  .annotations{width:380px;max-width:90vw;color:#dfd9cb}
+  .annotations h1{font-size:26px;font-weight:600;margin-bottom:4px;color:var(--cream)}
+  .annotations .lens{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin-bottom:18px}
+  .ann{background:var(--panel);border:1px solid var(--hair);border-left:3px solid var(--amber);border-radius:10px;padding:14px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.5}
+  .ann b{display:block;margin-bottom:3px;color:var(--cream)}
+  .ann .tie{display:block;margin-top:6px;font-size:11px;color:var(--sage);font-style:italic}
+  /* day-mode mini */
+  .mini{width:300px;background:#f4f0e6;border-radius:28px;border:8px solid #060a08;box-shadow:0 18px 44px rgba(0,0,0,.45);margin-top:26px;padding:18px;color:#22332b}
+  .mini .k{font-family:'Spline Sans Mono',monospace;font-size:9.5px;letter-spacing:.16em;color:#7c8a6e}
+  .mini h6{font-size:17px;font-weight:700;margin-top:6px}
+  .mini p{font-size:12px;color:#5d6b54;line-height:1.5;margin-top:4px}
+  .cycdots{display:flex;gap:8px;margin:12px 0 4px;align-items:center}
+  .cycdots span{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- ============ PHONE: 2:14 AM, DAY 1 ============ -->
+<div>
+<div class="phone"><div class="screen">
+  <div class="status"><span>02:14</span><span>NIGHT MODE · AUTO</span></div>
+
+  <div class="daybar">
+    <span class="d">Renee · Day 1 of recovery</span>
+    <span class="mode">SISTER'S PHONE PAIRED</span>
+  </div>
+
+  <!-- HERO: the one decision -->
+  <div class="hero">
+    <div class="arcwrap">
+      <svg viewBox="0 0 230 140" width="230" height="140">
+        <path d="M25,125 A92,92 0 1 1 205,125" fill="none" stroke="#2c4036" stroke-width="7" stroke-linecap="round"/>
+        <path d="M25,125 A92,92 0 0 1 115,23" fill="none" stroke="#e8b04b" stroke-width="7" stroke-linecap="round"/>
+      </svg>
+      <div class="arclabel">
+        <span class="in">NEXT DOSE IN</span>
+        <span class="t">0:46</span>
+        <span class="med">Ibuprofen 800 mg</span>
+        <span class="note">take with a few crackers</span>
+      </div>
+    </div>
+    <div class="heroacts">
+      <span class="hbtn log">Pain is bad now → what I can take</span>
+      <span class="hbtn snooze">Remind me</span>
+    </div>
+  </div>
+
+  <!-- TONIGHT RAIL -->
+  <div class="rail">
+    <div class="railhead"><span>TONIGHT</span><span>4 OF 6 DOSES DONE TODAY</span></div>
+    <div class="slots">
+      <div class="slot done"><div class="tm">22:00</div><div class="nm">Cyclobenz.</div></div>
+      <div class="slot done"><div class="tm">23:00</div><div class="nm">Stool soft.</div></div>
+      <div class="slot next"><div class="tm">03:00</div><div class="nm">Ibuprofen</div></div>
+      <div class="slot prn"><div class="tm">PRN</div><div class="nm">Hydromorph.</div></div>
+      <div class="slot prn"><div class="tm">PRN</div><div class="nm">Zofran</div></div>
+    </div>
+    <div class="guard">
+      <span class="lab">TYLENOL TODAY</span>
+      <span class="bar"><i></i></span>
+      <span class="lab">2000 / 4000 MG MAX</span>
+    </div>
+  </div>
+
+  <!-- QUIET CARD -->
+  <div class="quiet">
+    <span class="k">BETWEEN DOSES</span>
+    <h4>Nothing else is asked of you until 3:00.</h4>
+    <p>Cramping that comes in waves is expected tonight. Your heating pad is allowed and it helps. Rest — the schedule is watching the clock, not you.</p>
+  </div>
+
+  <!-- HANDOFF -->
+  <div class="handoff">
+    <span class="dotperson">T</span>
+    <span>Tasha can see this schedule and log doses for you until morning.</span>
+  </div>
+
+  <!-- ESCALATION -->
+  <div class="worry">
+    <span class="wbtn check">Is this normal? Check a symptom</span>
+    <span class="wbtn call">Call the clinic line</span>
+  </div>
+</div></div>
+
+<!-- DAY MODE / PHASE 3 mini -->
+<div class="mini">
+  <span class="k">DAY MODE · WEEK 7 · CYCLE SCOREBOARD</span>
+  <h6>Instrument goes quiet after week two.</h6>
+  <p>Light surfaces, one card per cycle, MRI countdown. No daily asks remain — the schedule retired itself when the meds ended.</p>
+  <div class="cycdots">
+    <span style="background:#d8b9a8;color:#6e3b28">C1</span>
+    <span style="background:#cfe0c6;color:#3f5a33">C2</span>
+    <span style="border:2px dashed #9aa88e;color:#7c8a6e">C3</span>
+    <span style="margin-left:auto;font-family:'Spline Sans Mono',monospace;font-size:10px;color:#7c8a6e;width:auto;height:auto;border-radius:0">MRI · MAR 12</span>
+  </div>
+  <p style="font-style:italic">Cycle 1 ran heavy — expected. Cycle 2 came in lighter. One check-in when cycle 3 ends.</p>
+</div>
+</div>
+
+<!-- ============ ANNOTATIONS ============ -->
+<div class="annotations">
+  <h1>Concept 3 · The Night Stand</h1>
+  <div class="lens">Lens: Swiss Functional, Night-First · Schibsted Grotesk / Spline Sans Mono · THE task-led concept</div>
+
+  <div class="ann"><b>This is the one concept that leads with the task list — and the list is meds only.</b>
+    The research's single executive job (the AVC days 1–5 grid, 6–8 dose events/day, done while opioid-foggy) is the entire home screen. Hydration, walking, and monitoring never appear as tasks anywhere.
+    <span class="tie">→ Principle 2 taken literally: the med schedule is the only checklist.</span></div>
+
+  <div class="ann"><b>Designed at 2:14 AM, then adapted to daytime — not the reverse.</b>
+    Dark evergreen surfaces, candle-amber accents, 40px mono countdown readable at arm's length with one eye open. Night mode is the default state during days 0–5; the white "day mode" is the variant.
+    <span class="tie">→ Principle 4: if it doesn't work on opioids at 2 AM, it doesn't work. The 2 AM fever-Google moment is when stakes peak and the clinic line is closed.</span></div>
+
+  <div class="ann"><b>One decision at a time, with guardrails doing the math.</b>
+    The hero is the next dose, full stop. "Pain is bad now" resolves PRN ambiguity (what can I take, how much is left) and the Tylenol meter tracks the 4000 mg ceiling so a foggy patient never does arithmetic.
+    <span class="tie">→ AVC grid specifics: scheduled ibuprofen/cyclobenzaprine vs PRN hydromorphone/Zofran is a genuinely confusing structure; the instrument absorbs it.</span></div>
+
+  <div class="ann"><b>The quiet card is the emotional core.</b>
+    "Nothing else is asked of you until 3:00... the schedule is watching the clock, not you." Permission to rest is the reassurance this concept offers, plus tonight's expected-symptom line (waves of cramping) so the dark hours don't read as emergencies.
+    <span class="tie">→ Care-tracker's strongest prior insight (quiet-hours messaging) + Principle 1 woven into a task-led frame.</span></div>
+
+  <div class="ann"><b>The support person is a first-class operator.</b>
+    "Sister's phone paired" — Tasha sees the same schedule and can log doses. In the research, the support person administers the meds for the first 72 hours; here she's in the header, not a settings toggle.
+    <span class="tie">→ JTBD 6: "let my person help me." Scoped to the acute phase, then the pairing expires.</span></div>
+
+  <div class="ann"><b>Escalation splits into check vs call.</b>
+    "Is this normal?" (symptom checker with AVC thresholds) sits beside "Call the clinic line" at the bottom of every screen — interpret first, escalate in one tap, 911 signs inside the call sheet.
+    <span class="tie">→ Principle 7: thresholds verbatim from the packet (≥101°F, pad-per-hour, foul smell).</span></div>
+
+  <div class="ann"><b>The instrument retires itself.</b>
+    When the med grid ends (~day 5–7), the home screen stops being a schedule: day mode lightens, and by week 2 the product becomes the cycle scoreboard with an MRI countdown. No zombie checklist lingering past its usefulness.
+    <span class="tie">→ Principle 6 + anti-reference: not a productivity app. The task UI exists exactly as long as the executive job does.</span></div>
+</div>
+
+</body>
+</html>

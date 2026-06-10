@@ -11,11 +11,23 @@
   *{box-sizing:border-box;margin:0;padding:0}
   body{max-width:430px;margin:0 auto;min-height:100dvh;background:var(--paper);font-family:'Albert Sans',sans-serif;color:var(--ink)}
   #page{padding:22px 24px 120px}
-  #page h1{font-family:'Petrona',serif;font-weight:500;font-size:24.5px;line-height:1.36}
+
+  /* check-in (styles copied from postpal-concept-daybook-coalesced.html v7) */
+  .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:700;color:var(--pine)}
+  .bigtext{font-family:'Petrona',serif;font-weight:500;font-size:24.5px;line-height:1.36;margin-top:12px}
+  .bigtext em{font-style:italic;color:var(--clay)}
+
+  /* faces */
+  .facelab{font-size:11px;letter-spacing:.16em;font-weight:700;color:var(--mut)}
+  .faces{display:flex;gap:10px;margin-top:14px}
+  .face{flex:1;aspect-ratio:1/1.18;background:var(--card);border:1px solid var(--line);border-radius:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(43,33,24,.05);cursor:pointer;padding:0;font:inherit}
+  .face svg{width:80%;height:auto}
+  .facecap{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mut);margin-top:10px;font-style:italic;font-family:'Petrona',serif}
 
   /* dev-only day switcher — deliberately not product-styled */
   #day-switcher{position:fixed;top:10px;right:10px;display:flex;gap:4px;z-index:100}
   .day-pill{font-family:'Albert Sans',sans-serif;font-size:11px;font-weight:600;color:#888;background:#eee;border:1px solid #ccc;border-radius:10px;padding:3px 8px;cursor:pointer}
+  .day-pill.active{color:#fff;background:#888;border-color:#888}
 </style>
 </head>
 <body>
@@ -27,9 +39,7 @@
   <button class="day-pill" data-day="20">20</button>
 </div>
 
-<main id="page">
-  <h1>The Daybook — placeholder (Petrona)</h1>
-</main>
+<main id="page"></main>
 
 <nav id="nextbar"></nav>
 
@@ -291,6 +301,70 @@ let state = { day: 5, phase: "checkin", face: null, note: null };
   if (errors.length) errors.forEach(e => console.error("DAYS self-check:", e));
   else console.log("DAYS self-check passed");
 })();
+
+/* ============================================================
+   Rendering — small state machine: checkin → noted → page.
+   ============================================================ */
+
+/* The five neutral outline faces from the v7 concept (state 1), good → hard. */
+const FACE_SVGS = [
+  '<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M10.5 20.5 Q17 26 23.5 20.5" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>',
+  '<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M11 21 Q17 24.5 23 21" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>',
+  '<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M11 21.5 H23" stroke="#7a6c5c" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  '<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M11 23 Q17 20 23 23" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>',
+  '<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M10.5 24 Q17 19 23.5 24" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'
+];
+const FACE_LABELS = ["a good day", "a pretty good day", "an okay day", "a harder day", "a hard day"];
+
+function render() {
+  const day = DAYS[state.day];
+  const page = document.getElementById("page");
+
+  if (state.phase === "checkin") {
+    /* Calm budget: eyebrow, hero, the one ask — nothing else. */
+    page.innerHTML = `
+      <div style="margin-top:44px">
+        <div class="eyebrow">${day.eyebrow}</div>
+        <div class="bigtext">${day.heroFull}</div>
+      </div>
+      <div style="margin-top:36px">
+        <span class="facelab">HOW DOES TODAY FEEL?</span>
+        <div class="faces">
+          ${FACE_SVGS.map((svg, i) =>
+            `<button class="face" data-face="${i}" aria-label="${FACE_LABELS[i]}">${svg}</button>`
+          ).join("")}
+        </div>
+        <div class="facecap"><span>a good day</span><span>a hard day</span></div>
+      </div>`;
+    page.querySelectorAll(".face").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.face = Number(btn.dataset.face);
+        state.phase = "noted";
+        render();
+      });
+    });
+  } else if (state.phase === "noted") {
+    /* Minimal stub — Task 4 completes this phase. */
+    page.innerHTML = `
+      <div style="margin-top:44px">
+        <div class="eyebrow">${day.eyebrow}</div>
+        <div class="bigtext">${day.heroShort}</div>
+      </div>`;
+  }
+
+  document.querySelectorAll(".day-pill").forEach(pill => {
+    pill.classList.toggle("active", Number(pill.dataset.day) === state.day);
+  });
+}
+
+document.querySelectorAll(".day-pill").forEach(pill => {
+  pill.addEventListener("click", () => {
+    state = { day: Number(pill.dataset.day), phase: "checkin", face: null, note: null };
+    render();
+  });
+});
+
+render();
 </script>
 </body>
 </html>

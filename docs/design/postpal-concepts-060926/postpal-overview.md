@@ -65,6 +65,25 @@ Michael's direction after v2 review: don't presume worry (reframe as assessment)
 
 Constant across passes: calm budget, two-slot footer, shared med sheet (quiet hours, PRN guardrails, support pairing), interpreter sheet on any symptom chip.
 
+## Coalesced direction (2026-06-10, v4): The Daybook, final shape
+
+Michael's screenshot markup on the three passes chose Pass A's wire and made four changes, captured in `postpal-concept-daybook-coalesced.html` (two states: before/after input):
+
+1. "Day 5 of about fourteen" heading removed; the standfirst copy now wears Pass B's big Petrona headline treatment under a small DAY 5 eyebrow.
+2. The tappable band is replaced by a five-face scale (smiley → frowny, "a good day / a hard day"); the band motif retires from the home screen (candidate for a trends/PA-report view).
+3. "Anything to note today?" appears only after she taps a face (progressive disclosure; good day = two taps total).
+4. The page below the check-in can run long — multiple entries scroll, calm budget holds above the fold.
+
+Second pass on the coalesced screen (same day, from Michael's second screenshot review): state 1 reduced to check-in only (hero + faces + footer; journal entries now reveal after the face tap along with the note chips), faces enlarged with generous padding around both the scale and the hero text, and the fifth face softened from angry to frowning. Bottom nav flagged by Michael as needing change later — deliberately untouched, parked for the prototype pass.
+
+Third pass (v3, same day): the check-in became an explicit stepped flow shown as four states — (1) check-in with bigger faces and tightened hero-to-faces spacing, (2) new in-between state: face tapped, note chips revealed, "Open today's page" submit visible but dormant, (3) any chip selection activates submit (good day = three taps), (4) today's page as its own destination screen with the check-in echoed at the top ("a better day · nothing new ✓"). Replaces the inline-reveal model. Symptom chips route through the interpreter sheet before the page.
+
+Fourth pass (v4, same day): completed steps now collapse to receipt lines (Michael chose Option A over accordion steps and morph-and-vanish) — the answered face row becomes one journal-voice line ("Today feels: *a little better* · edit") with the chosen face at small size, keeping answers visible and revisable while the active step takes the stage. The receipts resolve into state 4's echo line as the final receipt.
+
+Fifth pass (v5, same day): the receipts made the gate redundant, so the flow is one continuous page again — three states: check-in → face answered (hero truncates to its first clause at full 24.5px, never shrinks; face receipt + chips, no submit) → the whole page (chip tap completes the check-in; two stacked receipts, then today's entries flow in below; the separate destination screen and "Open today's page" button removed). Good day = two taps. Symptom chips still open the interpreter sheet before the page content.
+
+Sixth pass (v6, same day): receipts promoted to hero scale — the truncated hero and both receipts are now one unified pattern (24.5px Petrona rows on hairline rules; face glyph 30px). Edit links removed: at this scale every row reads as tappable (tap hero to re-expand, tap a receipt to change the answer). Flagged for prototype testing: confirm tappability reads without the label.
+
 ## Recommendation (v2 — superseded by convergence above)
 
 The two survivors now differ on exactly one question: should the home screen lead with *her worry* (Nurse Line: "Is something worrying you?") or with *her place on the curve* (Journal: the day-page and tappable band)? Everything else — the med sheet with the salvaged Night Stand engine, the two-slot footer, the escalation flow — is shared. That makes the next decision cheap to test: show both home screens to Dr. Costantino, Carrie, and 2–3 patients and watch which one a day-3 patient reaches for. My lean is the Journal for daily-driver structure with the Nurse Line's chip-to-sheet interpreter as its "Worried?" flow — but that's exactly the synthesis the test should confirm or kill.

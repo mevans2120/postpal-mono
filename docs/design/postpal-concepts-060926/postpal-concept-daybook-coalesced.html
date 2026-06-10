@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostPal — The Daybook (coalesced, v6)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Petrona:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#faf6f0;--card:#fff;--ink:#2b2118;--mut:#7a6c5c;--clay:#c4674a;--clay-deep:#8a4630;--clay-soft:#f3e4d3;--pine:#3d5a4c;--pine-soft:#e4ebe6;--line:#e6ddd1}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#efe9df;font-family:'Albert Sans',sans-serif;color:var(--ink);padding:40px 20px}
+  .intro{max-width:1200px;margin:0 auto 34px}
+  .intro h1{font-family:'Petrona',serif;font-weight:500;font-size:30px}
+  .intro .lens{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--clay);font-weight:700;margin:6px 0 10px}
+  .intro p{font-size:14px;color:#5a4d40;max-width:86ch;line-height:1.55}
+  .row{display:flex;gap:30px;justify-content:center;align-items:flex-start;flex-wrap:wrap;max-width:1260px;margin:0 auto}
+  .col{width:368px}
+  .statelabel{font-family:'Petrona',serif;font-size:18px;font-weight:500;margin-bottom:4px}
+  .statesub{font-size:12px;color:var(--mut);margin-bottom:14px;line-height:1.45;min-height:52px}
+  .phone{width:368px;background:var(--paper);border-radius:36px;border:9px solid #2b2118;overflow:hidden;box-shadow:0 22px 54px rgba(43,33,24,.24)}
+  .screen{padding:22px 24px 16px;min-height:760px;display:flex;flex-direction:column}
+  .status{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:var(--mut)}
+
+  .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:700;color:var(--pine)}
+  .bigtext{font-family:'Petrona',serif;font-weight:500;font-size:24.5px;line-height:1.36;margin-top:12px}
+  .bigtext em{font-style:italic;color:var(--clay)}
+
+  /* faces */
+  .facelab{font-size:11px;letter-spacing:.16em;font-weight:700;color:var(--mut)}
+  .faces{display:flex;gap:10px;margin-top:14px}
+  .face{flex:1;aspect-ratio:1/1.18;background:var(--card);border:1px solid var(--line);border-radius:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(43,33,24,.05)}
+  .face svg{width:80%;height:auto}
+  .facecap{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mut);margin-top:10px;font-style:italic;font-family:'Petrona',serif}
+
+  /* receipt rows — hero-scale, the whole row is the tap target */
+  .herorow{padding-bottom:16px;border-bottom:1px solid var(--line)}
+  .receipt{display:flex;align-items:center;gap:13px;padding:16px 2px;border-bottom:1px solid var(--line)}
+  .rface{flex:none;display:flex}
+  .rdot{flex:none;width:30px;height:30px;border-radius:50%;background:var(--pine-soft);display:flex;align-items:center;justify-content:center;color:var(--pine);font-size:15px;font-weight:700}
+  .rtext{font-family:'Petrona',serif;font-size:24.5px;font-weight:500;line-height:1.3}
+  .rtext em{font-style:italic;color:var(--pine)}
+
+  /* note chips */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .chip{font-size:12.5px;font-weight:600;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:9px 14px}
+
+  /* page content */
+  .entry{margin-top:16px}
+  .entry .body{font-family:'Petrona',serif;font-size:15px;line-height:1.6}
+  .entry .body b{font-weight:600}
+  .marginnote{display:block;font-family:'Petrona',serif;font-style:italic;font-size:12.5px;color:var(--clay-deep);margin-top:9px;padding-left:11px;border-left:2px solid var(--clay)}
+  .turn{font-size:12px;font-weight:700;color:var(--mut);margin-top:4px}
+  .turn b{color:var(--clay)}
+  .scrollhint{text-align:center;color:var(--mut);font-size:15px;letter-spacing:.2em;margin:6px 0}
+  .resting{font-family:'Petrona',serif;font-style:italic;font-size:12.5px;color:var(--mut)}
+  .resting b{font-style:normal;font-family:'Albert Sans';font-size:11px;font-weight:700;color:var(--clay-deep)}
+
+  .bar{display:flex;gap:9px;margin-top:12px}
+  .bar .pill{flex:1.45;display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:10px 13px}
+  .bar .pill .rx{width:26px;height:26px;border-radius:50%;background:var(--clay-soft);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--clay-deep);font-size:9.5px;flex:none}
+  .bar .pill .t{font-size:11px;font-weight:700;line-height:1.25}
+  .bar .pill .t small{display:block;font-weight:600;color:var(--pine);font-size:10px}
+  .bar .check{flex:1;background:var(--ink);color:#f5efe6;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;padding:0 8px}
+
+  /* annotations */
+  .annrow{max-width:1200px;margin:38px auto 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px}
+  .ann{background:#fff;border:1px solid var(--line);border-left:3px solid var(--clay);border-radius:10px;padding:14px 16px;font-size:13.5px;line-height:1.5}
+  .ann b{display:block;margin-bottom:3px}
+  .ann .tie{display:block;margin-top:6px;font-size:11px;color:var(--mut);font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>The Daybook — coalesced, v6</h1>
+  <div class="lens">One continuous page · receipts at hero scale · no edit links — the rows themselves are the tap targets</div>
+  <p>v6 unifies the top of the page into one typographic pattern: the truncated hero and the receipts are all 24.5px Petrona rows on hairline rules. The edit links are gone — at this scale every row reads as tappable (tap the hero to re-expand it, tap a receipt to change the answer). Chip tap still completes the check-in; today's page flows in below.</p>
+</div>
+
+<div class="row">
+
+<!-- ============ STATE 1: CHECK-IN ============ -->
+<div class="col">
+  <div class="statelabel">1 · Check-in</div>
+  <div class="statesub">First open of the day. Unchanged: hero at full voice, big faces, nothing else.</div>
+  <div class="phone"><div class="screen">
+    <div class="status"><span>9:41</span><span>Maya · UFE Feb 12</span></div>
+
+    <div style="margin-top:44px">
+      <div class="eyebrow">DAY 5 · MORNING CHECK-IN</div>
+      <div class="bigtext">The fog usually starts lifting around now — <em>though plenty of recoveries take until week two. Both are normal.</em></div>
+    </div>
+
+    <div style="margin-top:36px">
+      <span class="facelab">HOW DOES TODAY FEEL?</span>
+      <div class="faces">
+        <span class="face"><svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M10.5 20.5 Q17 26 23.5 20.5" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span>
+        <span class="face"><svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M11 21 Q17 24.5 23 21" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span>
+        <span class="face"><svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M11 21.5 H23" stroke="#7a6c5c" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        <span class="face"><svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M11 23 Q17 20 23 23" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span>
+        <span class="face"><svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M10.5 24 Q17 19 23.5 24" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span>
+      </div>
+      <div class="facecap"><span>a good day</span><span>a hard day</span></div>
+    </div>
+
+    <div class="bar" style="margin-top:auto">
+      <span class="pill"><span class="rx">Rx</span><span class="t">Ibuprofen 800<small>next · 1:00</small></span></span>
+      <span class="check">Check a symptom</span>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ STATE 2: FACE ANSWERED ============ -->
+<div class="col">
+  <div class="statelabel">2 · Face answered</div>
+  <div class="statesub">Hero and receipt now share one pattern: full-size Petrona rows on hairline rules, each tappable. The note chips take the stage below.</div>
+  <div class="phone"><div class="screen">
+    <div class="status"><span>9:41</span><span>Maya · UFE Feb 12</span></div>
+
+    <div style="margin-top:34px">
+      <div class="eyebrow">DAY 5 · MORNING CHECK-IN</div>
+      <div class="bigtext herorow">The fog usually starts lifting around now<em>…</em></div>
+    </div>
+
+    <div class="receipt">
+      <span class="rface"><svg width="30" height="30" viewBox="0 0 34 34"><circle cx="17" cy="17" r="14" fill="#c4674a" opacity=".15" stroke="#8a4630" stroke-width="1.7"/><circle cx="12" cy="14" r="1.7" fill="#8a4630"/><circle cx="22" cy="14" r="1.7" fill="#8a4630"/><path d="M11 21 Q17 24.5 23 21" stroke="#8a4630" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg></span>
+      <span class="rtext">Today feels: <em>a little better</em></span>
+    </div>
+
+    <div style="margin-top:22px">
+      <span class="facelab" style="color:var(--pine)">ANYTHING TO NOTE TODAY?</span>
+      <div class="chips">
+        <span class="chip">Nothing new</span>
+        <span class="chip">Warm / feverish</span>
+        <span class="chip">Cramping more</span>
+        <span class="chip">Discharge changed</span>
+        <span class="chip">Something else…</span>
+      </div>
+    </div>
+
+    <div class="bar" style="margin-top:auto">
+      <span class="pill"><span class="rx">Rx</span><span class="t">Ibuprofen 800<small>next · 1:00</small></span></span>
+      <span class="check">Check a symptom</span>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ STATE 3: THE WHOLE PAGE ============ -->
+<div class="col">
+  <div class="statelabel">3 · The whole page</div>
+  <div class="statesub">Tapping "Nothing new" completes the check-in in place: two receipts, and today's page flows in below. One scroll, no navigation.</div>
+  <div class="phone"><div class="screen">
+    <div class="status"><span>9:41</span><span>Maya · UFE Feb 12</span></div>
+
+    <div style="margin-top:30px">
+      <div class="eyebrow">DAY 5 · MORNING CHECK-IN</div>
+      <div class="bigtext herorow">The fog usually starts lifting around now<em>…</em></div>
+    </div>
+
+    <div class="receipt">
+      <span class="rface"><svg width="30" height="30" viewBox="0 0 34 34"><circle cx="17" cy="17" r="14" fill="#c4674a" opacity=".15" stroke="#8a4630" stroke-width="1.7"/><circle cx="12" cy="14" r="1.7" fill="#8a4630"/><circle cx="22" cy="14" r="1.7" fill="#8a4630"/><path d="M11 21 Q17 24.5 23 21" stroke="#8a4630" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg></span>
+      <span class="rtext">Today feels: <em>a little better</em></span>
+    </div>
+    <div class="receipt">
+      <span class="rdot">✓</span>
+      <span class="rtext">Noted: <em>nothing new</em></span>
+    </div>
+
+    <div class="entry">
+      <p class="body"><b>Still reaching for the strong medication?</b> Many women are stepping down to ibuprofen now; needing it into week two is also within the band. Rising pain — not lingering pain — is the thing to call about.</p>
+      <span class="marginnote">Carrie, PA-C — "Day 5 tired is honest tired."</span>
+    </div>
+
+    <div class="entry">
+      <p class="body"><b>Discharge may be starting.</b> Watery, brownish, sometimes for weeks — it's the fibroid breaking down, not a wound. Foul smell is the line: that's a call.</p>
+    </div>
+
+    <div class="scrollhint">⌄</div>
+    <p class="turn">Keep reading: <b>your appetite, and tomorrow's page →</b></p>
+
+    <div class="resting" style="margin-top:auto;padding-top:12px">Still resting: baths <b>9d</b> · lifting <b>2d</b></div>
+    <div class="bar">
+      <span class="pill"><span class="rx">Rx</span><span class="t">Ibuprofen 800<small>next · 1:00</small></span></span>
+      <span class="check">Check a symptom</span>
+    </div>
+  </div></div>
+</div>
+
+</div>
+
+<!-- ============ ANNOTATIONS ============ -->
+<div class="annrow">
+  <div class="ann"><b>One pattern from the eyebrow down: hero-scale rows on rules.</b>
+    The truncated hero and both receipts are the same element now — 24.5px Petrona lines on hairline rules. The top of the page reads as a short stack of journal sentences: what today is, how she feels, what she noted.
+    <span class="tie">→ Review: receipts match the hero, hero adopts the receipt pattern. "Concatenates, doesn't compress" carried over from v5.</span></div>
+  <div class="ann"><b>No edit links — the rows are the affordance.</b>
+    At this scale every row reads as tappable: tap the hero to re-expand the full sentence, tap a receipt to change that answer. Removing the underlined "edit" labels drops the last bit of form chrome from the screen.
+    <span class="tie">→ Review: "get rid of the edit button and everything will look tappable that way." Worth confirming in prototype testing that tappability reads without the label.</span></div>
+  <div class="ann"><b>Chip tap is the completion — the submit button is gone.</b>
+    "Nothing new" both answers and finishes: the chip collapses to its own receipt and today's page flows in beneath. A good day is back to two taps. Symptom chips still open the interpreter sheet (expected-today → threshold → Call Carrie) before the page content appears, so a worry never waits behind the reading.
+    <span class="tie">→ Review: single page, no "Open today's page" button. The v3 gate lasted one round — the receipts made it redundant.</span></div>
+  <div class="ann"><b>Two receipts are the day's record.</b>
+    Face and note stack as full-size journal sentences — the same artifact that feeds her trend curve and Carrie's pre-visit report. They replace v4's separate destination screen and its echo line.
+    <span class="tie">→ One scroll: check-in record on top, the day's reading below, footer constant.</span></div>
+  <div class="ann"><b>Bottom nav: still parked.</b>
+    Unchanged per Michael's earlier note. Open questions for the prototype pass: dose-pill states, post–week-2 cycle scoreboard placement, and whether "Check a symptom" remains a nav peer.
+    <span class="tie">→ Deliberately untouched in v5.</span></div>
+</div>
+
+</body>
+</html>

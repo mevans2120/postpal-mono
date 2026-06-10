@@ -3,7 +3,7 @@
   "buildCommand": null,
   "outputDirectory": "prototypes",
   "cleanUrls": true,
-  "rewrites": [{ "source": "/", "destination": "/daybook.html" }],
+  "rewrites": [{ "source": "/", "destination": "/daybook" }],
   "headers": [
     {
       "source": "/(.*)",

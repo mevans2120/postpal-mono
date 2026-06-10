@@ -110,7 +110,7 @@ const DAYS = {
     ],
     back: "driving ✓ · showers ✓ · normal meals ✓ · lifting ✓ · exercise ✓",
     notYet: "baths &amp; pools <b>4d</b> · tampons <b>4d</b>",
-    meds: { line: "As needed only — ibuprofen if cramps flare", sheet: "medrail" },
+    meds: { line: "As needed only — ibuprofen if cramps flare", sheet: "medrail" }, /* PRN-only medrail added — see prototype: NOTHING SCHEDULED (schedule ended day 7) + IF YOU NEED THEM (PRN ibuprofen/Tylenol), paired: null */
     ahead: [
       { k: "FEB 26", v: "Telehealth with Carrie, PA-C — in 4 days" },
       { k: "DAY 14", v: "Baths, pools, and tampons all clear" }

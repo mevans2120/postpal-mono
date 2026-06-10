@@ -13,6 +13,7 @@
   #page{padding:22px 24px 120px}
 
   /* check-in (styles copied from postpal-concept-daybook-coalesced.html v7) */
+  .status{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:var(--mut)}
   .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:700;color:var(--pine)}
   .bigtext{font-family:'Petrona',serif;font-weight:500;font-size:24.5px;line-height:1.36;margin-top:12px}
   .bigtext em{font-style:italic;color:var(--clay)}
@@ -23,6 +24,25 @@
   .face{flex:1;aspect-ratio:1/1.18;background:var(--card);border:1px solid var(--line);border-radius:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(43,33,24,.05);cursor:pointer;padding:0;font:inherit}
   .face svg{width:80%;height:auto}
   .facecap{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mut);margin-top:10px;font-style:italic;font-family:'Petrona',serif}
+  .face.sel{border-color:var(--clay);box-shadow:0 2px 8px rgba(138,70,48,.12)}
+
+  /* receipt rows — hero-scale, the whole row is the tap target (v7) */
+  .herorow{padding-bottom:16px;border-bottom:1px solid var(--line)}
+  .receipt{display:flex;align-items:center;gap:13px;padding:16px 2px;border-bottom:1px solid var(--line)}
+  .rface{flex:none;display:flex}
+  .rtext{font-family:'Petrona',serif;font-size:24.5px;font-weight:500;line-height:1.3}
+  .rtext em{font-style:italic;color:var(--pine)}
+  .tappable{cursor:pointer}
+
+  /* note chips (v7) */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .chip{font-family:'Albert Sans',sans-serif;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:9px 14px;cursor:pointer}
+
+  /* "Something else…" inline note input */
+  .notein{display:flex;align-items:center;gap:8px;margin-top:10px}
+  .notein input{flex:1;min-width:0;font-family:'Albert Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:9px 14px;outline:none}
+  .notein input:focus{border-color:var(--clay)}
+  .notebtn{font-family:'Albert Sans',sans-serif;font-size:12.5px;font-weight:600;color:var(--clay-deep);background:none;border:none;padding:9px 4px;cursor:pointer;white-space:nowrap}
 
   /* dev-only day switcher — deliberately not product-styled */
   #day-switcher{position:fixed;top:10px;right:10px;display:flex;gap:4px;z-index:100}
@@ -264,7 +284,7 @@ const DAYS = {
   }
 };
 
-let state = { day: 5, phase: "checkin", face: null, note: null };
+let state = { day: 5, phase: "checkin", face: null, note: null, heroExpanded: false, noteInputOpen: false };
 
 /* One-time self-check of the content model — logs violations, runs on load. */
 (function selfCheckDays() {
@@ -306,23 +326,90 @@ let state = { day: 5, phase: "checkin", face: null, note: null };
    Rendering — small state machine: checkin → noted → page.
    ============================================================ */
 
-/* The five neutral outline faces from the v7 concept (state 1), good → hard. */
-const FACE_SVGS = [
-  '<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M10.5 20.5 Q17 26 23.5 20.5" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>',
-  '<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M11 21 Q17 24.5 23 21" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>',
-  '<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M11 21.5 H23" stroke="#7a6c5c" stroke-width="1.5" stroke-linecap="round"/></svg>',
-  '<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M11 23 Q17 20 23 23" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>',
-  '<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M10.5 24 Q17 19 23.5 24" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'
+/* The five faces from the v7 concept, good → hard. Only the mouth differs.
+   The selected treatment (clay fill at 15% opacity, #8a4630 strokes) comes
+   from v7 state 2's receipt glyph. */
+const FACE_MOUTHS = [
+  "M10.5 20.5 Q17 26 23.5 20.5",
+  "M11 21 Q17 24.5 23 21",
+  "M11 21.5 H23",
+  "M11 23 Q17 20 23 23",
+  "M10.5 24 Q17 19 23.5 24"
 ];
 const FACE_LABELS = ["a good day", "a pretty good day", "an okay day", "a harder day", "a hard day"];
+const faceReceiptText = i => (i <= 1 ? "a little better" : i === 2 ? "about the same" : "harder than yesterday");
+const STATUS_HTML = '<div class="status"><span>9:41</span><span>Maya · UFE Feb 12</span></div>';
+
+function faceSvg(i, { selected = false, size = null } = {}) {
+  const stroke = selected ? "#8a4630" : "#7a6c5c";
+  const sw = selected ? 1.7 : 1.5;
+  const eye = selected ? 1.7 : 1.6;
+  const fill = selected ? 'fill="#c4674a" opacity=".15"' : 'fill="none"';
+  const dims = size ? `width="${size}" height="${size}" ` : "";
+  return `<svg ${dims}viewBox="0 0 34 34" aria-hidden="true">` +
+    `<circle cx="17" cy="17" r="14" ${fill} stroke="${stroke}" stroke-width="${sw}"/>` +
+    `<circle cx="12" cy="14" r="${eye}" fill="${stroke}"/>` +
+    `<circle cx="22" cy="14" r="${eye}" fill="${stroke}"/>` +
+    `<path d="${FACE_MOUTHS[i]}" stroke="${stroke}" stroke-width="${sw}" fill="none" stroke-linecap="round"/></svg>`;
+}
+
+/* Escape user-entered text before it goes into innerHTML. Authored DAYS copy
+   is trusted HTML; free text from the "Something else…" input is not. */
+function esc(s) {
+  const div = document.createElement("div");
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+/* Make a non-button element (hero, receipts) act like a button. */
+function tap(el, fn) {
+  el.addEventListener("click", fn);
+  el.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); }
+  });
+}
+
+/* Eyebrow + truncated hero on a hairline rule (v7 states 2–3). Tapping the
+   hero toggles the full sentence back in place; the hairline stays. */
+function heroBlockHTML(day, marginTop) {
+  return `
+    <div style="margin-top:${marginTop}px">
+      <div class="eyebrow">${day.eyebrow}</div>
+      <div class="bigtext herorow tappable" id="hero" role="button" tabindex="0"
+        aria-label="Expand or collapse today's reading">${state.heroExpanded ? day.heroFull : day.heroShort}</div>
+    </div>`;
+}
+
+function faceReceiptHTML() {
+  return `
+    <div class="receipt tappable" id="face-receipt" role="button" tabindex="0"
+      aria-label="Change how today feels">
+      <span class="rface">${faceSvg(state.face, { selected: true, size: 30 })}</span>
+      <span class="rtext">Today feels: <em>${faceReceiptText(state.face)}</em></span>
+    </div>`;
+}
+
+function wireHeroAndFaceReceipt(page) {
+  tap(page.querySelector("#hero"), () => {
+    state.heroExpanded = !state.heroExpanded;
+    render();
+  });
+  tap(page.querySelector("#face-receipt"), () => {
+    state.phase = "checkin";
+    state.heroExpanded = false;
+    render();
+  });
+}
 
 function render() {
   const day = DAYS[state.day];
   const page = document.getElementById("page");
 
   if (state.phase === "checkin") {
-    /* Calm budget: eyebrow, hero, the one ask — nothing else. */
+    /* Calm budget: eyebrow, hero, the one ask — nothing else.
+       Returning from a face-receipt tap keeps the chosen face preselected. */
     page.innerHTML = `
+      ${STATUS_HTML}
       <div style="margin-top:44px">
         <div class="eyebrow">${day.eyebrow}</div>
         <div class="bigtext">${day.heroFull}</div>
@@ -330,9 +417,11 @@ function render() {
       <div style="margin-top:36px">
         <span class="facelab">HOW DOES TODAY FEEL?</span>
         <div class="faces">
-          ${FACE_SVGS.map((svg, i) =>
-            `<button class="face" data-face="${i}" aria-label="${FACE_LABELS[i]}">${svg}</button>`
-          ).join("")}
+          ${FACE_MOUTHS.map((_, i) => {
+            const sel = state.face === i;
+            return `<button class="face${sel ? " sel" : ""}" data-face="${i}"` +
+              ` aria-label="${FACE_LABELS[i]}" aria-pressed="${sel}">${faceSvg(i, { selected: sel })}</button>`;
+          }).join("")}
         </div>
         <div class="facecap"><span>a good day</span><span>a hard day</span></div>
       </div>`;
@@ -344,12 +433,74 @@ function render() {
       });
     });
   } else if (state.phase === "noted") {
-    /* Minimal stub — Task 4 completes this phase. */
+    const ask = state.noteInputOpen
+      ? `<div class="notein">
+          <input type="text" id="note-input" placeholder="A few words is plenty" aria-label="Your note">
+          <button class="notebtn" id="note-submit">note it</button>
+        </div>`
+      : `<div class="chips">
+          ${day.chips.map((c, i) => `<button class="chip" data-chip="${i}">${c}</button>`).join("")}
+        </div>`;
     page.innerHTML = `
-      <div style="margin-top:44px">
-        <div class="eyebrow">${day.eyebrow}</div>
-        <div class="bigtext">${day.heroShort}</div>
+      ${STATUS_HTML}
+      ${heroBlockHTML(day, 34)}
+      ${faceReceiptHTML()}
+      <div style="margin-top:22px">
+        <span class="facelab" style="color:var(--pine)">ANYTHING TO NOTE TODAY?</span>
+        ${ask}
       </div>`;
+    wireHeroAndFaceReceipt(page);
+    if (state.noteInputOpen) {
+      const input = page.querySelector("#note-input");
+      const submit = () => {
+        const text = input.value.trim();
+        if (!text) return;
+        state.note = text;
+        state.noteInputOpen = false;
+        state.phase = "page";
+        render();
+      };
+      page.querySelector("#note-submit").addEventListener("click", submit);
+      input.addEventListener("keydown", e => { if (e.key === "Enter") submit(); });
+      input.focus();
+    } else {
+      page.querySelectorAll(".chip").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const chip = day.chips[Number(btn.dataset.chip)];
+          if (chip === "Nothing new") {
+            state.note = "nothing new";
+            state.phase = "page";
+          } else if (chip === "Something else…") {
+            state.noteInputOpen = true;
+          } else {
+            /* TODO(Task 7): open the interpreter sheet for this chip first;
+               record the note and advance to "page" when the sheet dismisses. */
+            state.note = chip.toLowerCase();
+            state.phase = "page";
+          }
+          render();
+        });
+      });
+    }
+  } else if (state.phase === "page") {
+    /* Stub — Task 5 renders the four question-led chapters below the receipts. */
+    page.innerHTML = `
+      ${STATUS_HTML}
+      ${heroBlockHTML(day, 30)}
+      ${faceReceiptHTML()}
+      <div class="receipt tappable" id="note-receipt" role="button" tabindex="0"
+        aria-label="Change what you noted">
+        <span class="rtext">Noted: <em>${esc(state.note)}</em> ✓</span>
+      </div>`;
+    wireHeroAndFaceReceipt(page);
+    tap(page.querySelector("#note-receipt"), () => {
+      state.phase = "noted";
+      state.noteInputOpen = false;
+      render();
+    });
+  } else {
+    page.innerHTML = "";
+    console.error(`render(): unknown phase "${state.phase}"`);
   }
 
   document.querySelectorAll(".day-pill").forEach(pill => {
@@ -359,7 +510,7 @@ function render() {
 
 document.querySelectorAll(".day-pill").forEach(pill => {
   pill.addEventListener("click", () => {
-    state = { day: Number(pill.dataset.day), phase: "checkin", face: null, note: null };
+    state = { day: Number(pill.dataset.day), phase: "checkin", face: null, note: null, heroExpanded: false, noteInputOpen: false };
     render();
   });
 });

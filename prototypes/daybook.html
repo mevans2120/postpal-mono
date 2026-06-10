@@ -10,9 +10,11 @@
   /* Contrast note (Task 8): white small text on --clay #c4674a measures
      ~3.9:1 — under the 4.5:1 WCAG small-text line. Solid grounds that carry
      white text (Next slot, Log button, primary sheet action) use --clay-fill
-     #b05b40 (4.75:1 against #fff) instead. --clay itself stays the accent
-     for hero italics (24.5px = large text, 3:1 applies) and for borders.
-     White on --pine #3d5a4c is 7.6:1 — fine as is. */
+     #b05b40 (4.75:1 against #fff) instead. Small clay text on paper
+     (.factline .go "open →", .turn b — 12px/700) uses --clay-deep #8a4630
+     (6.50:1 on --paper; --clay itself is only 3.62:1 there). --clay stays
+     the accent for hero italics (24.5px = large text, 3:1 applies) and for
+     borders. White on --pine #3d5a4c is 7.6:1 — fine as is. */
   :root{--paper:#faf6f0;--card:#fff;--ink:#2b2118;--mut:#7a6c5c;--clay:#c4674a;--clay-fill:#b05b40;--clay-deep:#8a4630;--clay-soft:#f3e4d3;--pine:#3d5a4c;--pine-soft:#e4ebe6;--line:#e6ddd1;--alert:#9c3a2a}
   *{box-sizing:border-box;margin:0;padding:0}
   body{max-width:430px;margin:0 auto;min-height:100dvh;background:var(--paper);font-family:'Albert Sans',sans-serif;color:var(--ink)}
@@ -49,14 +51,14 @@
   .factline .v{font-family:'Petrona',serif;font-size:14px}
   .factline .v b{font-family:'Albert Sans';font-size:11.5px;font-weight:700;color:var(--clay-deep)}
   .factline .v .ok{color:var(--pine);font-weight:600}
-  .factline .go{margin-left:auto;color:var(--clay);font-weight:700;font-size:12px;white-space:nowrap}
+  .factline .go{margin-left:auto;color:var(--clay-deep);font-weight:700;font-size:12px;white-space:nowrap}
   button.go{background:none;border:none;padding:0;font-family:'Albert Sans',sans-serif;cursor:pointer}
   .entry{margin-top:16px}
   .entry .body{font-family:'Petrona',serif;font-size:15px;line-height:1.6}
   .entry .body b{font-weight:600}
   .marginnote{display:block;font-family:'Petrona',serif;font-style:italic;font-size:12.5px;color:var(--clay-deep);margin-top:9px;padding-left:11px;border-left:2px solid var(--clay)}
   .turn{font-size:12px;font-weight:700;color:var(--mut);margin-top:4px}
-  .turn b{color:var(--clay)}
+  .turn b{color:var(--clay-deep)}
   .scrollhint{text-align:center;color:var(--mut);font-size:15px;letter-spacing:.2em;margin:6px 0}
 
   /* prototype edges: things that look tappable but go nowhere yet — pressed state only */
@@ -64,7 +66,7 @@
   .noop:active{opacity:.5}
 
   /* note chips (v7) */
-  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:10px} /* 9px: the chip ::before hit areas extend 4.5px each way — wrapped rows would contest a pixel at 8px */
   .chip{font-family:'Albert Sans',sans-serif;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:9px 14px;cursor:pointer}
 
   /* "Something else…" inline note input */
@@ -151,17 +153,23 @@
   .btn.ghost:active{background:var(--card)}
 
   /* ===== Tap targets (Task 8 sweep) =====
-     Visual sizes keep v7 fidelity; small controls get an invisible ::before
-     overlay that extends the hit area to ≥44px tall (a pseudo-element is part
-     of its button for hit-testing). Faces (~68×80), receipts (~62px), and the
-     Next pair (~48px) already clear 44px. The day switcher is exempt — dev
-     control, not product. */
+     Visual sizes keep v7 fidelity; small controls — chips, the Log button,
+     the grab handle, the meds "open →", the note-input buttons — get an
+     invisible ::before overlay that extends the hit area to ≥44px tall (a
+     pseudo-element is part of its button for hit-testing). Faces (~68×80),
+     receipts (~62px), and the Next pair (~48px) already clear 44px. The day
+     switcher is exempt — dev control, not product. */
   .chip{position:relative}
-  .chip::before{content:"";position:absolute;left:0;right:0;top:-4.5px;bottom:-4.5px} /* ~35px → 44px */
+  .chip::before{content:"";position:absolute;left:0;right:0;top:-4.5px;bottom:-4.5px} /* ~35px → 44px; needs the 9px .chips gap so wrapped rows' overlays don't overlap */
   .tl .log{position:relative}
   .tl .log::before{content:"";position:absolute;left:-4px;right:-4px;top:-6px;bottom:-6px} /* ~32px → 44px, inside the roomy NOW row */
   .grab{position:relative}
   .grab::before{content:"";position:absolute;left:-80px;right:-80px;top:-12px;bottom:-28px} /* 4px handle → 44×200 close target, kept inside the sheet */
+  button.go{position:relative}
+  button.go::before{content:"";position:absolute;left:-8px;right:-8px;top:-15px;bottom:-15px} /* ~14px text button → ≥44px; only static text sits in the spill */
+  .notebtn{position:relative}
+  .notebtn::before{content:"";position:absolute;left:-4px;right:-4px;top:-6px;bottom:-6px} /* ~33px → ≥44px; the .notein 8px gap means adjacent overlays touch, not overlap */
+  .notebtn.quiet::before{right:-6px} /* "back" is the narrowest control and ends the row — widen outward to clear 44px square */
 
   /* ===== Motion (Task 8) =====
      Every transition/animation lives behind prefers-reduced-motion:
@@ -532,9 +540,9 @@ function heroBlockHTML(day, marginTop) {
     </div>`;
 }
 
-function faceReceiptHTML() {
+function faceReceiptHTML(settleCls) {
   return `
-    <div class="receipt tappable settle" id="face-receipt" role="button" tabindex="0"
+    <div class="receipt tappable${settleCls}" id="face-receipt" role="button" tabindex="0"
       aria-label="Change how today feels">
       <span class="rface">${faceSvg(state.face, { selected: true, size: 30 })}</span>
       <span class="rtext">Today feels: <em>${faceReceiptText(state.face)}</em></span>
@@ -637,7 +645,7 @@ function logNowDose(day) {
     /* terminal: the schedule is finished — don't leave the last medicine's
        name in the Next slot; flip it to a calm pine milestone instead */
     day.next.label = "Medicines done";
-    day.next.sub = "all done for today";
+    day.next.sub = "nothing more until morning"; /* the label already says "done" — don't double it */
     day.next.tone = "pine";
   }
   /* keep the page's meds chapter in step with the rail */
@@ -810,16 +818,33 @@ function renderSheet() {
     /* fresh open: start translated offscreen, then slide up (instant when the
        transition is disabled by reduced motion — .open alone positions it).
        Content swaps while open rebuild inside the already-.open root — no
-       slide replay, and no focus yank off the control being used (Log,
-       cycle pill): focus moves to the sheet only on a fresh open. */
+       slide replay; their focus is handled below. */
     requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add("open")));
     root.querySelector("#sheet").focus({ preventScroll: true });
+  } else if (document.activeElement === document.body) {
+    /* in-place rebuild (Log, cycle-pill select, feel → interpreter swap)
+       threw away the focused control with the old DOM, dropping focus to
+       <body>. Re-focus its successor so keyboard flow continues: the new
+       Log button, else the chosen cycle pill, else the sheet itself. */
+    const successor = root.querySelector("#log-btn")
+      || root.querySelector(".cyc-pill.sel")
+      || root.querySelector("#sheet");
+    successor.focus({ preventScroll: true });
   }
 }
+
+/* .settle keyframes replay on every innerHTML rebuild, and render() reruns
+   the same view for plenty of reasons (hero toggle, sheet open/close, dose
+   log) — the lower chapters would blink each time. Only the first render of
+   a given day+phase gets the .settle classes; same-view rebuilds skip them. */
+let lastSettleKey = null;
 
 function render() {
   const day = DAYS[state.day];
   const page = document.getElementById("page");
+  const settleKey = `${state.day}:${state.phase}`;
+  const settleCls = settleKey === lastSettleKey ? "" : " settle";
+  lastSettleKey = settleKey;
 
   if (state.phase === "checkin") {
     /* Calm budget: eyebrow, hero, the one ask — nothing else.
@@ -861,8 +886,8 @@ function render() {
     page.innerHTML = `
       ${STATUS_HTML}
       ${heroBlockHTML(day, 34)}
-      ${faceReceiptHTML()}
-      <div class="settle" style="margin-top:22px;--d:200ms">
+      ${faceReceiptHTML(settleCls)}
+      <div class="${settleCls.trim()}" style="margin-top:22px;--d:200ms">
         <span class="facelab" style="color:var(--pine)">ANYTHING TO NOTE TODAY?</span>
         ${ask}
       </div>`;
@@ -930,7 +955,7 @@ function render() {
       ? `<div class="factline"><span class="k">NOT YET</span><span class="v">${day.notYet}</span></div>`
       : "";
     const medsChapter = day.meds ? `
-      <div class="sect settle" style="--d:240ms">
+      <div class="sect${settleCls}" style="--d:240ms">
         <h5>Your medicines today</h5>
         <div class="factline">
           <span class="k">${day.meds.k}</span>
@@ -949,22 +974,22 @@ function render() {
     page.innerHTML = `
       ${STATUS_HTML}
       ${heroBlockHTML(day, 30)}
-      ${faceReceiptHTML()}
-      <div class="receipt tappable settle" id="note-receipt" role="button" tabindex="0"
+      ${faceReceiptHTML(settleCls)}
+      <div class="receipt tappable${settleCls}" id="note-receipt" role="button" tabindex="0"
         style="--d:60ms" aria-label="Change what you noted">
         <span class="rdot">✓</span>
         <span class="rtext">Noted: <em>${esc(state.note)}</em></span>
       </div>
 
       <!-- chapter 1: the reading -->
-      <div class="sect settle" style="--d:120ms">
+      <div class="sect${settleCls}" style="--d:120ms">
         <h5>How today might feel</h5>
         ${feelEntries}
         ${turnLine}
       </div>
 
       <!-- chapter 2: can / can't yet -->
-      <div class="sect settle" style="--d:180ms">
+      <div class="sect${settleCls}" style="--d:180ms">
         <h5>What you can do — and not yet</h5>
         ${backLine}
         ${notYetLine}
@@ -974,12 +999,12 @@ function render() {
       ${medsChapter}
 
       <!-- chapter 4: ahead -->
-      <div class="sect settle" style="--d:300ms">
+      <div class="sect${settleCls}" style="--d:300ms">
         <h5>What's ahead</h5>
         ${aheadLines}
       </div>
 
-      <div class="scrollhint settle" style="margin-top:14px;--d:300ms">⌄</div>`;
+      <div class="scrollhint${settleCls}" style="margin-top:14px;--d:300ms">⌄</div>`;
     wireHeroAndFaceReceipt(page);
     tap(page.querySelector("#note-receipt"), () => {
       state.phase = "noted";

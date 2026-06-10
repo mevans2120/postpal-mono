@@ -42,6 +42,9 @@
   .rtext{font-family:'Petrona',serif;font-size:24.5px;font-weight:500;line-height:1.3}
   .rtext em{font-style:italic;color:var(--pine)}
   .tappable{cursor:pointer}
+  /* transient acknowledgment under the face receipt — noted phase only
+     (the .facedone treatment from the v3 concept) */
+  .ackline{font-family:'Petrona',serif;font-style:italic;font-size:13.5px;color:var(--pine);margin-top:10px}
 
   /* page content — the question-led chapters (v7 state 3) */
   .sect{margin-top:24px}
@@ -498,6 +501,7 @@ const FACE_MOUTHS = [
 ];
 const FACE_LABELS = ["a good day", "a pretty good day", "an okay day", "a harder day", "a hard day"];
 const faceReceiptText = i => (i <= 1 ? "a little better" : i === 2 ? "about the same" : "harder than yesterday");
+const faceAckKey = i => (i <= 1 ? "better" : i === 2 ? "same" : "worse");
 const STATUS_HTML = '<div class="status"><span>9:41</span><span>Maya · UFE Feb 12</span></div>';
 
 function faceSvg(i, { selected = false, size = null } = {}) {
@@ -887,6 +891,7 @@ function render() {
       ${STATUS_HTML}
       ${heroBlockHTML(day, 34)}
       ${faceReceiptHTML(settleCls)}
+      <div class="ackline${settleCls}" id="ack-line" style="--d:100ms">${day.ack[faceAckKey(state.face)]}</div>
       <div class="${settleCls.trim()}" style="margin-top:22px;--d:200ms">
         <span class="facelab" style="color:var(--pine)">ANYTHING TO NOTE TODAY?</span>
         ${ask}

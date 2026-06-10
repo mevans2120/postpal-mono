@@ -111,10 +111,10 @@ const DAYS = {
     turn: "your first night",
     back: null,
     notYet: "driving <b>24h</b> · alcohol <b>24h</b> · an adult stays with you <b>today</b>",
-    meds: { line: "2 of 7 doses taken · next: ibuprofen 800 at 1:00", sheet: "medrail" },
+    meds: { k: "SO FAR", line: "2 of 7 doses taken · next: ibuprofen 800 at 1:00", sheet: "medrail" },
     ahead: [
       { k: "TOMORROW", v: "Dressing comes off — and your first shower" },
-      { k: "FEB 26", v: "Telehealth with Carrie, PA-C (day 14)" }
+      { k: "FEB 26", v: "Telehealth with Carrie, PA-C (day 14)", details: true }
     ],
     next: { label: "Ibuprofen 800", sub: "1:00 · in 40 min", tone: "clay", sheet: "medrail" },
     medrail: {
@@ -155,10 +155,10 @@ const DAYS = {
     turn: "eating &amp; energy",
     back: "driving ✓ · showers ✓ · normal meals ✓",
     notYet: "lifting &gt;10 lb <b>4d</b> · baths &amp; pools <b>11d</b> · tampons <b>11d</b>",
-    meds: { line: "3 of 6 doses taken · next: ibuprofen 800 at 1:00", sheet: "medrail" },
+    meds: { k: "SO FAR", line: "3 of 6 doses taken · next: ibuprofen 800 at 1:00", sheet: "medrail" },
     ahead: [
       { k: "DAY 5", v: "The medicine schedule starts stepping down" },
-      { k: "FEB 26", v: "Telehealth with Carrie, PA-C (day 14)" }
+      { k: "FEB 26", v: "Telehealth with Carrie, PA-C (day 14)", details: true }
     ],
     next: { label: "Ibuprofen 800", sub: "1:00 · in 3 h", tone: "clay", sheet: "medrail" },
     medrail: {
@@ -199,10 +199,10 @@ const DAYS = {
     turn: "your appetite",
     back: "driving ✓ · showers ✓ · normal meals ✓",
     notYet: "lifting &gt;10 lb <b>2d</b> · baths &amp; pools <b>9d</b> · tampons <b>9d</b>",
-    meds: { line: "3 of 6 doses taken · next: ibuprofen 800 at 1:00", sheet: "medrail" },
+    meds: { k: "SO FAR", line: "3 of 6 doses taken · next: ibuprofen 800 at 1:00", sheet: "medrail" },
     ahead: [
       { k: "TOMORROW", v: "Stepping down the medications — day 6's page" },
-      { k: "FEB 26", v: "Telehealth with Carrie, PA-C (day 14)" }
+      { k: "FEB 26", v: "Telehealth with Carrie, PA-C (day 14)", details: true }
     ],
     next: { label: "Ibuprofen 800", sub: "1:00 · in 3 h", tone: "clay", sheet: "medrail" },
     medrail: {
@@ -243,9 +243,9 @@ const DAYS = {
     turn: "going back to work",
     back: "driving ✓ · showers ✓ · normal meals ✓ · lifting ✓ · exercise ✓",
     notYet: "baths &amp; pools <b>4d</b> · tampons <b>4d</b>",
-    meds: { line: "As needed only — ibuprofen if cramps flare", sheet: "medrail" },
+    meds: { k: "TODAY", line: "As needed only — ibuprofen if cramps flare", sheet: "medrail" },
     ahead: [
-      { k: "FEB 26", v: "Telehealth with Carrie, PA-C — in 4 days" },
+      { k: "FEB 26", v: "Telehealth with Carrie, PA-C — in 4 days", details: true },
       { k: "DAY 14", v: "Baths, pools, and tampons all clear" }
     ],
     next: { label: "Baths & pools clear", sub: "in 4 days · Feb 26", tone: "pine", sheet: "cancant" },
@@ -333,8 +333,16 @@ let state = { day: 5, phase: "checkin", face: null, note: null, heroExpanded: fa
     if (day.next && day.next.sheet && !day[day.next.sheet]) {
       errors.push(`Day ${d} next.sheet "${day.next.sheet}" has no matching sheet object`);
     }
-    if (day.meds && day.meds.sheet && !day[day.meds.sheet]) {
-      errors.push(`Day ${d} meds.sheet "${day.meds.sheet}" has no matching sheet object`);
+    if (day.meds) {
+      for (const field of ["line", "sheet", "k"]) {
+        if (!day.meds[field]) errors.push(`Day ${d} meds is missing "${field}"`);
+      }
+      if (day.meds.sheet && !day[day.meds.sheet]) {
+        errors.push(`Day ${d} meds.sheet "${day.meds.sheet}" has no matching sheet object`);
+      }
+    }
+    if (day.back == null && day.notYet == null) {
+      errors.push(`Day ${d} has neither "back" nor "notYet" — the can/can't chapter would render bare`);
     }
     for (const chip of day.chips || []) {
       if (chipsWithoutInterpreters.has(chip)) continue;
@@ -547,7 +555,7 @@ function render() {
       <div class="sect">
         <h5>Your medicines today</h5>
         <div class="factline">
-          <span class="k">${/^\d/.test(day.meds.line) ? "SO FAR" : "TODAY"}</span>
+          <span class="k">${day.meds.k}</span>
           <span class="v">${day.meds.line}</span>
           <span class="go noop" id="meds-open">open →</span>
         </div>
@@ -557,7 +565,7 @@ function render() {
         <div class="factline">
           <span class="k">${item.k}</span>
           <span class="v">${item.v}</span>
-          ${/telehealth|MRI/i.test(item.v) ? '<span class="go noop">details →</span>' : ""}
+          ${item.details ? '<span class="go noop">details →</span>' : ""}
         </div>`).join("");
 
     page.innerHTML = `

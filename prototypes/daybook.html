@@ -67,9 +67,25 @@
   .notebtn{font-family:'Albert Sans',sans-serif;font-size:12.5px;font-weight:600;color:var(--clay-deep);background:none;border:none;padding:9px 4px;cursor:pointer;white-space:nowrap}
   .notebtn.quiet{color:var(--mut);font-weight:500}
 
-  /* dev-only day switcher — deliberately not product-styled */
-  #day-switcher{position:fixed;top:10px;right:10px;display:flex;gap:4px;z-index:100}
-  .day-pill{font-family:'Albert Sans',sans-serif;font-size:11px;font-weight:600;color:#888;background:#eee;border:1px solid #ccc;border-radius:10px;padding:3px 8px;cursor:pointer}
+  /* Next-slot bottom nav — Option 3 pair, styles copied from
+     postpal-bottom-nav-options.html. Tones are classes here (the concept
+     file used inline styles in its crops): clay = urgent/dose,
+     pine = calm milestone/cycle. */
+  #nextbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--paper);border-top:1px solid var(--line);padding:12px 24px calc(12px + env(safe-area-inset-bottom));z-index:50}
+  .pair{display:flex;gap:9px}
+  .pair .next{flex:1.5;background:var(--clay);border:none;border-radius:999px;padding:11px 16px;color:#fff;display:flex;align-items:center;gap:10px;text-align:left;font-family:'Albert Sans',sans-serif;cursor:pointer}
+  .pair .next.tone-clay{background:var(--clay)}
+  .pair .next.tone-pine{background:var(--pine)}
+  .pair .next .k{font-size:9px;letter-spacing:.16em;font-weight:700;opacity:.8}
+  .pair .next .v{font-size:13px;font-weight:700;line-height:1.25}
+  .pair .next .v small{display:block;font-weight:600;font-size:10.5px;opacity:.85}
+  .pair .feel{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--mut);border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:0 8px;font-family:'Albert Sans',sans-serif;cursor:pointer}
+
+  /* dev-only day switcher — deliberately not product-styled.
+     Sits below the status line ("9:41 · Maya · UFE Feb 12") so the two
+     never overlap at 430px. */
+  #day-switcher{position:fixed;top:42px;right:10px;display:flex;gap:4px;z-index:100}
+  .day-pill{font-family:'Albert Sans',sans-serif;font-size:10px;font-weight:600;color:#888;background:#eee;border:1px solid #ccc;border-radius:10px;padding:2px 7px;cursor:pointer}
   .day-pill.active{color:#fff;background:#888;border-color:#888}
 </style>
 </head>
@@ -438,6 +454,29 @@ function wireHeroAndFaceReceipt(page) {
   });
 }
 
+/* The Next-slot pair (nav Option 3). The left slot is whatever is genuinely
+   next in the recovery — dose (clay) or milestone/cycle (pine); the right
+   slot is the constant, quiet symptom door. Re-rendered with every render()
+   so it tracks day switches; phase never changes it. */
+function renderNextbar(day) {
+  const next = day.next;
+  const nextbar = document.getElementById("nextbar");
+  nextbar.innerHTML = `
+    <div class="pair">
+      <button class="next tone-${next.tone} noop" id="next-slot"
+        aria-label="Next: ${next.label} — ${next.sub}">
+        <span class="k">NEXT</span>
+        <span class="v">${next.label}<small>${next.sub}</small></span>
+      </button>
+      <button class="feel noop" id="feel-btn"
+        aria-label="Feeling something? Check a symptom">Feeling something?</button>
+    </div>`;
+  /* TODO(Task 7): open the day's next.sheet (medrail / cancant / cycle). */
+  nextbar.querySelector("#next-slot").addEventListener("click", () => {});
+  /* TODO(Task 7): open the symptom list sheet (this day's interpreter chips). */
+  nextbar.querySelector("#feel-btn").addEventListener("click", () => {});
+}
+
 function render() {
   const day = DAYS[state.day];
   const page = document.getElementById("page");
@@ -612,6 +651,8 @@ function render() {
     page.innerHTML = "";
     console.error(`render(): unknown phase "${state.phase}"`);
   }
+
+  renderNextbar(day);
 
   document.querySelectorAll(".day-pill").forEach(pill => {
     pill.classList.toggle("active", Number(pill.dataset.day) === state.day);

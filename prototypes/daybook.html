@@ -155,6 +155,16 @@
   .btn.ghost{border:1.5px solid var(--line);color:var(--mut)}
   .btn.ghost:active{background:var(--card)}
 
+  /* interpreter — information-first redesign (source: docs/design/interpreter-components-070826) */
+  .threshold .lab{display:block;font-size:10px;letter-spacing:.12em;font-weight:700;color:var(--mut);margin-bottom:3px}
+  .threshold.gate{background:var(--clay-soft);border-color:#e7cdb6}
+  .askrow{margin-top:18px}
+  .asklab{display:block;font-size:10.5px;letter-spacing:.14em;font-weight:700;color:var(--mut);text-align:center;margin-bottom:10px}
+  .gatelead{font-family:'Petrona',serif;font-size:18.5px;font-weight:500;line-height:1.32;margin-bottom:4px}
+  .gatecalm{font-size:13px;color:var(--mut);line-height:1.55;margin-top:12px}
+  .emerg{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:var(--mut);margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+  .emerg b{color:var(--alert);font-weight:700}
+
   /* ===== Tap targets (Task 8 sweep) =====
      Visual sizes keep v7 fidelity; small controls — chips, the Log button,
      the grab handle, the meds "open →", the note-input buttons — get an
@@ -710,16 +720,40 @@ function cycleHTML(cy) {
     ${cy.selected ? `<div class="quietline">${cy.footnote}</div>` : ""}`;
 }
 
-function interpreterHTML(interp) {
+/* The interpreter never routes to a phone call now. "Not quite" surfaces the
+   line to watch plus self-care; only a 911 line remains for a true emergency.
+   A per-interpreter `care` string (optional) overrides the default self-care. */
+const SELF_CARE_DEFAULT = "If that's not you yet, it usually just needs a little more time. Try what's on today's page, and check back in an hour.";
+const EMERGENCY_LINE = "Sudden severe pain, heavy bleeding, or trouble breathing? <b>Call 911.</b>";
+
+function interpreterHTML(interp, payload) {
   const alertIcon = '<svg width="14" height="14" viewBox="0 0 14 14" style="flex:none;margin-top:2px" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="none" stroke="#9c3a2a" stroke-width="1.5"/><path d="M7 4v3.5M7 9.8v.4" stroke="#9c3a2a" stroke-width="1.5" stroke-linecap="round"/></svg>';
+
+  /* escalated view — reached from "Not quite" */
+  if (payload && payload.escalated) {
+    const care = interp.care || SELF_CARE_DEFAULT;
+    return `
+    <div class="gatelead">Here's the line to watch — and what helps right now.</div>
+    <div class="threshold gate">${alertIcon}<span><span class="lab">THE ONE THING TO WATCH FOR</span>${interp.threshold}</span></div>
+    <p class="gatecalm">${care}</p>
+    <div class="emerg">${alertIcon}<span>${EMERGENCY_LINE}</span></div>
+    <div class="sheetacts">
+      <button class="btn ghost" id="act-gotit">Back to today</button>
+    </div>`;
+  }
+
+  /* answer view — default */
   return `
     <span class="tag">${interp.tag}</span>
     <h4>${interp.head}</h4>
     <p>${interp.body}</p>
-    <div class="threshold">${alertIcon}<span>${interp.threshold}</span></div>
-    <div class="sheetacts">
-      <button class="btn ghost" id="act-helps">That helps</button>
-      <button class="btn primary" id="act-call" aria-label="Call Carrie, PA-C (prototype — no call placed)">Call Carrie, PA-C</button>
+    <div class="threshold">${alertIcon}<span><span class="lab">THE ONE LINE YOUR CLINIC WATCHES</span>${interp.threshold}</span></div>
+    <div class="askrow">
+      <span class="asklab">DID THIS ANSWER YOUR QUESTION?</span>
+      <div class="sheetacts">
+        <button class="btn primary" id="act-yes">Yes, that helps</button>
+        <button class="btn ghost" id="act-notquite">Not quite</button>
+      </div>
     </div>`;
 }
 
@@ -741,7 +775,7 @@ function sheetBodyHTML(day) {
     case "medrail": return medrailHTML(day.medrail);
     case "cancant": return cancantHTML(day.cancant);
     case "cycle": return cycleHTML(day.cycle);
-    case "interpreter": return interpreterHTML(day.interpreters[payload.key]);
+    case "interpreter": return interpreterHTML(day.interpreters[payload.key], payload);
     case "feel": return feelHTML(day);
     default:
       console.error(`sheetBodyHTML(): unknown sheet kind "${kind}"`);
@@ -767,18 +801,24 @@ function wireSheet(root, day) {
       });
     });
   } else if (kind === "interpreter") {
-    /* the worry never blocks the page: from a check-in chip, BOTH actions
-       record the note and land on the page; from "Feeling something?" they
-       just close — no note, no phase change. */
-    const dismiss = () => {
+    /* the worry never blocks the page: from a check-in chip, resolving ("Yes")
+       or acknowledging the escalation ("Back to today") records the note and
+       lands on the page; from "Feeling something?" they just close. "Not quite"
+       swaps to the escalated view in place, keeping the same opener. */
+    const resolve = () => {
       if (payload.origin === "chips") {
         state.note = payload.key.toLowerCase();
         state.phase = "page";
       }
       closeSheet();
     };
-    root.querySelector("#act-helps").addEventListener("click", dismiss);
-    root.querySelector("#act-call").addEventListener("click", dismiss);
+    if (payload.escalated) {
+      root.querySelector("#act-gotit").addEventListener("click", resolve);
+    } else {
+      root.querySelector("#act-yes").addEventListener("click", resolve);
+      root.querySelector("#act-notquite").addEventListener("click",
+        () => openSheet("interpreter", { ...payload, escalated: true }));
+    }
   } else if (kind === "feel") {
     const keys = Object.keys(day.interpreters);
     root.querySelectorAll(".chip").forEach(btn => {

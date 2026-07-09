@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostPal Onboarding — Concept 1: One Question at a Time</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Petrona:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== Daybook design tokens — copied verbatim from prototypes/daybook.html ===== */
+  :root{--paper:#faf6f0;--card:#fff;--ink:#2b2118;--mut:#7a6c5c;--clay:#c4674a;--clay-fill:#b05b40;--clay-deep:#8a4630;--clay-soft:#f3e4d3;--pine:#3d5a4c;--pine-soft:#e4ebe6;--line:#e6ddd1;--alert:#9c3a2a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Albert Sans',sans-serif;color:var(--ink);background:#e9e0d2;padding:34px 22px 70px;-webkit-font-smoothing:antialiased}
+
+  /* ===== gallery chrome (NOT product) ===== */
+  .wrap{max-width:1600px;margin:0 auto}
+  .kicker{font-size:11px;letter-spacing:.18em;font-weight:700;color:var(--clay-deep);text-transform:uppercase}
+  .title{font-family:'Petrona',serif;font-size:31px;font-weight:500;margin:6px 0 6px}
+  .title em{font-style:italic;color:var(--clay)}
+  .lede{font-size:14px;color:#5a4d40;max-width:680px;line-height:1.6}
+  .lede b{color:var(--ink)}
+  .row{display:flex;gap:26px;overflow-x:auto;padding:30px 4px 12px;align-items:flex-start}
+  .screen{flex:none;width:392px}
+  .stepcap{display:flex;align-items:baseline;gap:9px;margin:14px 8px 0}
+  .stepcap .n{font-family:'Petrona',serif;font-style:italic;font-size:16px;color:var(--clay-deep)}
+  .stepcap .t{font-size:11px;font-weight:700;letter-spacing:.07em;color:var(--mut);text-transform:uppercase}
+
+  /* ===== device frame ===== */
+  .frame{width:392px;height:812px;background:var(--paper);border:1px solid #d7ccba;border-radius:46px;box-shadow:0 22px 55px rgba(43,33,24,.18);position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .frame::before{content:"";position:absolute;top:13px;left:50%;transform:translateX(-50%);width:96px;height:6px;border-radius:3px;background:#e0d6c6;z-index:5}
+  .statusbar{display:flex;justify-content:space-between;padding:20px 28px 0;font-size:11px;font-weight:600;color:var(--mut)}
+  .scr{flex:1;display:flex;flex-direction:column;padding:30px 28px 26px;overflow-y:auto}
+
+  /* ===== product primitives (from daybook.html) ===== */
+  .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:700;color:var(--pine)}
+  .bigtext{font-family:'Petrona',serif;font-weight:500;font-size:24.5px;line-height:1.36;margin-top:14px}
+  .bigtext em{font-style:italic;color:var(--clay)}
+  .body{font-family:'Petrona',serif;font-size:15px;line-height:1.62;margin-top:16px}
+  .body b{font-weight:600}
+  .hero-sub{font-size:13.5px;color:var(--mut);line-height:1.6;margin-top:16px}
+  .marginnote{display:block;font-family:'Petrona',serif;font-style:italic;font-size:12.5px;color:var(--clay-deep);margin-top:16px;padding-left:12px;border-left:2px solid var(--clay)}
+  .factline{display:flex;align-items:baseline;gap:8px;font-size:13px;line-height:1.5}
+  .factline .k{flex:none;font-size:10.5px;letter-spacing:.11em;font-weight:700;color:var(--mut);width:104px}
+  .factline .v{font-family:'Petrona',serif;font-size:15px}
+  .factline .v b{font-family:'Albert Sans';font-size:11.5px;font-weight:700;color:var(--clay-deep)}
+
+  /* confirm card + teaching points — card treatment lifted from daybook's
+     .face / receipt shadow language (0 2px 8px rgba(43,33,24,.05)) */
+  .confirmcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:2px 16px;margin-top:22px;box-shadow:0 2px 8px rgba(43,33,24,.05)}
+  .confirmcard .factline{padding:15px 0;border-bottom:1px solid var(--line)}
+  .confirmcard .factline:last-child{border-bottom:none}
+  .point{display:flex;gap:14px;margin-top:20px}
+  .point .idx{font-family:'Petrona',serif;font-style:italic;font-size:23px;color:var(--clay);line-height:1.1;flex:none;width:20px}
+  .point .txt{font-family:'Petrona',serif;font-size:15px;line-height:1.5}
+
+  /* buttons (from daybook .btn / .pair .next) */
+  .cta{margin-top:auto;padding-top:20px;display:flex;flex-direction:column;gap:10px}
+  .btn{width:100%;text-align:center;border:none;border-radius:999px;padding:15px 10px;font-weight:700;font-size:14px;font-family:'Albert Sans',sans-serif;cursor:pointer}
+  .btn.primary{background:var(--clay-fill);color:#fff}
+  .btn.pine{background:var(--pine);color:#fff}
+  .btn.ghost{background:none;border:1.5px solid var(--line);color:var(--mut);padding:13px 10px}
+
+  /* progress dots — the "calm budget" made literal: one ask per screen */
+  .dots{display:flex;gap:7px;justify-content:center;margin-bottom:6px}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--line);transition:all .2s}
+  .dots i.on{background:var(--clay);width:22px;border-radius:4px}
+
+  .annot{margin:38px auto 0;max-width:1000px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px 26px}
+  .annot h3{font-family:'Petrona',serif;font-style:italic;font-size:19px;font-weight:500;color:var(--ink)}
+  .annot p{font-size:13.5px;line-height:1.62;color:#5a4d40;margin-top:10px}
+  .annot code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:var(--clay-deep)}
+  .annot .tokens{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--pine);background:var(--pine-soft);border-radius:10px;padding:12px 14px;margin-top:14px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">PostPal · Onboarding concept 1 of 3</div>
+  <h1 class="title">One question at a time <em>— sequential, space-forward</em></h1>
+  <p class="lede">The check-in's calm budget applied to setup: <b>one idea per screen</b>, a single primary action, generous space, a Petrona statement carrying each step. Five short screens, pre-procedure. It orients her — it doesn't add anything to do.</p>
+
+  <div class="row">
+
+    <!-- 1 · WELCOME -->
+    <div class="screen">
+      <div class="frame">
+        <div class="statusbar"><span>9:41</span><span>◗ 100%</span></div>
+        <div class="scr">
+          <div class="eyebrow">SET UP BY ADVANCED VASCULAR CENTERS</div>
+          <div class="bigtext">Maya — this is yours now. <em>Carrie set it up for your procedure on the 12th.</em></div>
+          <p class="hero-sub">Free, from your clinic, with your own instructions already inside. A minute now, so the hard days aren't a surprise.</p>
+          <div class="cta">
+            <div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <button class="btn primary">Let's get ready</button>
+          </div>
+        </div>
+      </div>
+      <div class="stepcap"><span class="n">1</span><span class="t">Welcome · it's hers, from the clinic</span></div>
+    </div>
+
+    <!-- 2 · CONFIRM -->
+    <div class="screen">
+      <div class="frame">
+        <div class="statusbar"><span>9:41</span><span>◗ 100%</span></div>
+        <div class="scr">
+          <div class="eyebrow">FIRST, THE BASICS</div>
+          <div class="bigtext">Does this look right?</div>
+          <div class="confirmcard">
+            <div class="factline"><span class="k">PROCEDURE</span><span class="v">Uterine fibroid embolization</span></div>
+            <div class="factline"><span class="k">DATE</span><span class="v">February 12 · <b>IN 4 DAYS</b></span></div>
+            <div class="factline"><span class="k">YOUR CLINIC</span><span class="v">Advanced Vascular Centers</span></div>
+          </div>
+          <div class="cta">
+            <div class="dots"><i></i><i class="on"></i><i></i><i></i><i></i></div>
+            <button class="btn primary">Yes, that's me</button>
+            <button class="btn ghost">Something's off</button>
+          </div>
+        </div>
+      </div>
+      <div class="stepcap"><span class="n">2</span><span class="t">Confirm the clinic-loaded essentials</span></div>
+    </div>
+
+    <!-- 3 · HONEST EXPECTATIONS -->
+    <div class="screen">
+      <div class="frame">
+        <div class="statusbar"><span>9:41</span><span>◗ 100%</span></div>
+        <div class="scr">
+          <div class="eyebrow">THE HONEST VERSION</div>
+          <div class="bigtext">The first three days are hard. <em>You should hear that from us, not from Reddit at 2am.</em></div>
+          <p class="body">Intense, labor-like cramping is common in the first day. A low fever and flu-like aches can follow. It's the procedure working, and it eases from here — but it can feel alarming, so we'll walk every day with you.</p>
+          <span class="marginnote">Carrie, PA-C — "No one has ever told me they regretted knowing this ahead of time."</span>
+          <div class="cta">
+            <div class="dots"><i></i><i></i><i class="on"></i><i></i><i></i></div>
+            <button class="btn primary">Okay — I'm glad you told me</button>
+          </div>
+        </div>
+      </div>
+      <div class="stepcap"><span class="n">3</span><span class="t">Prime honest expectations · "believe her"</span></div>
+    </div>
+
+    <!-- 4 · HOW IT WORKS -->
+    <div class="screen">
+      <div class="frame">
+        <div class="statusbar"><span>9:41</span><span>◗ 100%</span></div>
+        <div class="scr">
+          <div class="eyebrow">HOW POSTPAL WORKS</div>
+          <div class="bigtext">Two things, then you're set.</div>
+          <div class="point"><span class="idx">1</span><span class="txt">Each morning, one question: how are you today? Two taps, no forms.</span></div>
+          <div class="point"><span class="idx">2</span><span class="txt">Ask "is this normal?" any time. You'll get your clinic's own answer, not a search result.</span></div>
+          <div class="cta">
+            <div class="dots"><i></i><i></i><i></i><i class="on"></i><i></i></div>
+            <button class="btn primary">I'm ready</button>
+          </div>
+        </div>
+      </div>
+      <div class="stepcap"><span class="n">4</span><span class="t">Teach the daily check-in</span></div>
+    </div>
+
+    <!-- 5 · HAND-OFF -->
+    <div class="screen">
+      <div class="frame">
+        <div class="statusbar"><span>9:41</span><span>◗ 100%</span></div>
+        <div class="scr">
+          <div class="eyebrow">YOU'RE ALL SET</div>
+          <div class="bigtext">See you on the 12th, Maya. <em>Until then, rest up and drink water.</em></div>
+          <p class="hero-sub">We'll be here the morning after your procedure. Your first check-in will be waiting — nothing to do until then.</p>
+          <div class="cta">
+            <div class="dots"><i></i><i></i><i></i><i></i><i class="on"></i></div>
+            <button class="btn pine">Take me to my Daybook</button>
+          </div>
+        </div>
+      </div>
+      <div class="stepcap"><span class="n">5</span><span class="t">Warm hand-off into the Daybook</span></div>
+    </div>
+
+  </div>
+
+  <div class="annot">
+    <h3>Why this composition</h3>
+    <p><b>Lens: Stacked / Sequential + Space-Forward.</b> This is the most literal extension of the Daybook's core rule — the "calm budget," one ask above the fold. Each screen holds a single Petrona statement and one primary action, exactly like the check-in state. The progress dots (clay pill for the current step) are the only new primitive, and they reassure an anxious pre-procedure patient that setup is short and bounded.</p>
+    <p><b>Strengths:</b> lowest cognitive load, trivially matches the existing state machine (one more phase enum: <code>onboard</code>, stepping <code>0→4</code> before <code>checkin</code>), and reuses <code>.eyebrow</code>, <code>.bigtext</code>, <code>.factline</code>, <code>.marginnote</code>, <code>.btn</code> unchanged. <b>Tradeoff:</b> five taps to finish; the honest-expectations beat gets one screen rather than room to breathe.</p>
+    <div class="tokens">Tokens used — surface: --paper / --card · text: --ink, --mut · accent: --clay (hero em, active dot), --clay-deep (margin note, fact emphasis), --clay-fill (primary button, 4.75:1 white) · calm: --pine (hand-off button) · structure: --line hairlines · type: Petrona 24.5 hero + 15 body, Albert Sans 11/700 eyebrow &amp; labels</div>
+  </div>
+</div>
+</body>
+</html>

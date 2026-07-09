@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostPal Onboarding — Concept 3: See the Shape of It</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Petrona:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== Daybook design tokens — copied verbatim from prototypes/daybook.html ===== */
+  :root{--paper:#faf6f0;--card:#fff;--ink:#2b2118;--mut:#7a6c5c;--clay:#c4674a;--clay-fill:#b05b40;--clay-deep:#8a4630;--clay-soft:#f3e4d3;--pine:#3d5a4c;--pine-soft:#e4ebe6;--line:#e6ddd1;--alert:#9c3a2a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Albert Sans',sans-serif;color:var(--ink);background:#e9e0d2;padding:34px 22px 70px;-webkit-font-smoothing:antialiased}
+
+  /* ===== gallery chrome (NOT product) ===== */
+  .wrap{max-width:1600px;margin:0 auto}
+  .kicker{font-size:11px;letter-spacing:.18em;font-weight:700;color:var(--clay-deep);text-transform:uppercase}
+  .title{font-family:'Petrona',serif;font-size:31px;font-weight:500;margin:6px 0 6px}
+  .title em{font-style:italic;color:var(--clay)}
+  .lede{font-size:14px;color:#5a4d40;max-width:680px;line-height:1.6}
+  .lede b{color:var(--ink)}
+  .row{display:flex;gap:26px;overflow-x:auto;padding:30px 4px 12px;align-items:flex-start}
+  .screen{flex:none;width:392px}
+  .stepcap{display:flex;align-items:baseline;gap:9px;margin:14px 8px 0}
+  .stepcap .n{font-family:'Petrona',serif;font-style:italic;font-size:16px;color:var(--clay-deep)}
+  .stepcap .t{font-size:11px;font-weight:700;letter-spacing:.07em;color:var(--mut);text-transform:uppercase}
+
+  /* ===== device frame ===== */
+  .frame{width:392px;height:812px;background:var(--paper);border:1px solid #d7ccba;border-radius:46px;box-shadow:0 22px 55px rgba(43,33,24,.18);position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .frame::before{content:"";position:absolute;top:13px;left:50%;transform:translateX(-50%);width:96px;height:6px;border-radius:3px;background:#e0d6c6;z-index:5}
+  .statusbar{display:flex;justify-content:space-between;padding:20px 28px 0;font-size:11px;font-weight:600;color:var(--mut);flex:none}
+  .scr{flex:1;display:flex;flex-direction:column;padding:28px 28px 26px;overflow-y:auto}
+
+  /* ===== product primitives (from daybook.html) ===== */
+  .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:700;color:var(--pine)}
+  .bigtext{font-family:'Petrona',serif;font-weight:500;font-size:23px;line-height:1.36;margin-top:12px}
+  .bigtext em{font-style:italic;color:var(--clay)}
+  .body{font-family:'Petrona',serif;font-size:14.5px;line-height:1.6;margin-top:14px}
+  .body b{font-weight:600}
+  .btn{width:100%;text-align:center;border:none;border-radius:999px;padding:15px 10px;font-weight:700;font-size:14px;font-family:'Albert Sans',sans-serif;cursor:pointer}
+  .btn.primary{background:var(--clay-fill);color:#fff}
+  .btn.pine{background:var(--pine);color:#fff}
+  .btn.ghost{background:none;border:1.5px solid var(--line);color:var(--mut);padding:13px 10px}
+  .factline{display:flex;align-items:baseline;gap:8px;font-size:13px;line-height:1.5;padding:11px 0;border-bottom:1px solid var(--line)}
+  .factline:last-child{border-bottom:none}
+  .factline .k{flex:none;font-size:10.5px;letter-spacing:.11em;font-weight:700;color:var(--mut);width:92px}
+  .factline .v{font-family:'Petrona',serif;font-size:14.5px}
+  .cta{margin-top:auto;padding-top:18px;display:flex;flex-direction:column;gap:10px}
+
+  /* ===== concept 3 — the recovery arc as a rail (extends the "What's ahead"
+     chapter idea and the day-switcher's 1·3·5·10·20 spine) ===== */
+  .arc{position:relative;margin-top:20px;padding-left:28px}
+  .arc::before{content:"";position:absolute;left:7px;top:10px;bottom:10px;width:2px;background:var(--line)}
+  .arc-step{position:relative;padding:12px 0}
+  .arc-step .dot{position:absolute;left:-28px;top:15px;width:16px;height:16px;border-radius:50%;background:var(--paper);border:2px solid var(--line);box-sizing:border-box}
+  .arc-step.hard .dot{border-color:var(--clay);background:var(--clay-soft)}
+  .arc-step.cycle .dot{border-color:var(--pine);background:var(--pine-soft)}
+  .arc-step .d{font-size:10px;letter-spacing:.13em;font-weight:700;color:var(--mut)}
+  .arc-step.hard .d{color:var(--clay-deep)}
+  .arc-step.cycle .d{color:var(--pine)}
+  .arc-step .l{font-family:'Petrona',serif;font-size:14.5px;line-height:1.42;margin-top:2px}
+  .arc-step .l b{font-weight:600}
+
+  /* featured procedure card (asymmetric: one dominant fact + supporting rows) */
+  .feature{background:var(--clay-soft);border-radius:20px;padding:20px 22px;margin-top:20px}
+  .feature .abbr{font-family:'Petrona',serif;font-size:38px;font-weight:600;color:var(--clay-deep);line-height:1}
+  .feature .full{font-family:'Petrona',serif;font-size:16px;color:var(--ink);margin-top:6px}
+  .feature .when{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--clay-deep);margin-top:10px}
+  .support{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:2px 16px;margin-top:14px;box-shadow:0 2px 8px rgba(43,33,24,.05)}
+
+  /* day-1 preview (arc collapses into the real check-in) */
+  .preview{border:1px dashed var(--line);border-radius:20px;padding:18px 18px 20px;margin-top:20px;background:var(--card)}
+  .preview .pv-eye{font-size:10px;letter-spacing:.14em;font-weight:700;color:var(--pine)}
+  .preview .pv-hero{font-family:'Petrona',serif;font-size:16.5px;line-height:1.35;margin-top:8px}
+  .preview .pv-hero em{font-style:italic;color:var(--clay)}
+  .pv-faces{display:flex;gap:8px;margin-top:14px}
+  .pv-faces .f{flex:1;aspect-ratio:1/1.15;background:var(--paper);border:1px solid var(--line);border-radius:14px;display:flex;align-items:center;justify-content:center}
+  .pv-faces .f svg{width:70%;height:auto}
+  .pv-cap{display:flex;justify-content:space-between;font-family:'Petrona',serif;font-style:italic;font-size:10.5px;color:var(--mut);margin-top:8px}
+
+  .annot{margin:38px auto 0;max-width:1000px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px 26px}
+  .annot h3{font-family:'Petrona',serif;font-style:italic;font-size:19px;font-weight:500;color:var(--ink)}
+  .annot p{font-size:13.5px;line-height:1.62;color:#5a4d40;margin-top:10px}
+  .annot .tokens{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--pine);background:var(--pine-soft);border-radius:10px;padding:12px 14px;margin-top:14px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">PostPal · Onboarding concept 3 of 3</div>
+  <h1 class="title">See the shape of it <em>— the recovery arc as a spine</em></h1>
+  <p class="lede">Set expectations by <b>showing</b> the journey, not just telling. This onboarding opens with a preview of the five-day arc — hardest first, then steadily hers again — then confirms setup and hands off. Three screens; the arc is the same 1·3·5·10·20 the day-switcher already knows.</p>
+
+  <div class="row">
+
+    <!-- 1 · THE MAP -->
+    <div class="screen">
+      <div class="frame">
+        <div class="statusbar"><span>9:41</span><span>◗ 100%</span></div>
+        <div class="scr">
+          <div class="eyebrow">WHAT'S COMING</div>
+          <div class="bigtext">Here's the shape of the next three weeks. <em>Hardest first, then steadily yours again.</em></div>
+          <div class="arc">
+            <div class="arc-step hard">
+              <span class="dot"></span>
+              <div class="d">DAY 1 · THE HARD ONE</div>
+              <div class="l"><b>Intense cramping.</b> The day your medicine schedule carries you.</div>
+            </div>
+            <div class="arc-step">
+              <span class="dot"></span>
+              <div class="d">DAY 3 · THE PEAK</div>
+              <div class="l">Fever and flu-like aches crest, then break.</div>
+            </div>
+            <div class="arc-step">
+              <span class="dot"></span>
+              <div class="d">DAY 5 · THE LIFT</div>
+              <div class="l">The fog starts clearing; medicines step down.</div>
+            </div>
+            <div class="arc-step">
+              <span class="dot"></span>
+              <div class="d">DAY 10 · BACK TO LIFE</div>
+              <div class="l">Most restrictions gone. Tiredness lingers.</div>
+            </div>
+            <div class="arc-step cycle">
+              <span class="dot"></span>
+              <div class="d">DAY 20 · THE REAL TEST</div>
+              <div class="l">Your first period tells you more than any day count.</div>
+            </div>
+          </div>
+          <div class="cta">
+            <button class="btn primary">This is my map — set it up</button>
+          </div>
+        </div>
+      </div>
+      <div class="stepcap"><span class="n">1</span><span class="t">Preview the arc · expectations by showing</span></div>
+    </div>
+
+    <!-- 2 · CONFIRM (featured) -->
+    <div class="screen">
+      <div class="frame">
+        <div class="statusbar"><span>9:41</span><span>◗ 100%</span></div>
+        <div class="scr">
+          <div class="eyebrow">YOUR PROCEDURE</div>
+          <div class="bigtext">Set up by your clinic — does it match?</div>
+          <div class="feature">
+            <div class="abbr">UFE</div>
+            <div class="full">Uterine fibroid embolization</div>
+            <div class="when">FEBRUARY 12 · IN 4 DAYS</div>
+          </div>
+          <div class="support">
+            <div class="factline"><span class="k">YOUR CLINIC</span><span class="v">Advanced Vascular Centers</span></div>
+          </div>
+          <div class="cta">
+            <button class="btn primary">Yes, that's me</button>
+            <button class="btn ghost">Something's off</button>
+          </div>
+        </div>
+      </div>
+      <div class="stepcap"><span class="n">2</span><span class="t">Confirm · one dominant fact + support</span></div>
+    </div>
+
+    <!-- 3 · HAND-OFF (arc collapses into day 1) -->
+    <div class="screen">
+      <div class="frame">
+        <div class="statusbar"><span>9:41</span><span>◗ 100%</span></div>
+        <div class="scr">
+          <div class="eyebrow">READY FOR THE 12TH</div>
+          <div class="bigtext">We'll meet you the morning after. <em>One question, and we take it from there.</em></div>
+          <div class="preview">
+            <div class="pv-eye">DAY 1 · MORNING CHECK-IN</div>
+            <div class="pv-hero">Today is usually the hardest day<em>…</em></div>
+            <div class="pv-faces">
+              <span class="f"><svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M10.5 20.5 Q17 26 23.5 20.5" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span>
+              <span class="f"><svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M11 21 Q17 24.5 23 21" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span>
+              <span class="f"><svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M11 21.5 H23" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span>
+              <span class="f"><svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M11 23 Q17 20 23 23" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span>
+              <span class="f"><svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="14" fill="none" stroke="#7a6c5c" stroke-width="1.5"/><circle cx="12" cy="14" r="1.6" fill="#7a6c5c"/><circle cx="22" cy="14" r="1.6" fill="#7a6c5c"/><path d="M10.5 24 Q17 19 23.5 24" stroke="#7a6c5c" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span>
+            </div>
+            <div class="pv-cap"><span>a good day</span><span>a hard day</span></div>
+          </div>
+          <div class="cta">
+            <button class="btn pine">Open my Daybook</button>
+          </div>
+        </div>
+      </div>
+      <div class="stepcap"><span class="n">3</span><span class="t">Hand-off · the arc becomes the check-in</span></div>
+    </div>
+
+  </div>
+
+  <div class="annot">
+    <h3>Why this composition</h3>
+    <p><b>Lens: Asymmetric / Featured + Progressive.</b> The Daybook already has a "What's ahead" chapter and a 1·3·5·10·20 day spine; this concept promotes that spine to the opening move. Showing the arc — day 1 marked as the hard peak, day 20 as the cycle — does the "believe her" and "benchmark against the range" work visually, before a single hard day arrives. Frame 3 literally collapses the arc into the real day-1 check-in, so the last thing she sees in setup is the first thing she'll use.</p>
+    <p><b>Strengths:</b> best expectation-setting, orients her to the whole shape, fewest screens (three). <b>Tradeoffs:</b> denser than the calm budget prefers, and front-loading the full arc risks showing an anxious patient the scary peak before she's ready — the copy has to keep the arc reassuring, not ominous. The featured card and rail are new primitives to build.</p>
+    <div class="tokens">Tokens used — the rail reuses --clay-soft / --clay-deep for the hard peak and --pine-soft / --pine for the cycle marker · --line for the spine &amp; unreached dots · featured card on --clay-soft · day-1 preview reuses the exact face SVGs, --paper faces on --card · Petrona throughout, Albert Sans labels</div>
+  </div>
+</div>
+</body>
+</html>

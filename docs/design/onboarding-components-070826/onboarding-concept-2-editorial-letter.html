@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostPal Onboarding — Concept 2: A Note from Carrie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Petrona:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== Daybook design tokens — copied verbatim from prototypes/daybook.html ===== */
+  :root{--paper:#faf6f0;--card:#fff;--ink:#2b2118;--mut:#7a6c5c;--clay:#c4674a;--clay-fill:#b05b40;--clay-deep:#8a4630;--clay-soft:#f3e4d3;--pine:#3d5a4c;--pine-soft:#e4ebe6;--line:#e6ddd1;--alert:#9c3a2a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Albert Sans',sans-serif;color:var(--ink);background:#e9e0d2;padding:34px 22px 70px;-webkit-font-smoothing:antialiased}
+
+  /* ===== gallery chrome (NOT product) ===== */
+  .wrap{max-width:1600px;margin:0 auto}
+  .kicker{font-size:11px;letter-spacing:.18em;font-weight:700;color:var(--clay-deep);text-transform:uppercase}
+  .title{font-family:'Petrona',serif;font-size:31px;font-weight:500;margin:6px 0 6px}
+  .title em{font-style:italic;color:var(--clay)}
+  .lede{font-size:14px;color:#5a4d40;max-width:680px;line-height:1.6}
+  .lede b{color:var(--ink)}
+  .row{display:flex;gap:26px;overflow-x:auto;padding:30px 4px 12px;align-items:flex-start}
+  .screen{flex:none;width:392px}
+  .stepcap{display:flex;align-items:baseline;gap:9px;margin:14px 8px 0}
+  .stepcap .n{font-family:'Petrona',serif;font-style:italic;font-size:16px;color:var(--clay-deep)}
+  .stepcap .t{font-size:11px;font-weight:700;letter-spacing:.07em;color:var(--mut);text-transform:uppercase}
+
+  /* ===== device frame ===== */
+  .frame{width:392px;height:812px;background:var(--paper);border:1px solid #d7ccba;border-radius:46px;box-shadow:0 22px 55px rgba(43,33,24,.18);position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .frame::before{content:"";position:absolute;top:13px;left:50%;transform:translateX(-50%);width:96px;height:6px;border-radius:3px;background:#e0d6c6;z-index:5}
+  .statusbar{display:flex;justify-content:space-between;padding:20px 28px 0;font-size:11px;font-weight:600;color:var(--mut);flex:none}
+  .scr{flex:1;display:flex;flex-direction:column;padding:26px 30px 24px;overflow-y:auto}
+  .frame .fade{position:absolute;left:1px;right:1px;bottom:1px;height:46px;border-radius:0 0 45px 45px;background:linear-gradient(to top,var(--paper),transparent);pointer-events:none;z-index:4}
+
+  /* ===== product primitives (from daybook.html) ===== */
+  .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:700;color:var(--pine)}
+  .factline{display:flex;align-items:baseline;gap:8px;font-size:13px;line-height:1.5}
+  .factline .k{flex:none;font-size:10.5px;letter-spacing:.11em;font-weight:700;color:var(--mut);width:96px}
+  .factline .v{font-family:'Petrona',serif;font-size:14.5px}
+  .factline .v b{font-family:'Albert Sans';font-size:11px;font-weight:700;color:var(--clay-deep)}
+  .btn{width:100%;text-align:center;border:none;border-radius:999px;padding:15px 10px;font-weight:700;font-size:14px;font-family:'Albert Sans',sans-serif;cursor:pointer}
+  .btn.primary{background:var(--clay-fill);color:#fff}
+
+  /* ===== concept 2 — the letter ===== */
+  .mark{display:flex;align-items:center;gap:9px;flex:none}
+  .mark .seal{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--pine);color:var(--pine);display:flex;align-items:center;justify-content:center;font-family:'Petrona',serif;font-style:italic;font-size:14px;font-weight:600}
+  .mark .who{font-size:10px;letter-spacing:.16em;font-weight:700;color:var(--mut);text-transform:uppercase;line-height:1.4}
+  .salut{font-family:'Petrona',serif;font-size:31px;font-weight:500;margin-top:22px}
+  .letter p{font-family:'Petrona',serif;font-size:15.5px;line-height:1.66;margin-top:14px;color:var(--ink)}
+  .letter p b{font-weight:600}
+  .letter em{font-style:italic;color:var(--clay)}
+  /* section leads read like the Daybook's .sect h5 (italic Petrona on a hairline)
+     but tuned to pine, so the letter's "chapters" feel like her turning a page */
+  .lsec{border-top:1px solid var(--line);margin-top:24px;padding-top:16px}
+  .lsec > h6{font-family:'Petrona',serif;font-style:italic;font-size:17px;font-weight:500;color:var(--pine)}
+  .inlinecard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:4px 15px;margin-top:14px;box-shadow:0 2px 8px rgba(43,33,24,.05)}
+  .inlinecard .factline{padding:12px 0;border-bottom:1px solid var(--line)}
+  .inlinecard .factline:last-child{border-bottom:none}
+  .confirmrow{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:12.5px;color:var(--pine);font-weight:600}
+  .confirmrow .tick{width:20px;height:20px;border-radius:50%;background:var(--pine);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;flex:none}
+  .howlist{margin-top:12px}
+  .howlist li{list-style:none;font-family:'Petrona',serif;font-size:14.5px;line-height:1.5;padding:9px 0 9px 20px;position:relative}
+  .howlist li::before{content:"·";position:absolute;left:4px;color:var(--clay);font-weight:700;font-size:20px;line-height:1.1}
+  .sign{font-family:'Petrona',serif;font-style:italic;font-size:17px;color:var(--clay-deep);margin-top:22px}
+  .sign small{display:block;font-family:'Albert Sans';font-style:normal;font-size:10.5px;letter-spacing:.14em;font-weight:700;color:var(--mut);text-transform:uppercase;margin-top:4px}
+  .letter-cta{margin-top:22px}
+
+  .annot{margin:38px auto 0;max-width:1000px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px 26px}
+  .annot h3{font-family:'Petrona',serif;font-style:italic;font-size:19px;font-weight:500;color:var(--ink)}
+  .annot p{font-size:13.5px;line-height:1.62;color:#5a4d40;margin-top:10px}
+  .annot .tokens{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--pine);background:var(--pine-soft);border-radius:10px;padding:12px 14px;margin-top:14px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">PostPal · Onboarding concept 2 of 3</div>
+  <h1 class="title">A note from Carrie <em>— one editorial letter</em></h1>
+  <p class="lede">Principle 7, "the clinic's voice made human," rendered as the <b>entire</b> onboarding. Not slides — one warm, scrollable letter from her PA. She confirms her details inside the reading, without ever leaving the page. Two frames below show the top and the tail of the same scroll.</p>
+
+  <div class="row">
+
+    <!-- FRAME A — top of the letter -->
+    <div class="screen">
+      <div class="frame">
+        <div class="statusbar"><span>9:41</span><span>◗ 100%</span></div>
+        <div class="scr letter">
+          <div class="mark">
+            <span class="seal">C</span>
+            <span class="who">Carrie, PA-C<br>Advanced Vascular Centers</span>
+          </div>
+          <div class="salut">Maya,</div>
+          <p>Your embolization is in four days, and I set this up so you're not doing the recovery from memory. It's yours to keep — free, and loaded with <em>your</em> instructions, not the generic ones.</p>
+
+          <div class="lsec">
+            <h6>Here's what I've got for you</h6>
+            <div class="inlinecard">
+              <div class="factline"><span class="k">PROCEDURE</span><span class="v">Uterine fibroid embolization</span></div>
+              <div class="factline"><span class="k">DATE</span><span class="v">February 12 · <b>IN 4 DAYS</b></span></div>
+              <div class="factline"><span class="k">YOUR CLINIC</span><span class="v">Advanced Vascular Centers</span></div>
+            </div>
+            <div class="confirmrow"><span class="tick">✓</span> Looks right — that's me</div>
+          </div>
+
+          <div class="lsec">
+            <h6>The part the brochure skips</h6>
+            <p>The first three days are hard. I'd rather you hear that from me than from Reddit at 2am. <b>Intense, labor-like cramping</b> is common that first day, and a low fever can follow. It's the procedure working, and it eases from here.</p>
+          </div>
+        </div>
+        <div class="fade"></div>
+      </div>
+      <div class="stepcap"><span class="n">A</span><span class="t">Salutation → confirm → the honest part</span></div>
+    </div>
+
+    <!-- FRAME B — continued, to the sign-off -->
+    <div class="screen">
+      <div class="frame">
+        <div class="statusbar"><span>9:41</span><span>◗ 100%</span></div>
+        <div class="scr letter">
+          <p style="margin-top:0;font-family:'Petrona',serif;font-size:15.5px;line-height:1.66">…it eases from here, and I'll be on every page to tell you what's normal and what isn't.</p>
+
+          <div class="lsec">
+            <h6>How this works, quickly</h6>
+            <ul class="howlist">
+              <li>Each morning I'll ask one question: how are you today?</li>
+              <li>Tap any worry and you'll get my answer, not a search result.</li>
+            </ul>
+          </div>
+
+          <div class="lsec">
+            <h6>What you don't have to do</h6>
+            <p>No logs to keep, no forms to fill, nothing to remember. Just answer the morning question and read what I've left you. That's the whole job.</p>
+          </div>
+
+          <div class="sign">See you on the 12th. Rest up until then.
+            <small>Carrie, PA-C · Advanced Vascular Centers</small>
+          </div>
+          <div class="letter-cta">
+            <button class="btn primary">Start my Daybook</button>
+          </div>
+        </div>
+      </div>
+      <div class="stepcap"><span class="n">B</span><span class="t">How it works → what she needn't do → sign-off</span></div>
+    </div>
+
+  </div>
+
+  <div class="annot">
+    <h3>Why this composition</h3>
+    <p><b>Lens: Editorial / Spacious + Typography-Forward.</b> Every other surface in the Daybook already speaks in Carrie's voice through margin notes. This concept asks: what if the whole first contact is that voice? One continuous letter, Petrona throughout, with the single setup step (confirm) folded in as an inline moment rather than a gate. It's the warmest possible read on "made for her, prescribed by her doctor."</p>
+    <p><b>Strengths:</b> the strongest trust and tone; setup never feels like a form; distinct from any generic health-app signup. <b>Tradeoffs:</b> more reading up front than the calm-budget rule usually allows (defensible here because pre-procedure she has the capacity that day-1 fog would steal), and the inline confirm control is a new interaction the check-in flow doesn't already have. Best if paired with a "skim" affordance for returning or low-literacy users.</p>
+    <div class="tokens">Tokens used — Petrona 31 salutation / 15.5 body / italic section leads · --pine section headings &amp; seal (voice = clinician calm) · --clay for the em beats that land hardest · --clay-deep sign-off · --clay-fill primary CTA · --card inline confirm card · --line hairline "page turns" between sections</div>
+  </div>
+</div>
+</body>
+</html>

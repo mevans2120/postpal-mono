@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostPal — Interpreter Redesign (information-first escalation)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Petrona:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== Daybook design tokens — copied verbatim from prototypes/daybook.html ===== */
+  :root{--paper:#faf6f0;--card:#fff;--ink:#2b2118;--mut:#7a6c5c;--clay:#c4674a;--clay-fill:#b05b40;--clay-deep:#8a4630;--clay-soft:#f3e4d3;--pine:#3d5a4c;--pine-soft:#e4ebe6;--line:#e6ddd1;--alert:#9c3a2a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Albert Sans',sans-serif;color:var(--ink);background:#e9e0d2;padding:34px 22px 70px;-webkit-font-smoothing:antialiased}
+
+  /* ===== gallery chrome (NOT product) ===== */
+  .wrap{max-width:1400px;margin:0 auto}
+  .kicker{font-size:11px;letter-spacing:.18em;font-weight:700;color:var(--clay-deep);text-transform:uppercase}
+  .title{font-family:'Petrona',serif;font-size:31px;font-weight:500;margin:6px 0 6px}
+  .title em{font-style:italic;color:var(--clay)}
+  .lede{font-size:14px;color:#5a4d40;max-width:720px;line-height:1.6}
+  .lede b{color:var(--ink)}
+  .row{display:flex;gap:26px;overflow-x:auto;padding:30px 4px 12px;align-items:flex-start}
+  .screen{flex:none;width:392px}
+  .stepcap{display:flex;align-items:baseline;gap:9px;margin:14px 8px 0}
+  .stepcap .n{font-family:'Petrona',serif;font-style:italic;font-size:16px;color:var(--clay-deep)}
+  .stepcap .t{font-size:11px;font-weight:700;letter-spacing:.07em;color:var(--mut);text-transform:uppercase}
+
+  /* ===== device frame ===== */
+  .frame{width:392px;height:812px;background:var(--paper);border:1px solid #d7ccba;border-radius:46px;box-shadow:0 22px 55px rgba(43,33,24,.18);position:relative;overflow:hidden}
+  .frame::before{content:"";position:absolute;top:13px;left:50%;transform:translateX(-50%);width:96px;height:6px;border-radius:3px;background:#e0d6c6;z-index:8}
+
+  /* faint page behind the sheet */
+  .bg{position:absolute;inset:0;padding:44px 26px 0}
+  .bg .statusbar{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:var(--mut)}
+  .bg .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:700;color:var(--pine);margin-top:26px}
+  .bg .hero{font-family:'Petrona',serif;font-weight:500;font-size:24.5px;line-height:1.36;margin-top:12px}
+  .bg .hero em{font-style:italic;color:var(--clay)}
+  .bg .chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+  .bg .chip{font-size:12.5px;font-weight:600;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:9px 14px}
+  .bg .chip.hot{border-color:var(--clay);color:var(--clay-deep)}
+  .scrim{position:absolute;inset:0;background:rgba(43,33,24,.34);z-index:2}
+
+  /* ===== the interpreter sheet (styles from daybook.html) ===== */
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);border-radius:26px 26px 0 0;padding:16px 22px 26px;box-shadow:0 -12px 40px rgba(43,33,24,.25);z-index:3}
+  .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 14px}
+  .tag{font-size:10.5px;font-weight:700;letter-spacing:.16em;color:var(--pine)}
+  .sheet h4{font-family:'Petrona',serif;font-size:21px;font-weight:500;line-height:1.3;margin:8px 0 10px}
+  .sheet p{font-size:14px;line-height:1.6;color:#5a4d40}
+
+  /* threshold box — default is quiet/informational (no action).
+     .gate is the actionable version revealed only on "Not quite". */
+  .threshold{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:14px;font-size:13px;line-height:1.5}
+  .threshold b{color:var(--alert)}
+  .threshold.gate{background:var(--clay-soft);border-color:#e7cdb6}
+  .threshold .lab{font-size:10px;letter-spacing:.12em;font-weight:700;color:var(--mut);display:block;margin-bottom:3px}
+
+  /* the resolution ask — approaches 1 + 2 merged: the "did this answer it?"
+     question IS the primary action. "Yes" is the loud one; nothing invites a call. */
+  .askrow{margin-top:18px}
+  .asklab{font-size:10.5px;letter-spacing:.14em;font-weight:700;color:var(--mut);text-align:center;display:block;margin-bottom:10px}
+  .sheetacts{display:flex;gap:10px}
+  .btn{flex:1;text-align:center;border:none;background:none;border-radius:999px;padding:13px 10px;font-weight:700;font-size:13.5px;font-family:'Albert Sans',sans-serif;cursor:pointer}
+  .btn.primary{background:var(--clay-fill);color:#fff}
+  .btn.ghost{border:1.5px solid var(--line);color:var(--mut)}
+
+  /* "Yes, that helps" outcome — resolved + logged */
+  .resolved{text-align:center;padding:14px 6px 4px}
+  .resolved .check{width:52px;height:52px;border-radius:50%;background:var(--pine-soft);color:var(--pine);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px}
+  .resolved h4{font-family:'Petrona',serif;font-size:22px;font-weight:500;margin-bottom:8px}
+  .resolved p{font-size:14px;line-height:1.6;color:#5a4d40}
+
+  /* "Not quite" outcome — gated human path, bound to the clinic's own line */
+  .gatelead{font-family:'Petrona',serif;font-size:17px;font-weight:500;line-height:1.35;margin-bottom:4px}
+  .gatecalm{font-size:13px;color:var(--mut);line-height:1.55;margin-top:12px}
+  .emerg{display:flex;gap:8px;align-items:center;font-size:11.5px;color:var(--mut);margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+  .emerg b{color:var(--alert);font-weight:700}
+
+  .annot{margin:36px auto 0;max-width:1080px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px 26px}
+  .annot h3{font-family:'Petrona',serif;font-style:italic;font-size:19px;font-weight:500;color:var(--ink);margin-bottom:6px}
+  .annot h3:not(:first-child){margin-top:18px}
+  .annot p{font-size:13.5px;line-height:1.62;color:#5a4d40;margin-top:8px}
+  .annot code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:var(--clay-deep)}
+  .annot .tokens{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--pine);background:var(--pine-soft);border-radius:10px;padding:12px 14px;margin-top:14px;line-height:1.7}
+
+  /* shared faint-page markup helper */
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">PostPal · Interpreter redesign · information-first escalation</div>
+  <h1 class="title">Answer first, no call button <em>— one design, three states</em></h1>
+  <p class="lede">The old interpreter ended with "Call Carrie" as the loud primary button, training a call even after the worry was resolved. Here the closing question <b>is</b> the action: "Yes, that helps" resolves and logs it; "Not quite" surfaces the line to watch and what to try now. There's no clinic-contact button at all: the clinic isn't always open, and the right first step for the "app couldn't answer" case is a separate problem to design next. Only a 911 line stays, for a true emergency. Example: the day-1 "cramping is intense" worry.</p>
+
+  <div class="row">
+
+    <!-- STATE A — the answer + the ask -->
+    <div class="screen">
+      <div class="frame">
+        <div class="bg">
+          <div class="statusbar"><span>9:41</span><span>Maya · UFE Feb 12</span></div>
+          <div class="eyebrow">DAY 1 · MORNING CHECK-IN</div>
+          <div class="hero">Today is usually the hardest day<em>…</em></div>
+          <div class="chips">
+            <span class="chip">Nothing new</span>
+            <span class="chip hot">Cramping is intense</span>
+            <span class="chip">Fever or chills</span>
+          </div>
+        </div>
+        <div class="scrim"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <span class="tag">EXPECTED ON DAY 1</span>
+          <h4>Strong, wave-like cramping is the procedure working.</h4>
+          <p>Most women describe day 1 as the hardest — cramping like a very strong period, sometimes worse. It fades over the next two to three days, and your scheduled medicines are set up to stay ahead of it.</p>
+          <div class="threshold">
+            <svg width="14" height="14" viewBox="0 0 14 14" style="flex:none;margin-top:2px" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="none" stroke="#9c3a2a" stroke-width="1.5"/><path d="M7 4v3.5M7 9.8v.4" stroke="#9c3a2a" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span><span class="lab">THE ONE LINE YOUR CLINIC WATCHES</span>Pain that your <b>scheduled medicines aren't controlling</b> — that's what the PRN dose is for, and the reason to reach out.</span>
+          </div>
+          <div class="askrow">
+            <span class="asklab">DID THIS ANSWER YOUR QUESTION?</span>
+            <div class="sheetacts">
+              <button class="btn primary">Yes, that helps</button>
+              <button class="btn ghost">Not quite</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stepcap"><span class="n">A</span><span class="t">The answer · resolution is the primary action</span></div>
+    </div>
+
+    <!-- STATE B — Yes: resolved + logged -->
+    <div class="screen">
+      <div class="frame">
+        <div class="bg">
+          <div class="statusbar"><span>9:41</span><span>Maya · UFE Feb 12</span></div>
+          <div class="eyebrow">DAY 1 · MORNING CHECK-IN</div>
+          <div class="hero">Today is usually the hardest day<em>…</em></div>
+          <div class="chips">
+            <span class="chip">Nothing new</span>
+            <span class="chip hot">Cramping is intense</span>
+            <span class="chip">Fever or chills</span>
+          </div>
+        </div>
+        <div class="scrim"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <div class="resolved">
+            <div class="check">✓</div>
+            <h4>Good — that's the plan working.</h4>
+            <p>Noted on today's page. Nothing else to do — your next dose is already on the schedule.</p>
+          </div>
+        </div>
+      </div>
+      <div class="stepcap"><span class="n">B</span><span class="t">"Yes" → resolved, logged, closes (a deflected call)</span></div>
+    </div>
+
+    <!-- STATE C — Not quite: gated human path, bound to the threshold -->
+    <div class="screen">
+      <div class="frame">
+        <div class="bg">
+          <div class="statusbar"><span>9:41</span><span>Maya · UFE Feb 12</span></div>
+          <div class="eyebrow">DAY 1 · MORNING CHECK-IN</div>
+          <div class="hero">Today is usually the hardest day<em>…</em></div>
+          <div class="chips">
+            <span class="chip">Nothing new</span>
+            <span class="chip hot">Cramping is intense</span>
+            <span class="chip">Fever or chills</span>
+          </div>
+        </div>
+        <div class="scrim"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <div class="gatelead">Here's the line to watch — and what helps right now.</div>
+          <p>One thing would be worth getting looked at today. Short of that, the medicines just need a little more time.</p>
+          <div class="threshold gate">
+            <svg width="14" height="14" viewBox="0 0 14 14" style="flex:none;margin-top:2px" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="none" stroke="#9c3a2a" stroke-width="1.5"/><path d="M7 4v3.5M7 9.8v.4" stroke="#9c3a2a" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span><span class="lab">THE ONE THING TO WATCH FOR</span>Pain your <b>scheduled medicines aren't controlling</b>, even after the PRN dose.</span>
+          </div>
+          <p class="gatecalm">If it's not that yet: take the PRN dose, try the heating pad, and check back in an hour. Most day-1 cramping settles with the schedule.</p>
+          <div class="emerg">
+            <svg width="13" height="13" viewBox="0 0 14 14" style="flex:none" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="none" stroke="#9c3a2a" stroke-width="1.5"/><path d="M7 4v3.5M7 9.8v.4" stroke="#9c3a2a" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span>Sudden severe pain, heavy bleeding, or trouble breathing? <b>Call 911.</b></span>
+          </div>
+        </div>
+      </div>
+      <div class="stepcap"><span class="n">C</span><span class="t">"Not quite" → the line to watch + what to try (no call button)</span></div>
+    </div>
+
+  </div>
+
+  <div class="annot">
+    <h3>How the three approaches show up</h3>
+    <p><b>1 · Resolution is the primary action.</b> The loud clay button is now "Yes, that helps", not "Call Carrie". The most prominent thing on the sheet confirms the reassurance instead of inviting a call.</p>
+    <p><b>2 · "Did this answer your question?"</b> The ask and the action are the same control. "Yes" closes and records the worry on today's page — a call the app absorbed, and a number the clinic can see. "Not quite" is the only route that opens a path to a person, so contact happens exactly when the information failed.</p>
+    <p><b>3 · The clinic's line stays information.</b> The threshold criterion appears as the one thing to watch for, never as a contact button. Per your call, there's no "reach the clinic" action anywhere: the clinic has closed hours, and the right first step for the "app couldn't answer" case is a separate problem to design next.</p>
+    <h3>What's left open (on purpose)</h3>
+    <p>Only the 911 line remains, for a true emergency. With the clinic-contact button gone, the "app couldn't answer" case ends in the watch-line, self-care, and a check-back, with no routine path to a person. That's deliberate for now: the clinic isn't always open, and a better first step is still to be designed. Open tension to resolve then: design principle #4 (a route to a human) and the liability line will both need an answer.</p>
+    <div class="tokens">Tokens used — sheet: --paper on 26px radius, --line grab · --pine tag &amp; resolved check on --pine-soft · --alert threshold icon &amp; 911 · --clay-soft on the gated threshold · --clay-fill (4.75:1) for the "Yes" primary and the gated call · Petrona 21 headline / 15 body, Albert Sans labels &amp; buttons. New primitives: the ask label, the .threshold.gate variant, the resolved state.</div>
+  </div>
+</div>
+</body>
+</html>

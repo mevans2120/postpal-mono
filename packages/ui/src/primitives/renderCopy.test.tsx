@@ -17,4 +17,12 @@ describe('renderCopy', () => {
     render(<p data-testid="out">{renderCopy('a <span>b</span>')}</p>);
     expect(screen.getByTestId('out').querySelector('span')).toBeNull();
   });
+  it('preserves text order for unclosed tags', () => {
+    render(<p data-testid="out">{renderCopy('<em>a <b>c')}</p>);
+    expect(screen.getByTestId('out').textContent).toBe('a c');
+  });
+  it('renders a stray closing tag without throwing, dropping the tag', () => {
+    render(<p data-testid="out">{renderCopy('</em> huh')}</p>);
+    expect(screen.getByTestId('out').textContent).toBe(' huh');
+  });
 });

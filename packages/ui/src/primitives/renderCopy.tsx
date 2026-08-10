@@ -8,7 +8,8 @@ const TOKEN = /<(\/?)(em|b)>/g;
  * Renders the constrained copy markup (<em>/<b> only — enforced by
  * @postpal/content CopyString) as React elements. No innerHTML anywhere.
  * Unknown tags never reach here in valid content; if they do, they render
- * as literal text, which is the safe failure.
+ * as literal text, which is the safe failure. A stray closing tag with no
+ * matching opener is dropped silently ('</em> huh' renders as ' huh').
  */
 export function renderCopy(copy: string, classes: CopyClasses = {}): ReactNode[] {
   const out: ReactNode[] = [];
@@ -35,7 +36,9 @@ export function renderCopy(copy: string, classes: CopyClasses = {}): ReactNode[]
   }
   const tail = copy.slice(last);
   if (tail) push(tail);
-  // unclosed tags: flush children as plain text (malformed content already failed parse)
-  while (stack.length) out.push(...stack.pop()!.children);
+  // Unclosed tags: CopyString allows unbalanced em/b (it only rejects other
+  // tags), so this fallback drops styling but must preserve text order —
+  // flush frames bottom-of-stack first (source order).
+  for (const frame of stack) out.push(...frame.children);
   return out;
 }

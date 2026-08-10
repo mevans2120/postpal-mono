@@ -1,2 +1,2 @@
-// Placeholder so `tsc --noEmit` has an input; Task 7 adds the first real export.
+// Placeholder so `tsc --noEmit` has an input; the barrel is populated in Task 13 (Daybook shell).
 export {};

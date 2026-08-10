@@ -7,6 +7,9 @@ describe('Daybook shell', () => {
   it('renders the check-in for the initial day with the clay dose Next slot', () => {
     render(<Daybook content={avcUfe} initialDay={5} statusLabel="Maya · UFE Feb 12" />);
     expect(screen.getByText('DAY 5 · MORNING CHECK-IN')).toBeInTheDocument();
+    // the shell owns the status row (moved out of CheckIn in Task 13)
+    expect(screen.getByText('9:41')).toBeInTheDocument();
+    expect(screen.getByText('Maya · UFE Feb 12')).toBeInTheDocument();
     const next = screen.getByRole('button', { name: /next: ibuprofen 800/i });
     expect(next.className).toContain('bg-clay-fill');
   });

@@ -64,3 +64,57 @@ export const MedsLineSchema = z.object({ k: z.string(), line: z.string(), sheet:
 export const NextSchema = z.object({
   label: z.string(), sub: z.string(), tone: ToneSchema, sheet: SheetKindSchema
 });
+
+/** Chips that intentionally have no interpreter (prototype line 457). */
+const CHIPS_WITHOUT_INTERPRETERS = new Set(['Nothing new', 'Something else…']);
+
+export const DayContentSchema = z.object({
+  eyebrow: z.string(),
+  heroFull: CopyString,
+  heroShort: CopyString,
+  chips: z.array(z.string()).min(1),
+  ack: AckSchema,
+  feel: z.array(FeelEntrySchema).min(1),
+  turn: z.string(),
+  back: z.string().nullable(),
+  notYet: CopyString.nullable(),
+  meds: MedsLineSchema.nullable(),
+  ahead: z.array(AheadSchema).min(1),
+  next: NextSchema,
+  medrail: MedRailSchema.optional(),
+  cancant: CanCantSchema.optional(),
+  cycle: CycleSchema.optional(),
+  interpreters: z.record(z.string(), InterpreterSchema)
+}).superRefine((day, ctx) => {
+  for (const chip of day.chips) {
+    if (!CHIPS_WITHOUT_INTERPRETERS.has(chip) && !day.interpreters[chip]) {
+      ctx.addIssue({ code: 'custom', message: `chip "${chip}" has no matching interpreter` });
+    }
+  }
+  if (!day[day.next.sheet]) {
+    ctx.addIssue({ code: 'custom', message: `next.sheet "${day.next.sheet}" has no matching sheet object` });
+  }
+  if (day.meds && !day[day.meds.sheet]) {
+    ctx.addIssue({ code: 'custom', message: `meds.sheet "${day.meds.sheet}" has no matching sheet object` });
+  }
+  if (day.back == null && day.notYet == null) {
+    ctx.addIssue({ code: 'custom', message: 'day has neither "back" nor "notYet" — the can/can’t chapter would render bare' });
+  }
+});
+
+export const ProcedureContentSchema = z.object({
+  meta: MetaSchema,
+  days: z.record(z.string(), DayContentSchema)
+});
+
+export type Meta = z.infer<typeof MetaSchema>;
+export type Interpreter = z.infer<typeof InterpreterSchema>;
+export type MedRail = z.infer<typeof MedRailSchema>;
+export type MedGroup = z.infer<typeof MedGroupSchema>;
+export type CanCant = z.infer<typeof CanCantSchema>;
+export type Cycle = z.infer<typeof CycleSchema>;
+export type MedsLine = z.infer<typeof MedsLineSchema>;
+export type Next = z.infer<typeof NextSchema>;
+export type SheetKind = z.infer<typeof SheetKindSchema>;
+export type DayContent = z.infer<typeof DayContentSchema>;
+export type ProcedureContent = z.infer<typeof ProcedureContentSchema>;

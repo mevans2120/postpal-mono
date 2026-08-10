@@ -18,7 +18,7 @@ describe('TodayPage', () => {
     expect(screen.getByText('How today might feel')).toBeInTheDocument();
     expect(screen.getByText('What you can do — and not yet')).toBeInTheDocument();
     expect(screen.getByText('Your medicines today')).toBeInTheDocument();
-    expect(screen.getByText('What’s ahead')).toBeInTheDocument();
+    expect(screen.getByText("What's ahead")).toBeInTheDocument();
   });
   it('day 1 has no BACK line; day 20 has no meds chapter and no NOT YET', () => {
     setup(1);

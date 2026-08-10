@@ -136,7 +136,7 @@ export function TodayPage({ day }: TodayPageProps) {
       {/* chapter 4: ahead */}
       <div className={`mt-6${settleCls}`} style={delay('300ms')}>
         <h5 className="font-serif text-[18.5px] font-medium italic text-ink border-t border-line pt-3.5">
-          What’s ahead
+          What's ahead
         </h5>
         {day.ahead.map((item, i) => (
           <div key={i} className="flex items-baseline gap-2 text-[13px] mt-2.5 leading-[1.5]">

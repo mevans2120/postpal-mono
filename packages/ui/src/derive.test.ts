@@ -23,6 +23,15 @@ describe('deriveDayView', () => {
     expect(v.medsLine).toMatch(/^3 of 7 doses taken · next: ibuprofen 800 at 6:00/);
   });
 
+  it('logging 2 doses promotes the 9:00 dose but is not yet terminal', () => {
+    const v = deriveDayView(day1(), 2);
+    const now = v.medrail!.groups.find((g) => g.now)!;
+    expect(now.rows[0][0]).toBe('9:00');
+    expect(v.next.label).toBe('Cyclobenzaprine 10 + stool softener');
+    expect(v.next.tone).toBe('clay');
+    expect(v.medsLine).toMatch(/^4 of 7 doses taken/);
+  });
+
   it('logging past the schedule flips Next to the pine terminal state', () => {
     const v = deriveDayView(day1(), 3);        // 1:00, 6:00, 9:00 all logged
     expect(v.next).toMatchObject({ label: 'Medicines done', sub: 'nothing more until morning', tone: 'pine' });

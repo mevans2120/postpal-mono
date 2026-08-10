@@ -1,0 +1,19 @@
+/* Palette from prototypes/daybook.html:18. Contrast pairs are load-bearing
+   (see the contrast note at daybook.html:10–17): white small text goes on
+   clay-fill (4.75:1) never clay; small clay text on paper uses clay-deep. */
+@theme {
+  --color-paper: #faf6f0;
+  --color-card: #ffffff;
+  --color-ink: #2b2118;
+  --color-mut: #7a6c5c;
+  --color-clay: #c4674a;
+  --color-clay-fill: #b05b40;
+  --color-clay-deep: #8a4630;
+  --color-clay-soft: #f3e4d3;
+  --color-pine: #3d5a4c;
+  --color-pine-soft: #e4ebe6;
+  --color-line: #e6ddd1;
+  --color-alert: #9c3a2a;
+  --font-serif: var(--font-petrona), 'Petrona', serif;
+  --font-sans: var(--font-albert), 'Albert Sans', sans-serif;
+}

@@ -1,0 +1,48 @@
+/* Fidelity layer ported from prototypes/daybook.html — the small set of rules
+   Tailwind handles poorly (pseudo-element hit areas, parent-state-keyed
+   transitions, keyframes). Everything else is Tailwind utilities per the
+   Task 6.5 style mapping. */
+
+/* prototype edges: things that look tappable but go nowhere yet — pressed state only
+   (daybook.html:67–69) */
+.noop{cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.noop:active{opacity:.5}
+
+/* ===== Tap targets (daybook.html:168–186) =====
+   Visual sizes keep v7 fidelity; small controls — chips, the Log button,
+   the grab handle, the meds "open →", the note-input buttons — get an
+   invisible ::before overlay that extends the hit area to ≥44px tall (a
+   pseudo-element is part of its button for hit-testing). Faces (~68×80),
+   receipts (~62px), and the Next pair (~48px) already clear 44px. The day
+   switcher is exempt — dev control, not product.
+   Additive classes: each partner element also carries Tailwind `relative`. */
+.hit-chip::before{content:"";position:absolute;left:0;right:0;top:-4.5px;bottom:-4.5px} /* ~35px → 44px; needs the 9px chips gap so wrapped rows' overlays don't overlap */
+.hit-log::before{content:"";position:absolute;left:-4px;right:-4px;top:-6px;bottom:-6px} /* ~32px → 44px, inside the roomy NOW row */
+.hit-grab::before{content:"";position:absolute;left:-80px;right:-80px;top:-12px;bottom:-28px} /* 4px handle → 44×200 close target, kept inside the sheet */
+.hit-go::before{content:"";position:absolute;left:-8px;right:-8px;top:-15px;bottom:-15px} /* ~14px text button → ≥44px; only static text sits in the spill */
+.hit-notebtn::before,
+.hit-notebtn-quiet::before{content:"";position:absolute;left:-4px;right:-4px;top:-6px;bottom:-6px} /* ~33px → ≥44px; the notein 8px gap means adjacent overlays touch, not overlap */
+.hit-notebtn-quiet::before{right:-6px} /* "back" is the narrowest control and ends the row — widen outward to clear 44px square */
+
+/* ===== Sheet open/close state (daybook.html:106–110) =====
+   Structural positioning of .dim/.sheet lives in Tailwind on the components;
+   the transition-critical properties live here, keyed on #sheet-root.open,
+   because Tailwind classes can't react to the parent's .open toggling. */
+#sheet-root .dim{opacity:0}
+#sheet-root .sheet{transform:translateY(100%)}
+#sheet-root.open .dim{opacity:1}
+#sheet-root.open .sheet{transform:translateY(0)}
+#sheet-root:not(.open) .dim,#sheet-root:not(.open) .sheet{pointer-events:none}
+
+/* ===== Motion (daybook.html:187–198) =====
+   Every transition/animation lives behind prefers-reduced-motion:
+   no-preference. With reduced motion everything appears instantly; the
+   sheet still opens/closes correctly because its enter is class-driven and
+   its exit cleanup uses a plain timeout, never transitionend. */
+@media (prefers-reduced-motion: no-preference){
+  #sheet-root .dim{transition:opacity 240ms ease-out}
+  #sheet-root .sheet{transition:transform 240ms ease-out}
+  @keyframes settle{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  /* receipts/chips/chapters settle in; per-element stagger via --d */
+  .settle{animation:settle 200ms ease-out both;animation-delay:var(--d,0ms)}
+}

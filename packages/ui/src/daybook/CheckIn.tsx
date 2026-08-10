@@ -6,25 +6,21 @@ import { useDaybook } from '../store';
 
 export interface CheckInProps {
   day: DayContent;
-  statusLabel: string;
 }
 
 /**
- * The check-in phase (prototype render lines 893–919). Calm budget: status,
- * eyebrow, the FULL hero (no hairline, no toggle), and the one ask — five
- * faces. Nothing else competes. Returning from a face-receipt tap keeps the
- * chosen face preselected (state.face survives).
+ * The check-in phase (prototype render lines 893–919). Calm budget: eyebrow,
+ * the FULL hero (no hairline, no toggle), and the one ask — five faces. Nothing
+ * else competes. The status line is owned by the Daybook shell (rendered once,
+ * above the phase view), so this view does not render it. Returning from a
+ * face-receipt tap keeps the chosen face preselected (state.face survives).
  */
-export function CheckIn({ day, statusLabel }: CheckInProps) {
+export function CheckIn({ day }: CheckInProps) {
   const face = useDaybook((s) => s.face);
   const selectFace = useDaybook((s) => s.selectFace);
 
   return (
     <>
-      <div className="flex justify-between text-[11px] font-semibold text-mut">
-        <span>9:41</span>
-        <span>{statusLabel}</span>
-      </div>
       <div className="mt-[44px]">
         <div className="text-[11px] tracking-[.14em] font-bold text-pine">{day.eyebrow}</div>
         <div className="font-serif font-medium text-[24.5px] leading-[1.36] mt-3">

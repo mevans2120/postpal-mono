@@ -7,13 +7,13 @@ import { NotedView } from './NotedView';
 
 describe('CheckIn', () => {
   it('renders eyebrow, full hero, five faces — and nothing else competes (calm budget)', () => {
-    renderWithStore(1, <CheckIn day={getDay(avcUfe, 1)} statusLabel="Maya · UFE Feb 12" />);
+    renderWithStore(1, <CheckIn day={getDay(avcUfe, 1)} />);
     expect(screen.getByText('DAY 1 · MORNING CHECK-IN')).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: /day$/ })).toHaveLength(5);  // FACE_LABELS all end in "day"
     expect(screen.queryByText(/ANYTHING TO NOTE/)).not.toBeInTheDocument();
   });
   it('tapping a face advances to noted', async () => {
-    const store = renderWithStore(1, <CheckIn day={getDay(avcUfe, 1)} statusLabel="Maya · UFE Feb 12" />);
+    const store = renderWithStore(1, <CheckIn day={getDay(avcUfe, 1)} />);
     await userEvent.click(screen.getByRole('button', { name: 'a hard day' }));
     expect(store.getState()).toMatchObject({ face: 4, phase: 'noted' });
   });

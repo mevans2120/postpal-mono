@@ -1,2 +1,18 @@
-// Placeholder so `tsc --noEmit` has an input; the barrel is populated in Task 13 (Daybook shell).
-export {};
+// Public API of @postpal/ui. Daybook is the main export; the store hook and its
+// types are re-exported for consumers that need to read or drive state.
+export { Daybook } from './daybook/Daybook';
+export type { DaybookProps } from './daybook/Daybook';
+
+export {
+  createDaybookStore,
+  DaybookStoreContext,
+  useDaybook
+} from './store';
+export type {
+  DaybookState,
+  DaybookStore,
+  Phase,
+  OpenSheet,
+  OpenSheetKind,
+  SheetPayload
+} from './store';

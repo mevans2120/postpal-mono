@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import type { Phase } from '../store';
 
 /**
@@ -15,11 +15,18 @@ import type { Phase } from '../store';
  * component instance, already settled this day+phase key?" A module-global
  * would wrongly suppress settling when two instances legitimately mount for the
  * same key (e.g. a remount). useRef keeps the guard local and per-instance.
+ *
+ * The ref is written in an effect, not during render, so render stays pure.
+ * A render-time write breaks under React StrictMode's dev double-invoke: the
+ * first pass would stamp the ref and the second would read it back and return
+ * false, silently suppressing the entrance animation on first mount.
  */
 export function useSettle(day: number, phase: Phase): boolean {
-  const lastKey = useRef<string | null>(null);
   const key = `${day}:${phase}`;
+  const lastKey = useRef<string | null>(null);
   const settle = key !== lastKey.current;
-  lastKey.current = key;
+  useEffect(() => {
+    lastKey.current = key;
+  }, [key]);
   return settle;
 }

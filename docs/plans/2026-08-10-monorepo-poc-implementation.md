@@ -203,7 +203,7 @@ export const MetaSchema = z.object({
 });
 ```
 
-**Step 5:** Run: `npx jest packages/content` — Expected: PASS (5 tests).
+**Step 5:** Run: `npx jest packages/content` — Expected: PASS (3 tests).
 
 **Step 6:** Commit: `git add -A && git commit -m "feat(content): scaffold package with copy-string and meta schemas"`
 

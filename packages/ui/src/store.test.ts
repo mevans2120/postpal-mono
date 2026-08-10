@@ -54,6 +54,15 @@ describe('daybook store', () => {
     store.getState().submitNote('left hip aches');
     expect(store.getState()).toMatchObject({ note: 'left hip aches', phase: 'page', noteInputOpen: false });
   });
+  it("'Something else…' only opens the note input in the noted phase (prototype line 828)", () => {
+    const store = createDaybookStore(1);
+    // checkin phase — e.g. reached via the feel sheet's Something else… chip
+    store.getState().chooseChip('Something else…');
+    expect(store.getState().noteInputOpen).toBe(false);
+    store.getState().selectFace(2);
+    store.getState().chooseChip('Something else…');
+    expect(store.getState().noteInputOpen).toBe(true);
+  });
   it('switchDay resets to a fresh check-in and closes any sheet', () => {
     const store = createDaybookStore(1);
     store.getState().selectFace(0);

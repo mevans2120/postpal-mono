@@ -52,7 +52,9 @@ export function createDaybookStore(initialDay: number) {
     reopenNoted: () => set({ phase: 'noted', noteInputOpen: false }),
     chooseChip: (chip) => {
       if (chip === 'Nothing new') set({ note: 'nothing new', phase: 'page' });
-      else if (chip === 'Something else…') set({ noteInputOpen: true });
+      // prototype line 828: only route to the inline note input from the noted
+      // phase; from other phases (e.g. the feel sheet) the sheet just closes.
+      else if (chip === 'Something else…') { if (get().phase === 'noted') set({ noteInputOpen: true }); }
       else set({ sheet: { kind: 'interpreter', payload: { key: chip, origin: 'chips' } } });
     },
     submitNote: (text) => {

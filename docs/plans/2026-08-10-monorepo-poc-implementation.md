@@ -956,6 +956,8 @@ export function useDaybook<T>(selector: (s: DaybookState) => T): T {
 
 **Step 5:** Commit: `git commit -am "feat(ui): zustand store ports the prototype state machine"`
 
+> **Review decision (2026-08-10):** `cycleAnswer` resets on `switchDay` — deliberately unlike the prototype, whose cross-switch persistence was an artifact of mutating `DAYS` content. Task 14's CycleSheet must not "fix" this back.
+
 ---
 
 ## Task 9: Dose derivation — content ⊕ logged count → rail, Next slot, meds line

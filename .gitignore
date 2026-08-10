@@ -3,3 +3,6 @@
 
 # Git worktrees
 .worktrees/
+
+node_modules/
+.next/

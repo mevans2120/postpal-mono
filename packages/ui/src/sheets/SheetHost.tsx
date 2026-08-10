@@ -52,7 +52,6 @@ export function SheetHost({ content }: SheetHostProps) {
   const sheet = useDaybook((s) => s.sheet);
   const closeSheet = useDaybook((s) => s.closeSheet);
   const dayNum = useDaybook((s) => s.day);
-  const day = getDay(content, dayNum);
 
   // `rendered` is what's actually in the DOM — it lags the store on close so the
   // exit animation can finish before unmount. `open` drives the CSS transition.
@@ -72,7 +71,11 @@ export function SheetHost({ content }: SheetHostProps) {
         exitTimer.current = null;
       }
       if (renderedRef.current == null) {
-        // fresh open: remember who to return focus to (content swaps keep it)
+        // fresh open: remember who to return focus to (content swaps keep it).
+        // Edge: a close→reopen within EXIT_MS (before the exit timer nulls
+        // renderedRef) skips re-capture, so focus later returns to the first
+        // opener. Harmless — needs two interactions inside 280ms, no safety
+        // impact — and not worth complicating the close path to match exactly.
         openerRef.current = document.activeElement as HTMLElement | null;
       }
       renderedRef.current = sheet;

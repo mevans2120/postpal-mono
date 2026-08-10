@@ -8,6 +8,7 @@ import { NotedView } from './NotedView';
 import { TodayPage } from './TodayPage';
 import { NextBar } from './NextBar';
 import { DaySwitcher } from './DaySwitcher';
+import { SheetHost } from '../sheets/SheetHost';
 
 export interface DaybookProps {
   content: ProcedureContent;
@@ -73,7 +74,7 @@ function DaybookBody({ content, statusLabel }: DaybookBodyProps) {
         )}
       </main>
       <NextBar day={day} />
-      {/* TODO(Task 14): mount <SheetHost content={content} /> here. */}
+      <SheetHost content={content} />
     </>
   );
 }

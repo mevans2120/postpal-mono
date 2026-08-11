@@ -1,7 +1,9 @@
 import type { DayContent } from '@postpal/content';
+import { Pressable, Text, View } from 'react-native';
 import { renderCopy } from '../primitives/renderCopy';
 import { FaceGlyph } from '../primitives/FaceGlyph';
 import { FACE_LABELS, FACE_MOUTHS } from '../primitives/faces';
+import { typography } from '../primitives/typography';
 import { useDaybook } from '../store';
 
 export interface CheckInProps {
@@ -21,41 +23,40 @@ export function CheckIn({ day }: CheckInProps) {
 
   return (
     <>
-      <div className="mt-[44px]">
-        <div className="text-[11px] tracking-[.14em] font-bold text-pine">{day.eyebrow}</div>
-        <div className="font-serif font-medium text-[24.5px] leading-[1.36] mt-3">
-          {renderCopy(day.heroFull, { em: 'italic text-clay' })}
-        </div>
-      </div>
-      <div className="mt-9">
-        <span className="text-[11px] tracking-[.16em] font-bold text-mut">HOW DOES TODAY FEEL?</span>
-        <div className="flex gap-2.5 mt-3.5">
+      <View className="mt-[44px]">
+        <Text className={`${typography.eyebrow} text-pine`}>{day.eyebrow}</Text>
+        <Text className={`${typography.hero} mt-3`}>
+          {renderCopy(day.heroFull, { em: 'font-serif-italic text-clay' })}
+        </Text>
+      </View>
+      <View className="mt-9">
+        <Text className={typography.facelab}>HOW DOES TODAY FEEL?</Text>
+        <View className="flex-row gap-2.5 mt-3.5">
           {FACE_MOUTHS.map((_, i) => {
             const sel = face === i;
             return (
-              <button
+              <Pressable
                 key={i}
-                type="button"
-                data-face={i}
-                aria-label={FACE_LABELS[i]}
-                aria-pressed={sel}
-                onClick={() => selectFace(i)}
-                className={`flex-1 aspect-[1/1.18] bg-card border rounded-[18px] flex items-center justify-center cursor-pointer p-0 [&>svg]:w-[80%] [&>svg]:h-auto ${
+                accessibilityRole="button"
+                accessibilityLabel={FACE_LABELS[i]}
+                accessibilityState={{ selected: sel }}
+                onPress={() => selectFace(i)}
+                className={`flex-1 aspect-[1/1.18] bg-card border rounded-[18px] items-center justify-center ${
                   sel
                     ? 'border-clay shadow-[0_2px_8px_rgba(138,70,48,.12)]'
                     : 'border-line shadow-[0_2px_8px_rgba(43,33,24,.05)]'
                 }`}
               >
-                <FaceGlyph index={i} selected={sel} />
-              </button>
+                <FaceGlyph index={i} selected={sel} size="80%" />
+              </Pressable>
             );
           })}
-        </div>
-        <div className="flex justify-between text-[11.5px] text-mut mt-2.5 italic font-serif">
-          <span>a good day</span>
-          <span>a hard day</span>
-        </div>
-      </div>
+        </View>
+        <View className="flex-row justify-between mt-2.5">
+          <Text className="font-serif-italic text-[11.5px] text-mut">a good day</Text>
+          <Text className="font-serif-italic text-[11.5px] text-mut">a hard day</Text>
+        </View>
+      </View>
     </>
   );
 }

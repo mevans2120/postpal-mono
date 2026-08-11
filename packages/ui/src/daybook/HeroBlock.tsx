@@ -1,6 +1,7 @@
-import type { KeyboardEvent } from 'react';
 import type { DayContent } from '@postpal/content';
+import { Pressable, Text, View } from 'react-native';
 import { renderCopy } from '../primitives/renderCopy';
+import { typography } from '../primitives/typography';
 import { useDaybook } from '../store';
 
 export interface HeroBlockProps {
@@ -14,32 +15,27 @@ export interface HeroBlockProps {
  * 546–555). Tapping the hero toggles the full sentence back in place; the
  * hairline stays. Shared by NotedView and TodayPage — CheckIn shows the full
  * hero with no hairline and no toggle, so it does NOT use HeroBlock.
+ *
+ * RN's Pressable already gives press states and — on web, via RNW — focus +
+ * Enter/Space activation, so unlike the DOM version there's no onKeyDown to
+ * port.
  */
 export function HeroBlock({ day, className }: HeroBlockProps) {
   const heroExpanded = useDaybook((s) => s.heroExpanded);
   const toggleHero = useDaybook((s) => s.toggleHero);
   const copy = heroExpanded ? day.heroFull : day.heroShort;
 
-  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      toggleHero();
-    }
-  };
-
   return (
-    <div className={className}>
-      <div className="text-[11px] tracking-[.14em] font-bold text-pine">{day.eyebrow}</div>
-      <div
-        role="button"
-        tabIndex={0}
-        aria-label="Expand or collapse today's reading"
-        onClick={toggleHero}
-        onKeyDown={onKeyDown}
-        className="font-serif font-medium text-[24.5px] leading-[1.36] mt-3 pb-4 border-b border-line"
+    <View className={className}>
+      <Text className={`${typography.eyebrow} text-pine`}>{day.eyebrow}</Text>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Expand or collapse today's reading"
+        onPress={toggleHero}
+        className="mt-3 pb-4 border-b border-line"
       >
-        {renderCopy(copy, { em: 'italic text-clay' })}
-      </div>
-    </div>
+        <Text className={typography.hero}>{renderCopy(copy, { em: 'font-serif-italic text-clay' })}</Text>
+      </Pressable>
+    </View>
   );
 }

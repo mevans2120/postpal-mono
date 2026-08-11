@@ -68,6 +68,25 @@ describe('TodayPage', () => {
     expect(screen.getByText(day20.back!)).toBeTruthy();
   });
 
+  it('the note receipt reopens the noted phase', () => {
+    const store = renderWithStore(5, <TodayPage day={getDay(avcUfe, 5)} />);
+    store.getState().selectFace(2);
+    store.getState().chooseChip(NOTHING_NEW);
+    expect(store.getState().phase).toBe('page');
+
+    fireEvent.press(screen.getByLabelText('Change what you noted'));
+    expect(store.getState().phase).toBe('noted');
+  });
+
+  it('the face receipt reopens the check-in', () => {
+    const store = renderWithStore(5, <TodayPage day={getDay(avcUfe, 5)} />);
+    store.getState().selectFace(2);
+    store.getState().chooseChip(NOTHING_NEW);
+
+    fireEvent.press(screen.getByLabelText('Change how today feels'));
+    expect(store.getState().phase).toBe('checkin');
+  });
+
   it('a user-entered note renders as literal text, never parsed as markup', () => {
     const store = renderWithStore(5, <TodayPage day={getDay(avcUfe, 5)} />);
     store.getState().selectFace(2);

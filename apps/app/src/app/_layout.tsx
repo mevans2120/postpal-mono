@@ -4,7 +4,11 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
-import { Petrona_500Medium, Petrona_500Medium_Italic } from '@expo-google-fonts/petrona';
+import {
+  Petrona_500Medium,
+  Petrona_500Medium_Italic,
+  Petrona_600SemiBold,
+} from '@expo-google-fonts/petrona';
 import {
   AlbertSans_400Regular,
   AlbertSans_600SemiBold,
@@ -15,11 +19,13 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   // RN gotcha: italic is a SEPARATE family (Petrona_500Medium_Italic) — loaded
-  // alongside the upright 500 so the hero <em> can map to it. Same story for
-  // the sans weights (semibold / bold are their own families).
+  // alongside the upright 500 so the hero <em> can map to it. Petrona_600SemiBold
+  // backs the `font-serif-semibold` role (feel-body <b> + the BACK value on the
+  // page). Same story for the sans weights (semibold / bold are their own families).
   const [loaded] = useFonts({
     Petrona_500Medium,
     Petrona_500Medium_Italic,
+    Petrona_600SemiBold,
     AlbertSans_400Regular,
     AlbertSans_600SemiBold,
     AlbertSans_700Bold,

@@ -1,3 +1,9 @@
+'use client';
+
+// Daybook is a client component (hooks, context, effects). Declaring the
+// boundary here — on the package's public entry — lets any consumer render it
+// from a Server Component without adding their own wrapper (PoC criterion 2:
+// a second surface consumes @postpal/ui unchanged).
 import { useRef } from 'react';
 import type { ProcedureContent } from '@postpal/content';
 import { getDay } from '@postpal/content';

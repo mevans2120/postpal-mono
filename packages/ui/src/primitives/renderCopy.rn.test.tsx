@@ -18,12 +18,12 @@ describe('renderCopy', () => {
       <Text>
         {renderCopy('call if it reaches <b>101°F</b> — <em>soon</em>', {
           b: 'text-alert',
-          em: 'italic text-clay',
+          em: 'font-serif-italic text-clay',
         })}
       </Text>,
     );
     expect(screen.getByText('101°F').props.className).toBe('text-alert');
-    expect(screen.getByText('soon').props.className).toBe('italic text-clay');
+    expect(screen.getByText('soon').props.className).toBe('font-serif-italic text-clay');
   });
 
   it('never uses innerHTML — unknown tags render as literal text', () => {

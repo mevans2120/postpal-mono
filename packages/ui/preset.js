@@ -34,6 +34,7 @@ module.exports = {
         'sans-bold': ['AlbertSans_700Bold'],
         serif: ['Petrona_500Medium'],
         'serif-italic': ['Petrona_500Medium_Italic'],
+        'serif-semibold': ['Petrona_600SemiBold'],
       },
     },
   },

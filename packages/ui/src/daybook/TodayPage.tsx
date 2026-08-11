@@ -1,11 +1,13 @@
-import type { CSSProperties } from 'react';
 import type { DayContent } from '@postpal/content';
+import { Pressable, Text, View } from 'react-native';
+import Animated, { useReducedMotion } from 'react-native-reanimated';
 import { HeroBlock } from './HeroBlock';
 import { Receipt } from '../primitives/Receipt';
 import { FaceGlyph } from '../primitives/FaceGlyph';
 import { faceReceiptText } from '../primitives/faces';
 import { renderCopy } from '../primitives/renderCopy';
-import { useSettle } from '../primitives/useSettle';
+import { typography } from '../primitives/typography';
+import { useSettle, settleEntering } from '../primitives/useSettle';
 import { deriveDayView } from '../derive';
 import { useDaybook } from '../store';
 
@@ -29,11 +31,10 @@ export function TodayPage({ day }: TodayPageProps) {
   const reopenNoted = useDaybook((s) => s.reopenNoted);
   const openSheet = useDaybook((s) => s.openSheet);
   const settle = useSettle(dayNum, phase);
+  const reduceMotion = useReducedMotion();
 
   if (face === null) return null;
 
-  const settleCls = settle ? ' settle' : '';
-  const delay = (ms: string): CSSProperties => ({ '--d': ms } as CSSProperties);
   const medsLine = deriveDayView(day, logged).medsLine;
 
   return (
@@ -47,114 +48,111 @@ export function TodayPage({ day }: TodayPageProps) {
         label="Change how today feels"
         settle={settle}
       >
-        Today feels: <span className="italic text-pine">{faceReceiptText(face)}</span>
+        Today feels: <Text className="font-serif-italic text-pine">{faceReceiptText(face)}</Text>
       </Receipt>
 
-      {/* note receipt — the pine ✓ dot; the note renders as a plain string child
-          (React auto-escapes), the XSS-safe port of the prototype's esc() */}
+      {/* note receipt — the pine ✓ dot; the note renders as a plain string
+          child, never through renderCopy — the XSS-safe port of the
+          prototype's esc(). */}
       <Receipt
         icon={
-          <span className="w-[30px] h-[30px] rounded-full bg-pine-soft flex items-center justify-center text-pine text-[15px] font-bold">
-            ✓
-          </span>
+          <View className="w-[30px] h-[30px] rounded-full bg-pine-soft items-center justify-center">
+            <Text className="text-pine text-[15px] font-sans-bold">✓</Text>
+          </View>
         }
         onActivate={reopenNoted}
         label="Change what you noted"
         settle={settle}
         delayMs={60}
       >
-        Noted: <span className="italic text-pine">{note}</span>
+        Noted: <Text className="font-serif-italic text-pine">{note}</Text>
       </Receipt>
 
       {/* chapter 1: the reading */}
-      <div className={`mt-6${settleCls}`} style={delay('120ms')}>
-        <h5 className="font-serif text-[18.5px] font-medium italic text-ink border-t border-line pt-3.5">
-          How today might feel
-        </h5>
-        {day.feel.map((entry, i) => (
-          <div key={i} className="mt-4">
-            <p className="font-serif text-[15px] leading-[1.6]">
-              {renderCopy(entry.body, { b: 'font-semibold' })}
-            </p>
-            {entry.note ? (
-              <span className="block font-serif italic text-[12.5px] text-clay-deep mt-[9px] pl-[11px] border-l-2 border-clay">
-                {entry.note}
-              </span>
-            ) : null}
-          </div>
-        ))}
-        {/* "Keep reading" is a prototype edge — pressed state only, no behavior. */}
-        <p className="text-[12px] font-bold text-mut mt-3 noop">
-          Keep reading: <b className="text-clay-deep">{day.turn} →</b>
-        </p>
-      </div>
+      <Animated.View entering={settleEntering(settle, reduceMotion, 120)}>
+        <View className="mt-6 border-t border-line pt-3.5">
+          <Text className={typography.chapterHeading}>How today might feel</Text>
+          {day.feel.map((entry, i) => (
+            <View key={i} className="mt-4">
+              <Text className={typography.body}>{renderCopy(entry.body, { b: 'font-serif-semibold' })}</Text>
+              {entry.note ? (
+                <Text className="font-serif-italic text-[12.5px] text-clay-deep mt-[9px] pl-[11px] border-l-2 border-clay">
+                  {entry.note}
+                </Text>
+              ) : null}
+            </View>
+          ))}
+          {/* "Keep reading" is a prototype edge — pressed state only, no
+              behavior (.noop). Ported as static, non-pressable text — see
+              the task report for why the affordance is dropped. */}
+          <Text className="font-sans-bold text-[12px] text-mut mt-3">
+            Keep reading: <Text className="text-clay-deep">{day.turn} →</Text>
+          </Text>
+        </View>
+      </Animated.View>
 
       {/* chapter 2: can / can't yet */}
-      <div className={`mt-6${settleCls}`} style={delay('180ms')}>
-        <h5 className="font-serif text-[18.5px] font-medium italic text-ink border-t border-line pt-3.5">
-          What you can do — and not yet
-        </h5>
-        {day.back ? (
-          <div className="flex items-baseline gap-2 text-[13px] mt-2.5 leading-[1.5]">
-            <span className="flex-none text-[10.5px] tracking-[.12em] font-bold text-mut w-[74px]">BACK</span>
-            <span className="font-serif text-[14px]">
-              <span className="text-pine font-semibold">{day.back}</span>
-            </span>
-          </div>
-        ) : null}
-        {day.notYet ? (
-          <div className="flex items-baseline gap-2 text-[13px] mt-2.5 leading-[1.5]">
-            <span className="flex-none text-[10.5px] tracking-[.12em] font-bold text-mut w-[74px]">NOT YET</span>
-            <span className="font-serif text-[14px]">
-              {renderCopy(day.notYet, { b: 'font-sans text-[11.5px] font-bold text-clay-deep' })}
-            </span>
-          </div>
-        ) : null}
-      </div>
+      <Animated.View entering={settleEntering(settle, reduceMotion, 180)}>
+        <View className="mt-6 border-t border-line pt-3.5">
+          <Text className={typography.chapterHeading}>What you can do — and not yet</Text>
+          {day.back ? (
+            <View className="flex-row items-baseline gap-2 mt-2.5">
+              <Text className={`${typography.factK} w-[74px] shrink-0`}>BACK</Text>
+              <Text className="font-serif-semibold text-[14px] text-pine">{day.back}</Text>
+            </View>
+          ) : null}
+          {day.notYet ? (
+            <View className="flex-row items-baseline gap-2 mt-2.5">
+              <Text className={`${typography.factK} w-[74px] shrink-0`}>NOT YET</Text>
+              <Text className={typography.factV}>
+                {renderCopy(day.notYet, { b: 'font-sans-bold text-[11.5px] text-clay-deep' })}
+              </Text>
+            </View>
+          ) : null}
+        </View>
+      </Animated.View>
 
       {/* chapter 3: meds (absent on day 20) */}
       {day.meds ? (
-        <div className={`mt-6${settleCls}`} style={delay('240ms')}>
-          <h5 className="font-serif text-[18.5px] font-medium italic text-ink border-t border-line pt-3.5">
-            Your medicines today
-          </h5>
-          <div className="flex items-baseline gap-2 text-[13px] mt-2.5 leading-[1.5]">
-            <span className="flex-none text-[10.5px] tracking-[.12em] font-bold text-mut w-[74px]">{day.meds.k}</span>
-            <span className="font-serif text-[14px]">{medsLine}</span>
-            <button
-              type="button"
-              onClick={() => openSheet(day.meds!.sheet)}
-              aria-label="Open today's medicine rail"
-              className="relative hit-go ml-auto text-clay-deep font-bold text-[12px] whitespace-nowrap"
-            >
-              open →
-            </button>
-          </div>
-        </div>
+        <Animated.View entering={settleEntering(settle, reduceMotion, 240)}>
+          <View className="mt-6 border-t border-line pt-3.5">
+            <Text className={typography.chapterHeading}>Your medicines today</Text>
+            <View className="flex-row items-baseline gap-2 mt-2.5">
+              <Text className={`${typography.factK} w-[74px] shrink-0`}>{day.meds.k}</Text>
+              <Text className={typography.factV}>{medsLine}</Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Open today's medicine rail"
+                onPress={() => openSheet(day.meds!.sheet)}
+                hitSlop={8}
+                className="ml-auto"
+              >
+                <Text className="font-sans-bold text-[12px] text-clay-deep">open →</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Animated.View>
       ) : null}
 
       {/* chapter 4: ahead */}
-      <div className={`mt-6${settleCls}`} style={delay('300ms')}>
-        <h5 className="font-serif text-[18.5px] font-medium italic text-ink border-t border-line pt-3.5">
-          What's ahead
-        </h5>
-        {day.ahead.map((item, i) => (
-          <div key={i} className="flex items-baseline gap-2 text-[13px] mt-2.5 leading-[1.5]">
-            <span className="flex-none text-[10.5px] tracking-[.12em] font-bold text-mut w-[74px]">{item.k}</span>
-            <span className="font-serif text-[14px]">{item.v}</span>
-            {item.details ? (
-              <span className="ml-auto text-clay-deep font-bold text-[12px] whitespace-nowrap noop">details →</span>
-            ) : null}
-          </div>
-        ))}
-      </div>
+      <Animated.View entering={settleEntering(settle, reduceMotion, 300)}>
+        <View className="mt-6 border-t border-line pt-3.5">
+          <Text className={typography.chapterHeading}>What's ahead</Text>
+          {day.ahead.map((item, i) => (
+            <View key={i} className="flex-row items-baseline gap-2 mt-2.5">
+              <Text className={`${typography.factK} w-[74px] shrink-0`}>{item.k}</Text>
+              <Text className={typography.factV}>{item.v}</Text>
+              {item.details ? (
+                <Text className="ml-auto font-sans-bold text-[12px] text-clay-deep">details →</Text>
+              ) : null}
+            </View>
+          ))}
+        </View>
+      </Animated.View>
 
-      <div
-        className={`text-center text-mut text-[15px] tracking-[.2em] mb-1.5 mt-[14px]${settleCls}`}
-        style={delay('300ms')}
-      >
-        ⌄
-      </div>
+      <Animated.View entering={settleEntering(settle, reduceMotion, 300)}>
+        <Text className="text-center text-mut text-[15px] tracking-[3px] mt-[14px] mb-1.5">⌄</Text>
+      </Animated.View>
     </>
   );
 }

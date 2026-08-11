@@ -1,10 +1,11 @@
-import type { CSSProperties, KeyboardEvent } from 'react';
 import type { DayContent } from '@postpal/content';
+import { Pressable, Text, TextInput, View } from 'react-native';
+import Animated, { useReducedMotion } from 'react-native-reanimated';
 import { HeroBlock } from './HeroBlock';
 import { Receipt } from '../primitives/Receipt';
 import { FaceGlyph } from '../primitives/FaceGlyph';
 import { FACE_LABELS, faceAckKey, faceReceiptText } from '../primitives/faces';
-import { useSettle } from '../primitives/useSettle';
+import { useSettle, settleEntering } from '../primitives/useSettle';
 import { useDaybook } from '../store';
 
 export interface NotedViewProps {
@@ -29,16 +30,9 @@ export function NotedView({ day }: NotedViewProps) {
   const cancelNote = useDaybook((s) => s.cancelNote);
   const setNoteDraft = useDaybook((s) => s.setNoteDraft);
   const settle = useSettle(dayNum, phase);
+  const reduceMotion = useReducedMotion();
 
   if (face === null) return null;
-
-  const settleCls = settle ? ' settle' : '';
-  const delay = (ms: string): CSSProperties => ({ '--d': ms } as CSSProperties);
-
-  const onInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') submitNote(noteDraft);
-    else if (e.key === 'Escape') cancelNote();
-  };
 
   return (
     <>
@@ -50,61 +44,53 @@ export function NotedView({ day }: NotedViewProps) {
         label="Change how today feels"
         settle={settle}
       >
-        Today feels: <span className="italic text-pine">{faceReceiptText(face)}</span>
+        Today feels: <Text className="font-serif-italic text-pine">{faceReceiptText(face)}</Text>
       </Receipt>
 
-      <div
-        className={`font-serif italic text-[13.5px] text-pine mt-2.5${settleCls}`}
-        style={delay('100ms')}
-      >
-        {day.ack[faceAckKey(face)]}
-      </div>
+      <Animated.View entering={settleEntering(settle, reduceMotion, 100)}>
+        <Text className="font-serif-italic text-[13.5px] text-pine mt-2.5">{day.ack[faceAckKey(face)]}</Text>
+      </Animated.View>
 
-      <div className={`mt-[22px]${settleCls}`} style={delay('200ms')}>
-        <span className="text-[11px] tracking-[.16em] font-bold text-pine">ANYTHING TO NOTE TODAY?</span>
-        {noteInputOpen ? (
-          <div className="flex items-center gap-2 mt-2.5">
-            <input
-              type="text"
-              autoFocus
-              aria-label="Your note"
-              placeholder="A few words is plenty"
-              value={noteDraft}
-              onChange={(e) => setNoteDraft(e.target.value)}
-              onKeyDown={onInputKeyDown}
-              className="flex-1 min-w-0 font-sans text-[13px] text-ink bg-card border border-line rounded-full py-[9px] px-3.5 outline-none focus:border-clay"
-            />
-            <button
-              type="button"
-              onClick={() => submitNote(noteDraft)}
-              className="relative hit-notebtn font-sans text-[12.5px] font-semibold text-clay-deep py-[9px] px-1 whitespace-nowrap"
-            >
-              note it
-            </button>
-            <button
-              type="button"
-              aria-label="Back to the choices"
-              onClick={cancelNote}
-              className="relative hit-notebtn-quiet font-sans text-[12.5px] font-medium text-mut py-[9px] px-1 whitespace-nowrap"
-            >
-              back
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-wrap gap-[9px] mt-2.5">
-            {day.chips.map((chip) => (
-              <button
-                key={chip}
-                type="button"
-                onClick={() => chooseChip(chip)}
-                className="relative hit-chip font-sans text-[12.5px] font-semibold text-ink bg-card border border-line rounded-full py-[9px] px-3.5 cursor-pointer"
-              >
-                {chip}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+      <Animated.View entering={settleEntering(settle, reduceMotion, 200)}>
+        <View className="mt-[22px]">
+          <Text className="font-sans-bold text-[11px] tracking-[1.76px] text-pine">ANYTHING TO NOTE TODAY?</Text>
+          {noteInputOpen ? (
+            <View className="flex-row items-center gap-2 mt-2.5">
+              <TextInput
+                autoFocus
+                accessibilityLabel="Your note"
+                placeholder="A few words is plenty"
+                placeholderTextColor="#a89a88"
+                value={noteDraft}
+                onChangeText={setNoteDraft}
+                onSubmitEditing={() => submitNote(noteDraft)}
+                returnKeyType="done"
+                className="flex-1 font-sans text-[13px] text-ink bg-card border border-line rounded-full py-[9px] px-3.5"
+              />
+              <Pressable onPress={() => submitNote(noteDraft)} hitSlop={8}>
+                <Text className="font-sans-semibold text-[12.5px] text-clay-deep">note it</Text>
+              </Pressable>
+              <Pressable accessibilityLabel="Back to the choices" onPress={cancelNote} hitSlop={8}>
+                <Text className="font-sans text-[12.5px] text-mut">back</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <View className="flex-row flex-wrap gap-[9px] mt-2.5">
+              {day.chips.map((chip) => (
+                <Pressable
+                  key={chip}
+                  accessibilityRole="button"
+                  accessibilityLabel={chip}
+                  onPress={() => chooseChip(chip)}
+                  className="bg-card border border-line rounded-full py-[9px] px-3.5"
+                >
+                  <Text className="font-sans-semibold text-[12.5px] text-ink">{chip}</Text>
+                </Pressable>
+              ))}
+            </View>
+          )}
+        </View>
+      </Animated.View>
     </>
   );
 }

@@ -1,11 +1,14 @@
-import type { ProcedureContent } from '../schema';
+import { ProcedureContentSchema } from '../schema';
 import { day01 } from './days/day-01';
 import { day03 } from './days/day-03';
 import { day05 } from './days/day-05';
 import { day10 } from './days/day-10';
 import { day20 } from './days/day-20';
 
-export const avcUfe: ProcedureContent = {
+// Parsed at module load, not just under Jest: importing @postpal/content (which
+// apps/web does, so `next build` does too) now throws if the content violates
+// the schema's cross-reference refinements. Incomplete content = hard build fail.
+export const avcUfe = ProcedureContentSchema.parse({
   meta: {
     id: 'avc-ufe',
     clinic: 'Advanced Vascular Centers',
@@ -16,4 +19,4 @@ export const avcUfe: ProcedureContent = {
     emergencyLine: 'Sudden severe pain, heavy bleeding, or trouble breathing? <b>Call 911.</b>'
   },
   days: { 1: day01, 3: day03, 5: day05, 10: day10, 20: day20 }
-};
+});

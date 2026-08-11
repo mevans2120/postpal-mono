@@ -65,8 +65,16 @@ export const NextSchema = z.object({
   label: z.string(), sub: z.string(), tone: ToneSchema, sheet: SheetKindSchema
 });
 
+/**
+ * Sentinel chip labels that route by identity rather than an interpreter (both
+ * the user-facing label and the value passed to chooseChip). Single-sourced here
+ * so @postpal/ui compares against these instead of re-hardcoding the literals.
+ */
+export const NOTHING_NEW = 'Nothing new';
+export const SOMETHING_ELSE = 'Something else…';   // note U+2026 ellipsis
+
 /** Chips that intentionally have no interpreter (prototype line 457). */
-const CHIPS_WITHOUT_INTERPRETERS = new Set(['Nothing new', 'Something else…']);
+export const CHIPS_WITHOUT_INTERPRETERS = new Set([NOTHING_NEW, SOMETHING_ELSE]);
 
 export const DayContentSchema = z.object({
   eyebrow: z.string(),

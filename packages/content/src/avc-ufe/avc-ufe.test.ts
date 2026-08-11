@@ -5,6 +5,22 @@ describe('AVC/UFE content instance', () => {
   it('parses against the schema — the CI-enforced selfCheckDays', () => {
     expect(() => ProcedureContentSchema.parse(avcUfe)).not.toThrow();
   });
+  it('the exported instance is schema-valid (parsed at load, not just under Jest)', () => {
+    // index.ts now runs ProcedureContentSchema.parse at module load, so a bad
+    // instance would have thrown at import and failed this whole suite. The five
+    // parsed day keys prove the parse ran and produced a typed result.
+    expect(Object.keys(avcUfe.days)).toHaveLength(5);
+  });
+  it('the parse gate rejects incomplete content — a chip with no interpreter throws', () => {
+    const good = getDay(avcUfe, 5);
+    // A day whose chip list references a symptom that has no matching interpreter
+    // is exactly what the load-time parse must reject.
+    const broken = {
+      meta: avcUfe.meta,
+      days: { 5: { ...good, chips: [...good.chips, 'a symptom with no interpreter'] } }
+    };
+    expect(() => ProcedureContentSchema.parse(broken)).toThrow();
+  });
   it('exposes exactly the five prototype days', () => {
     expect(listDays(avcUfe)).toEqual([1, 3, 5, 10, 20]);
   });

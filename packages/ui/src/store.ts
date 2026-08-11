@@ -2,6 +2,7 @@ import { createStore } from 'zustand/vanilla';
 import { useStore } from 'zustand';
 import { createContext, useContext } from 'react';
 import type { SheetKind } from '@postpal/content';
+import { NOTHING_NEW, SOMETHING_ELSE } from '@postpal/content';
 
 export type Phase = 'checkin' | 'noted' | 'page';
 export type OpenSheetKind = SheetKind | 'interpreter' | 'feel';
@@ -51,10 +52,10 @@ export function createDaybookStore(initialDay: number) {
     reopenCheckin: () => set({ phase: 'checkin', heroExpanded: false, noteInputOpen: false }),
     reopenNoted: () => set({ phase: 'noted', noteInputOpen: false }),
     chooseChip: (chip) => {
-      if (chip === 'Nothing new') set({ note: 'nothing new', phase: 'page' });
+      if (chip === NOTHING_NEW) set({ note: 'nothing new', phase: 'page' });
       // prototype line 828: only route to the inline note input from the noted
       // phase; from other phases (e.g. the feel sheet) the sheet just closes.
-      else if (chip === 'Something else…') { if (get().phase === 'noted') set({ noteInputOpen: true }); }
+      else if (chip === SOMETHING_ELSE) { if (get().phase === 'noted') set({ noteInputOpen: true }); }
       else set({ sheet: { kind: 'interpreter', payload: { key: chip, origin: 'chips' } } });
     },
     submitNote: (text) => {

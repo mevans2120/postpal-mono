@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { avcUfe } from '@postpal/content';
 import { Daybook } from '../daybook/Daybook';
@@ -49,6 +49,30 @@ describe('sheet system', () => {
     await userEvent.click(screen.getByRole('button', { name: /feeling something/i }));
     await userEvent.click(screen.getByRole('button', { name: 'Still feverish' }));
     expect(screen.getByText('EXPECTED THROUGH DAY 3')).toBeInTheDocument();
+  });
+  it('"Feeling something?" → "Something else…" opens the note input only in the noted phase', async () => {
+    // Noted phase: a face is selected, so the feel-sheet handoff routes to the
+    // inline note input (FeelSheet → chooseChip(SOMETHING_ELSE) → closeSheet).
+    const noted = render(
+      <Daybook content={avcUfe} initialDay={3} statusLabel="Maya · UFE Feb 12" />
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'a good day' }));
+    await userEvent.click(screen.getByRole('button', { name: /feeling something/i }));
+    // Scope to the sheet: NotedView also renders a "Something else…" day chip.
+    await userEvent.click(
+      within(screen.getByRole('dialog')).getByRole('button', { name: 'Something else…' })
+    );
+    expect(screen.getByLabelText('Your note')).toBeInTheDocument();
+    noted.unmount();
+
+    // Check-in phase: the nextbar (hence "Feeling something?") renders here too,
+    // but the store's phase guard means the same handoff must NOT open the input.
+    render(<Daybook content={avcUfe} initialDay={3} statusLabel="Maya · UFE Feb 12" />);
+    await userEvent.click(screen.getByRole('button', { name: /feeling something/i }));
+    await userEvent.click(
+      within(screen.getByRole('dialog')).getByRole('button', { name: 'Something else…' })
+    );
+    expect(screen.queryByLabelText('Your note')).not.toBeInTheDocument();
   });
   it('Escape closes; focus returns to the opener', async () => {
     render(<Daybook content={avcUfe} initialDay={1} statusLabel="Maya · UFE Feb 12" />);

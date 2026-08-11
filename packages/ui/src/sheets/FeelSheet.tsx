@@ -1,4 +1,5 @@
 import type { DayContent } from '@postpal/content';
+import { SOMETHING_ELSE } from '@postpal/content';
 import { useDaybook } from '../store';
 
 export interface FeelSheetProps {
@@ -37,12 +38,12 @@ export function FeelSheet({ day }: FeelSheetProps) {
         <button
           type="button"
           onClick={() => {
-            chooseChip('Something else…');
+            chooseChip(SOMETHING_ELSE);
             closeSheet();
           }}
           className={chipCls}
         >
-          Something else…
+          {SOMETHING_ELSE}
         </button>
       </div>
     </>

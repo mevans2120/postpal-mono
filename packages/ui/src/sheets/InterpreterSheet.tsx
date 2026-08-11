@@ -5,7 +5,8 @@ import { useDaybook } from '../store';
 /**
  * The alert icon (prototype daybook.html line 730) — a small ring-and-bang SVG
  * inlined so the interpreter's threshold and 911 lines carry the same clinical
- * mark. The stroke is the literal --color-alert value, matching the prototype.
+ * mark. The stroke references the semantic --color-alert token, which resolves
+ * to the same value the prototype hardcoded (#9c3a2a).
  */
 function AlertIcon() {
   return (
@@ -16,8 +17,8 @@ function AlertIcon() {
       className="flex-none mt-[2px]"
       aria-hidden="true"
     >
-      <circle cx="7" cy="7" r="6" fill="none" stroke="#9c3a2a" strokeWidth="1.5" />
-      <path d="M7 4v3.5M7 9.8v.4" stroke="#9c3a2a" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="7" cy="7" r="6" fill="none" stroke="var(--color-alert)" strokeWidth="1.5" />
+      <path d="M7 4v3.5M7 9.8v.4" stroke="var(--color-alert)" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }

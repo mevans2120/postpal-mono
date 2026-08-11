@@ -4,7 +4,7 @@ import Animated, { useReducedMotion } from 'react-native-reanimated';
 import { HeroBlock } from './HeroBlock';
 import { Receipt } from '../primitives/Receipt';
 import { FaceGlyph } from '../primitives/FaceGlyph';
-import { FACE_LABELS, faceAckKey, faceReceiptText } from '../primitives/faces';
+import { faceAckKey, faceReceiptText } from '../primitives/faces';
 import { useSettle, settleEntering } from '../primitives/useSettle';
 import { useDaybook } from '../store';
 
@@ -67,10 +67,20 @@ export function NotedView({ day }: NotedViewProps) {
                 returnKeyType="done"
                 className="flex-1 font-sans text-[13px] text-ink bg-card border border-line rounded-full py-[9px] px-3.5"
               />
-              <Pressable onPress={() => submitNote(noteDraft)} hitSlop={8}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="note it"
+                onPress={() => submitNote(noteDraft)}
+                hitSlop={8}
+              >
                 <Text className="font-sans-semibold text-[12.5px] text-clay-deep">note it</Text>
               </Pressable>
-              <Pressable accessibilityLabel="Back to the choices" onPress={cancelNote} hitSlop={8}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Back to the choices"
+                onPress={cancelNote}
+                hitSlop={8}
+              >
                 <Text className="font-sans text-[12.5px] text-mut">back</Text>
               </Pressable>
             </View>

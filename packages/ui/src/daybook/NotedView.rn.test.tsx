@@ -55,6 +55,34 @@ describe('NotedView', () => {
     expect(store.getState().phase).toBe('page');
   });
 
+  it('the "note it" tap (not just Enter) records the note and advances', () => {
+    const store = renderWithStore(5, <NotedView day={getDay(avcUfe, 5)} />);
+    store.getState().selectFace(2);
+
+    fireEvent.press(screen.getByLabelText(SOMETHING_ELSE));
+    fireEvent.changeText(screen.getByLabelText('Your note'), 'tired');
+    fireEvent.press(screen.getByLabelText('note it'));
+
+    expect(store.getState().note).toBe('tired');
+    expect(store.getState().phase).toBe('page');
+  });
+
+  it('"back" cancels the note input, restoring the chips', () => {
+    const store = renderWithStore(5, <NotedView day={getDay(avcUfe, 5)} />);
+    store.getState().selectFace(2);
+
+    fireEvent.press(screen.getByLabelText(SOMETHING_ELSE));
+    fireEvent.changeText(screen.getByLabelText('Your note'), 'half-written');
+    fireEvent.press(screen.getByLabelText('Back to the choices'));
+
+    expect(store.getState().noteInputOpen).toBe(false);
+    expect(store.getState().noteDraft).toBe('');
+    expect(store.getState().phase).toBe('noted');
+    // the chips are back and the input is gone
+    expect(screen.getByLabelText(NOTHING_NEW)).toBeTruthy();
+    expect(screen.queryByLabelText('Your note')).toBeNull();
+  });
+
   it('tapping the face receipt reopens the check-in', () => {
     const store = renderWithStore(5, <NotedView day={getDay(avcUfe, 5)} />);
     store.getState().selectFace(2);

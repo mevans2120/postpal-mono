@@ -1,5 +1,6 @@
 export * from './schema';
 export { avcUfe } from './avc-ufe';
+export { demoPae } from './demo-pae';
 import type { ProcedureContent, DayContent } from './schema';
 
 export function listDays(content: ProcedureContent): number[] {

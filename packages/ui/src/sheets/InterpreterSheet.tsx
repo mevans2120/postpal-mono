@@ -61,17 +61,17 @@ export function InterpreterSheet({ interp, escalated, meta }: InterpreterSheetPr
             <Text className="text-[10px] tracking-[1.2px] font-sans-bold text-mut mb-[3px]">
               THE ONE THING TO WATCH FOR
             </Text>
-            <Text className="text-[13px] text-ink">
+            <Text className="font-sans text-[13px] text-ink">
               {renderCopy(interp.threshold, { b: 'font-sans-bold text-alert' })}
             </Text>
           </View>
         </View>
-        <Text className="text-[13px] leading-[20px] text-mut mt-3">
+        <Text className="font-sans text-[13px] leading-[20px] text-mut mt-3">
           {renderCopy(care, { b: 'font-sans-bold' })}
         </Text>
         <View className="flex-row gap-2 items-start mt-4 pt-3 border-t border-line">
           <AlertIcon />
-          <Text className="flex-1 text-[11.5px] text-mut">
+          <Text className="flex-1 font-sans text-[11.5px] text-mut">
             {renderCopy(meta.emergencyLine, { b: 'font-sans-bold text-alert' })}
           </Text>
         </View>
@@ -96,7 +96,7 @@ export function InterpreterSheet({ interp, escalated, meta }: InterpreterSheetPr
     <View>
       <Text className="text-[10.5px] font-sans-bold tracking-[1.68px] text-pine">{interp.tag}</Text>
       <Text className="font-serif text-[21px] leading-[27px] text-ink mt-2 mb-2.5">{renderCopy(interp.head)}</Text>
-      <Text className="text-[14px] leading-[22px] text-[#5a4d40]">{renderCopy(interp.body)}</Text>
+      <Text className="font-sans text-[14px] leading-[22px] text-[#5a4d40]">{renderCopy(interp.body)}</Text>
       <View className="flex-row gap-2.5 items-start bg-card border border-line rounded-xl py-3 px-3.5 mt-3.5">
         <AlertIcon />
         <View className="flex-1">

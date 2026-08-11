@@ -26,7 +26,7 @@ export function CanCantSheet({ cancant }: CanCantSheetProps) {
           <Text className="ml-auto text-[11px] font-sans-bold text-clay-deep">{countdown}</Text>
         </View>
       ))}
-      <Text className="text-[11.5px] text-mut mt-3.5">{cancant.footnote}</Text>
+      <Text className="font-sans text-[11.5px] text-mut mt-3.5">{cancant.footnote}</Text>
     </View>
   );
 }

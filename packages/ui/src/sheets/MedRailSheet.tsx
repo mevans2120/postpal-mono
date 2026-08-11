@@ -53,7 +53,7 @@ export function MedRailSheet({ day }: MedRailSheetProps) {
         </Text>
       </View>
       <Text className="font-serif-italic text-[13.5px] text-pine mt-3.5">{renderCopy(rail.quiet)}</Text>
-      {rail.paired ? <Text className="text-[11.5px] text-mut mt-2">{rail.paired}</Text> : null}
+      {rail.paired ? <Text className="font-sans text-[11.5px] text-mut mt-2">{rail.paired}</Text> : null}
     </View>
   );
 }

@@ -126,6 +126,19 @@ describe('sheet system', () => {
     expect(screen.getByText('EXPECTED THROUGH DAY 3')).toBeTruthy();
   });
 
+  it('day 3: a feel-origin "Yes, that helps" closes the sheet WITHOUT recording a note', () => {
+    const store = renderWithStore(3, <SheetBody content={avcUfe} />);
+    store.getState().openSheet('feel');
+    fireEvent.press(screen.getByLabelText('Still feverish'));
+    // now in the interpreter with origin 'feel' — resolving must just close,
+    // never record (only origin 'chips' records; the store owns that branch).
+    fireEvent.press(screen.getByLabelText('Yes, that helps'));
+
+    expect(store.getState().sheet).toBeNull();
+    expect(store.getState().note).toBeNull();
+    expect(store.getState().phase).toBe('checkin');
+  });
+
   it('day 3: "Feeling something?" → "Something else…" hands off to chooseChip and closes the sheet', () => {
     const store = renderWithStore(3, <SheetBody content={avcUfe} />);
     store.getState().openSheet('feel');

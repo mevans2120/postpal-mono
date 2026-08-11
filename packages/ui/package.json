@@ -4,13 +4,29 @@
   "private": true,
   "exports": {
     ".": "./src/index.ts",
-    "./styles/*": "./src/styles/*"
+    "./preset": "./preset.js"
   },
-  "scripts": { "typecheck": "tsc --noEmit" },
+  "scripts": { "typecheck": "tsc --noEmit", "test": "jest --projects jest.config.js jest.expo.config.js" },
   "dependencies": {
+    "@gorhom/bottom-sheet": "^5",
     "@postpal/content": "*",
+    "nativewind": "^4.2.6",
+    "react-native-gesture-handler": "~2.32.0",
+    "react-native-reanimated": "4.5.1",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-svg": "15.15.4",
     "zustand": "^5.0.0"
   },
-  "peerDependencies": { "react": "^19.0.0", "react-dom": "^19.0.0" },
-  "devDependencies": { "react": "^19.0.0", "react-dom": "^19.0.0", "@types/react": "^19.0.0", "@types/react-dom": "^19.0.0" }
+  "peerDependencies": { "react": "^19.0.0", "react-native": ">=0.86.0" },
+  "devDependencies": {
+    "@react-native/jest-preset": "^0.86.2",
+    "@testing-library/react-native": "^13",
+    "@types/react": "~19.2.2",
+    "@types/react-test-renderer": "^19.1.0",
+    "jest-expo": "~57",
+    "react": "19.2.3",
+    "react-native": "0.86.2",
+    "react-test-renderer": "19.2.3",
+    "tailwindcss": "^3.4.19"
+  }
 }

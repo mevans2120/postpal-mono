@@ -11,6 +11,8 @@ export const FACE_MOUTHS = [
   'M10.5 24 Q17 19 23.5 24'
 ];
 
+export const FACE_COUNT = FACE_MOUTHS.length;
+
 export const FACE_LABELS = ['a good day', 'a pretty good day', 'an okay day', 'a harder day', 'a hard day'];
 
 export const faceReceiptText = (i: number): string =>

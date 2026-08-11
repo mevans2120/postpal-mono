@@ -1,21 +1,21 @@
 import type { ReactElement } from 'react';
-import { act, render } from '@testing-library/react';
+import { act, render } from '@testing-library/react-native';
 import { createDaybookStore, DaybookStoreContext } from './store';
 import type { DaybookState, DaybookStore } from './store';
 
 /**
  * Renders `ui` inside a fresh DaybookStoreContext for `day` and returns the
  * store, so a test can both drive it (store.getState().selectFace(...)) and
- * assert against the resulting DOM. Shared by Tasks 11–14.
+ * assert against the resulting render tree. Shared by Tasks 3–7.
  *
- * RTL sets IS_REACT_ACT_ENVIRONMENT, so an external store mutation made outside
- * a React event is deferred until the next act() flush — a bare
- * `store.getState().selectFace(i)` would not reach the DOM before the following
- * assertion. The returned store therefore proxies getState() so that invoking
- * an action (any function-valued state field) runs inside act(), flushing the
- * subscribed re-render synchronously. Data fields (face, phase, note, sheet…)
- * pass through unchanged, so `expect(store.getState()).toMatchObject(...)`
- * still reads plain values.
+ * RNTL sets IS_REACT_ACT_ENVIRONMENT, so an external store mutation made
+ * outside a React event is deferred until the next act() flush — a bare
+ * `store.getState().selectFace(i)` would not reach the render tree before the
+ * following assertion. The returned store therefore proxies getState() so
+ * that invoking an action (any function-valued state field) runs inside
+ * act(), flushing the subscribed re-render synchronously. Data fields (face,
+ * phase, note, sheet…) pass through unchanged, so
+ * `expect(store.getState()).toMatchObject(...)` still reads plain values.
  */
 export function renderWithStore(day: number, ui: ReactElement): DaybookStore {
   const store = createDaybookStore(day);

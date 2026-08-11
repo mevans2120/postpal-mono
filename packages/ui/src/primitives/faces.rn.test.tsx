@@ -1,9 +1,10 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react-native';
 import { FaceGlyph } from './FaceGlyph';
-import { FACE_LABELS, faceReceiptText, faceAckKey } from './faces';
+import { FACE_COUNT, FACE_LABELS, faceReceiptText, faceAckKey } from './faces';
 
 describe('faces', () => {
   it('has five labels good → hard', () => {
+    expect(FACE_COUNT).toBe(5);
     expect(FACE_LABELS).toHaveLength(5);
     expect(FACE_LABELS[0]).toBe('a good day');
     expect(FACE_LABELS[4]).toBe('a hard day');
@@ -16,7 +17,9 @@ describe('faces', () => {
     expect(faceAckKey(3)).toBe('worse');
   });
   it('renders an svg with the selected treatment', () => {
-    const { container } = render(<FaceGlyph index={0} selected />);
-    expect(container.querySelector('svg circle[fill="#c4674a"]')).toBeInTheDocument();
+    render(<FaceGlyph index={0} selected />);
+    // react-native-svg's Circle is a library-specific host component with no
+    // accessible role, so the low-level UNSAFE_ query is the right tool here.
+    expect(screen.UNSAFE_getByProps({ fill: '#c4674a' })).toBeTruthy();
   });
 });

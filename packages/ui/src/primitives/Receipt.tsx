@@ -1,4 +1,8 @@
-import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { Pressable, View } from 'react-native';
+import Animated, { useReducedMotion } from 'react-native-reanimated';
+import { Txt } from './typography';
+import { settleEntering } from './useSettle';
 
 export interface ReceiptProps {
   icon: ReactNode;
@@ -6,34 +10,30 @@ export interface ReceiptProps {
   onActivate: () => void;
   label: string;
   settle?: boolean;
-  delay?: string;
+  delayMs?: number;
 }
 
 /**
- * A tappable receipt row (.receipt, prototype line 39). Ports tap() (lines
- * 539–544): a div acting as a button — Enter/Space activate, Space
- * preventDefault'd to suppress page scroll. When `settle`, the `.settle`
- * keyframe (daybook.css) runs, staggered by the `--d` custom property.
+ * A tappable receipt row (.receipt, prototype line 39). RN's Pressable
+ * already gives press states and — on web, via RNW — focus + Enter/Space
+ * activation, so unlike the DOM version there's no onKeyDown to port. When
+ * `settle`, the row mounts with a Reanimated `entering` animation (staggered
+ * by `delayMs`) in place of the DOM's `.settle` keyframe + `--d` custom
+ * property; see useSettle.ts for why the animation only ever fires on mount.
  */
-export function Receipt({ icon, children, onActivate, label, settle = false, delay }: ReceiptProps) {
-  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      onActivate();
-    }
-  };
+export function Receipt({ icon, children, onActivate, label, settle = false, delayMs }: ReceiptProps) {
+  const reduceMotion = useReducedMotion();
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      aria-label={label}
-      onClick={onActivate}
-      onKeyDown={onKeyDown}
-      className={`flex items-center gap-[13px] py-4 px-[2px] border-b border-line${settle ? ' settle' : ''}`}
-      style={settle && delay ? ({ '--d': delay } as CSSProperties) : undefined}
-    >
-      <span className="flex-none flex">{icon}</span>
-      <span className="font-serif text-[24.5px] font-medium leading-[1.3]">{children}</span>
-    </div>
+    <Animated.View entering={settleEntering(settle, reduceMotion, delayMs)}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        onPress={onActivate}
+        className="flex-row items-center gap-[13px] py-4 px-[2px] border-b border-line"
+      >
+        <View className="shrink-0">{icon}</View>
+        <Txt variant="receipt">{children}</Txt>
+      </Pressable>
+    </Animated.View>
   );
 }

@@ -61,7 +61,7 @@ export function TodayPage({ day }: TodayPageProps) {
         onActivate={reopenNoted}
         label="Change what you noted"
         settle={settle}
-        delay="60ms"
+        delayMs={60}
       >
         Noted: <span className="italic text-pine">{note}</span>
       </Receipt>

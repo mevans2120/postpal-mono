@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { FadeInDown } from 'react-native-reanimated';
 import type { Phase } from '../store';
 
 /**
@@ -29,4 +30,11 @@ export function useSettle(day: number, phase: Phase): boolean {
     lastKey.current = key;
   }, [key]);
   return settle;
+}
+
+/** Builds the settle entrance for an Animated.View, or undefined when it
+ *  should not animate (not first render of this day:phase, or reduced motion).
+ *  Pure so it's unit-testable without mounting or mocking Reanimated hooks. */
+export function settleEntering(settle: boolean, reduceMotion: boolean, delayMs = 0) {
+  return settle && !reduceMotion ? FadeInDown.duration(200).delay(delayMs) : undefined;
 }

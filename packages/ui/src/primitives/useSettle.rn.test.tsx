@@ -1,8 +1,12 @@
 import { StrictMode } from 'react';
-import { renderHook } from '@testing-library/react';
-import { useSettle } from './useSettle';
+import { renderHook } from '@testing-library/react-native';
+import { useSettle, settleEntering } from './useSettle';
 import type { Phase } from '../store';
 
+// RN port of the dormant DOM useSettle.test.tsx (deleted) — same four cases,
+// via @testing-library/react-native's renderHook instead of
+// @testing-library/react's. useSettle itself is untouched (render-pure,
+// effect-written ref), so its behavior is identical on RN.
 describe('useSettle', () => {
   it('returns true on the first render of a given day:phase key', () => {
     const { result } = renderHook(() => useSettle(1, 'checkin'));
@@ -36,5 +40,16 @@ describe('useSettle', () => {
       wrapper: StrictMode,
     });
     expect(result.current).toBe(true);
+  });
+});
+
+describe('settleEntering', () => {
+  it('returns undefined when settle is false, or when reduceMotion is true', () => {
+    expect(settleEntering(false, false)).toBeUndefined();
+    expect(settleEntering(true, true)).toBeUndefined();
+  });
+
+  it('returns a truthy entering descriptor when settle is true and reduceMotion is false', () => {
+    expect(settleEntering(true, false)).toBeTruthy();
   });
 });

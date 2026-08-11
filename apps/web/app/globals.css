@@ -1,5 +1,0 @@
-@import 'tailwindcss';
-@import '@postpal/ui/styles/tokens.css';
-@import '@postpal/ui/styles/daybook.css';
-/* Tailwind must scan the ui package for class names */
-@source '../../../packages/ui/src';

@@ -24,7 +24,7 @@ export function CheckIn({ day }: CheckInProps) {
   return (
     <>
       <View className="mt-[44px]">
-        <Text className={`${typography.eyebrow} text-pine`}>{day.eyebrow}</Text>
+        <Text className={typography.eyebrow}>{day.eyebrow}</Text>
         <Text className={`${typography.hero} mt-3`}>
           {renderCopy(day.heroFull, { em: 'font-serif-italic text-clay' })}
         </Text>

@@ -27,7 +27,7 @@ export function HeroBlock({ day, className }: HeroBlockProps) {
 
   return (
     <View className={className}>
-      <Text className={`${typography.eyebrow} text-pine`}>{day.eyebrow}</Text>
+      <Text className={typography.eyebrow}>{day.eyebrow}</Text>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Expand or collapse today's reading"

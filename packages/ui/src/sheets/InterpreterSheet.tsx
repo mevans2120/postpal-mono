@@ -1,25 +1,28 @@
 import type { Interpreter, Meta } from '@postpal/content';
+import { Pressable, Text, View } from 'react-native';
+import Svg, { Circle, Path } from 'react-native-svg';
 import { renderCopy } from '../primitives/renderCopy';
 import { useDaybook } from '../store';
+
+// Mirrors packages/ui/preset.js theme.extend.colors.alert ('#9c3a2a') —
+// react-native-svg props take literal color values, not Tailwind classNames
+// (see FaceGlyph.tsx for the same pattern), so the token value is hardcoded
+// here with this comment as the link back to its source of truth.
+const ALERT = '#9c3a2a';
 
 /**
  * The alert icon (prototype daybook.html line 730) — a small ring-and-bang SVG
  * inlined so the interpreter's threshold and 911 lines carry the same clinical
- * mark. The stroke references the semantic --color-alert token, which resolves
- * to the same value the prototype hardcoded (#9c3a2a).
+ * mark.
  */
 function AlertIcon() {
   return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      className="flex-none mt-[2px]"
-      aria-hidden="true"
-    >
-      <circle cx="7" cy="7" r="6" fill="none" stroke="var(--color-alert)" strokeWidth="1.5" />
-      <path d="M7 4v3.5M7 9.8v.4" stroke="var(--color-alert)" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
+    <View className="mt-[2px]">
+      <Svg width={14} height={14} viewBox="0 0 14 14" accessible={false}>
+        <Circle cx={7} cy={7} r={6} fill="none" stroke={ALERT} strokeWidth={1.5} />
+        <Path d="M7 4v3.5M7 9.8v.4" stroke={ALERT} strokeWidth={1.5} strokeLinecap="round" />
+      </Svg>
+    </View>
   );
 }
 
@@ -33,9 +36,13 @@ export interface InterpreterSheetProps {
  * The symptom interpreter (prototype interpreterHTML, lines 729–758). The answer
  * view leads with what the symptom means and the one line the clinic watches;
  * "Not quite" escalates in place to the watch-for gate, self-care, and the 911
- * line — never a phone call. From a check-in chip, resolving records the note
- * and lands on the page; from "Feeling something?" it just closes (the store's
- * resolveInterpreter reads the payload origin).
+ * line — never a phone call (deviation #3, deliberate). From a check-in chip,
+ * resolving records the note and lands on the page; from "Feeling something?"
+ * it just closes (the store's resolveInterpreter reads the payload origin).
+ *
+ * Neither `interp.head` nor `interp.body` contains `<b>` anywhere in the
+ * current content (checked against packages/content/src/avc-ufe/days/*.ts), so
+ * their renderCopy calls intentionally carry no `b` class — nothing to style.
  */
 export function InterpreterSheet({ interp, escalated, meta }: InterpreterSheetProps) {
   const resolveInterpreter = useDaybook((s) => s.resolveInterpreter);
@@ -44,74 +51,86 @@ export function InterpreterSheet({ interp, escalated, meta }: InterpreterSheetPr
   if (escalated) {
     const care = interp.care ?? meta.selfCareDefault;
     return (
-      <>
-        <div className="font-serif text-[18.5px] font-medium leading-[1.32] mb-1">
-          Here’s the line to watch — and what helps right now.
-        </div>
-        <div className="flex gap-2.5 items-start bg-clay-soft border border-[#e7cdb6] rounded-xl py-3 px-3.5 mt-3.5 text-[13px]">
+      <View>
+        <Text className="font-serif text-[18.5px] leading-[24px] text-ink mb-1">
+          Here's the line to watch — and what helps right now.
+        </Text>
+        <View className="flex-row gap-2.5 items-start bg-clay-soft border border-[#e7cdb6] rounded-xl py-3 px-3.5 mt-3.5">
           <AlertIcon />
-          <span>
-            <span className="block text-[10px] tracking-[.12em] font-bold text-mut mb-[3px]">
+          <View className="flex-1">
+            <Text className="text-[10px] tracking-[1.2px] font-sans-bold text-mut mb-[3px]">
               THE ONE THING TO WATCH FOR
-            </span>
-            {renderCopy(interp.threshold, { b: 'text-alert' })}
-          </span>
-        </div>
-        <p className="text-[13px] text-mut leading-[1.55] mt-3">{renderCopy(care)}</p>
-        <div className="flex gap-2 items-start text-[11.5px] text-mut mt-4 pt-3 border-t border-line">
+            </Text>
+            <Text className="text-[13px] text-ink">
+              {renderCopy(interp.threshold, { b: 'font-sans-bold text-alert' })}
+            </Text>
+          </View>
+        </View>
+        <Text className="text-[13px] leading-[20px] text-mut mt-3">
+          {renderCopy(care, { b: 'font-sans-bold' })}
+        </Text>
+        <View className="flex-row gap-2 items-start mt-4 pt-3 border-t border-line">
           <AlertIcon />
-          <span>{renderCopy(meta.emergencyLine, { b: 'text-alert' })}</span>
-        </div>
-        <div className="flex gap-2.5 mt-4">
-          <button
-            type="button"
-            onClick={resolveInterpreter}
-            className="flex-1 text-center rounded-full py-[13px] px-2.5 font-bold text-[13.5px] font-sans cursor-pointer border-[1.5px] border-line text-mut active:bg-card"
+          <Text className="flex-1 text-[11.5px] text-mut">
+            {renderCopy(meta.emergencyLine, { b: 'font-sans-bold text-alert' })}
+          </Text>
+        </View>
+        {/* No call/phone button here — deviation #3, deliberate. The 911 line
+            above is the only escalation; the single control below just
+            returns to today. */}
+        <View className="flex-row gap-2.5 mt-4">
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Back to today"
+            onPress={resolveInterpreter}
+            className="flex-1 items-center justify-center rounded-full py-[13px] px-2.5 border-[1.5px] border-line"
           >
-            Back to today
-          </button>
-        </div>
-      </>
+            <Text className="font-sans-bold text-[13.5px] text-mut">Back to today</Text>
+          </Pressable>
+        </View>
+      </View>
     );
   }
 
   return (
-    <>
-      <span className="text-[10.5px] font-bold tracking-[.16em] text-pine">{interp.tag}</span>
-      <h4 className="font-serif text-[21px] font-medium leading-[1.3] mt-2 mb-2.5">
-        {renderCopy(interp.head)}
-      </h4>
-      <p className="text-[14px] leading-[1.6] text-[#5a4d40]">{renderCopy(interp.body)}</p>
-      <div className="flex gap-2.5 items-start bg-white border border-line rounded-xl py-3 px-3.5 mt-3.5 text-[13px]">
+    <View>
+      <Text className="text-[10.5px] font-sans-bold tracking-[1.68px] text-pine">{interp.tag}</Text>
+      <Text className="font-serif text-[21px] leading-[27px] text-ink mt-2 mb-2.5">{renderCopy(interp.head)}</Text>
+      <Text className="text-[14px] leading-[22px] text-[#5a4d40]">{renderCopy(interp.body)}</Text>
+      <View className="flex-row gap-2.5 items-start bg-card border border-line rounded-xl py-3 px-3.5 mt-3.5">
         <AlertIcon />
-        <span>
-          <span className="block text-[10px] tracking-[.12em] font-bold text-mut mb-[3px]">
+        <View className="flex-1">
+          <Text className="text-[10px] tracking-[1.2px] font-sans-bold text-mut mb-[3px]">
             THE ONE LINE YOUR CLINIC WATCHES
-          </span>
-          {renderCopy(interp.threshold, { b: 'text-alert' })}
-        </span>
-      </div>
-      <div className="mt-[18px]">
-        <span className="block text-[10.5px] tracking-[.14em] font-bold text-mut text-center mb-2.5">
+          </Text>
+          <Text className="text-[13px] text-ink">
+            {renderCopy(interp.threshold, { b: 'font-sans-bold text-alert' })}
+          </Text>
+        </View>
+      </View>
+      <View className="mt-[18px]">
+        <Text className="text-[10.5px] tracking-[1.47px] font-sans-bold text-mut text-center mb-2.5">
           DID THIS ANSWER YOUR QUESTION?
-        </span>
-        <div className="flex gap-2.5 mt-4">
-          <button
-            type="button"
-            onClick={resolveInterpreter}
-            className="flex-1 text-center rounded-full py-[13px] px-2.5 font-bold text-[13.5px] font-sans cursor-pointer bg-clay-fill text-white active:bg-clay-deep"
+        </Text>
+        <View className="flex-row gap-2.5 mt-4">
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Yes, that helps"
+            onPress={resolveInterpreter}
+            className="flex-1 items-center justify-center rounded-full py-[13px] px-2.5 bg-clay-fill"
           >
-            Yes, that helps
-          </button>
-          <button
-            type="button"
-            onClick={escalateInterpreter}
-            className="flex-1 text-center rounded-full py-[13px] px-2.5 font-bold text-[13.5px] font-sans cursor-pointer border-[1.5px] border-line text-mut active:bg-card"
+            <Text className="font-sans-bold text-[13.5px] text-white">Yes, that helps</Text>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Not quite"
+            onPress={escalateInterpreter}
+            className="flex-1 items-center justify-center rounded-full py-[13px] px-2.5 border-[1.5px] border-line"
           >
-            Not quite
-          </button>
-        </div>
-      </div>
-    </>
+            <Text className="font-sans-bold text-[13.5px] text-mut">Not quite</Text>
+          </Pressable>
+        </View>
+      </View>
+    </View>
   );
 }

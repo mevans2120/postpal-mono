@@ -1,5 +1,6 @@
 import type { DayContent } from '@postpal/content';
 import { SOMETHING_ELSE } from '@postpal/content';
+import { Pressable, Text, View } from 'react-native';
 import { useDaybook } from '../store';
 
 export interface FeelSheetProps {
@@ -18,34 +19,35 @@ export function FeelSheet({ day }: FeelSheetProps) {
   const chooseChip = useDaybook((s) => s.chooseChip);
   const closeSheet = useDaybook((s) => s.closeSheet);
 
-  const chipCls =
-    'relative hit-chip font-sans text-[12.5px] font-semibold text-ink bg-card border border-line rounded-full py-[9px] px-3.5 cursor-pointer';
-
   return (
-    <>
-      <div className="font-serif text-[20px] font-medium">What are you feeling?</div>
-      <div className="flex flex-wrap gap-[9px] mt-3.5">
+    <View>
+      <Text className="font-serif text-[20px] text-ink">What are you feeling?</Text>
+      <View className="flex-row flex-wrap gap-[9px] mt-3.5">
         {Object.keys(day.interpreters).map((key) => (
-          <button
+          <Pressable
             key={key}
-            type="button"
-            onClick={() => openSheet('interpreter', { key, origin: 'feel' })}
-            className={chipCls}
+            accessibilityRole="button"
+            accessibilityLabel={key}
+            onPress={() => openSheet('interpreter', { key, origin: 'feel' })}
+            hitSlop={8}
+            className="bg-card border border-line rounded-full py-[9px] px-3.5"
           >
-            {key}
-          </button>
+            <Text className="font-sans-semibold text-[12.5px] text-ink">{key}</Text>
+          </Pressable>
         ))}
-        <button
-          type="button"
-          onClick={() => {
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={SOMETHING_ELSE}
+          onPress={() => {
             chooseChip(SOMETHING_ELSE);
             closeSheet();
           }}
-          className={chipCls}
+          hitSlop={8}
+          className="bg-card border border-line rounded-full py-[9px] px-3.5"
         >
-          {SOMETHING_ELSE}
-        </button>
-      </div>
-    </>
+          <Text className="font-sans-semibold text-[12.5px] text-ink">{SOMETHING_ELSE}</Text>
+        </Pressable>
+      </View>
+    </View>
   );
 }

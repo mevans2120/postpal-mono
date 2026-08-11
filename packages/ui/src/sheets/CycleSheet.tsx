@@ -1,4 +1,5 @@
 import type { Cycle } from '@postpal/content';
+import { Pressable, Text, View } from 'react-native';
 import { useDaybook } from '../store';
 
 export interface CycleSheetProps {
@@ -16,29 +17,30 @@ export function CycleSheet({ cycle }: CycleSheetProps) {
   const answerCycle = useDaybook((s) => s.answerCycle);
 
   return (
-    <>
-      <div className="font-serif text-[20px] font-medium">{cycle.title}</div>
-      <div className="flex gap-2 mt-3.5">
+    <View>
+      <Text className="font-serif text-[20px] text-ink">{cycle.title}</Text>
+      <View className="flex-row gap-2 mt-3.5">
         {cycle.options.map((opt) => {
           const sel = selected === opt;
           return (
-            <button
+            <Pressable
               key={opt}
-              type="button"
-              aria-pressed={sel}
-              onClick={() => answerCycle(opt)}
-              className={`flex-1 min-h-11 text-center text-[11.5px] font-bold border rounded-full py-[11px] font-sans cursor-pointer ${
-                sel ? 'bg-pine-soft text-pine border-pine-soft' : 'text-mut border-line'
+              accessibilityRole="button"
+              accessibilityLabel={opt}
+              accessibilityState={{ selected: sel }}
+              onPress={() => answerCycle(opt)}
+              className={`flex-1 min-h-11 items-center justify-center border rounded-full py-[11px] ${
+                sel ? 'bg-pine-soft border-pine-soft' : 'border-line'
               }`}
             >
-              {opt}
-            </button>
+              <Text className={`text-[11.5px] font-sans-bold ${sel ? 'text-pine' : 'text-mut'}`}>{opt}</Text>
+            </Pressable>
           );
         })}
-      </div>
+      </View>
       {selected ? (
-        <div className="font-serif italic text-[13.5px] text-pine mt-3.5">{cycle.footnote}</div>
+        <Text className="font-serif-italic text-[13.5px] text-pine mt-3.5">{cycle.footnote}</Text>
       ) : null}
-    </>
+    </View>
   );
 }

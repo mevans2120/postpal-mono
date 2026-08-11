@@ -7,6 +7,7 @@ import type { ProcedureContent } from '@postpal/content';
 import { getDay } from '@postpal/content';
 import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { createDaybookStore, DaybookStoreContext, useDaybook } from '../store';
 import type { DaybookStore } from '../store';
 import { StatusRow } from './status';
@@ -45,16 +46,23 @@ export function Daybook({ content, initialDay = 5, statusLabel }: DaybookProps) 
   const storeRef = useRef<DaybookStore>(undefined);
   if (!storeRef.current) storeRef.current = createDaybookStore(initialDay);
 
+  // BottomSheetModalProvider lives HERE, inside the store context — not up in
+  // the app root — because @gorhom/bottom-sheet renders sheet content through a
+  // portal hosted by the nearest provider. Hosted above the store (e.g. in the
+  // Expo _layout), the portaled SheetBody loses DaybookStoreContext and its
+  // useDaybook throws. Nesting it here keeps the portal inside the store scope.
   return (
     <DaybookStoreContext.Provider value={storeRef.current}>
-      <View className="flex-1 items-center bg-paper">
-        <View className="w-full max-w-[430px] flex-1">
-          <SafeAreaView edges={['top', 'bottom']} className="flex-1">
-            <DaySwitcher content={content} />
-            <DaybookBody content={content} statusLabel={statusLabel} />
-          </SafeAreaView>
+      <BottomSheetModalProvider>
+        <View className="flex-1 items-center bg-paper">
+          <View className="w-full max-w-[430px] flex-1">
+            <SafeAreaView edges={['top', 'bottom']} className="flex-1">
+              <DaySwitcher content={content} />
+              <DaybookBody content={content} statusLabel={statusLabel} />
+            </SafeAreaView>
+          </View>
         </View>
-      </View>
+      </BottomSheetModalProvider>
     </DaybookStoreContext.Provider>
   );
 }

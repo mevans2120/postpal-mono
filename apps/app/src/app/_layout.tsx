@@ -6,7 +6,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import {
   Petrona_500Medium,
   Petrona_500Medium_Italic,
@@ -42,16 +41,15 @@ export default function RootLayout() {
 
   // Provider nesting, outermost to innermost: GestureHandlerRootView (required
   // at the app root by react-native-gesture-handler) -> SafeAreaProvider (feeds
-  // Daybook's/SheetHost's safe-area-context consumers) -> BottomSheetModalProvider
-  // (required by @gorhom/bottom-sheet, which SheetHost mounts) -> the router Stack.
+  // Daybook's/SheetHost's safe-area-context consumers) -> the router Stack.
+  // BottomSheetModalProvider is NOT here — it lives inside <Daybook>, below the
+  // store context, so the sheet portal keeps DaybookStoreContext (see Daybook.tsx).
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <BottomSheetModalProvider>
-          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#faf6f0' } }}>
-            <Stack.Screen name="index" />
-          </Stack>
-        </BottomSheetModalProvider>
+        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#faf6f0' } }}>
+          <Stack.Screen name="index" />
+        </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

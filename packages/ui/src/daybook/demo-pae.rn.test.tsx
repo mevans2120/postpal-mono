@@ -1,6 +1,4 @@
-import type { ReactElement } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react-native';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { demoPae, avcUfe, listDays } from '@postpal/content';
 import { Daybook } from './Daybook';
 
@@ -10,16 +8,9 @@ import { Daybook } from './Daybook';
  * data (packages/content/src/demo-pae). This test renders it through the
  * exact same <Daybook> component the AVC/UFE app uses, with ZERO changes to
  * @postpal/ui. If the UI had hardcoded anything UFE-specific, these
- * assertions would fail.
- *
- * Since Task 7, Daybook's SheetHost mounts a real @gorhom/bottom-sheet
- * BottomSheetModal, which throws without a BottomSheetModalProvider ancestor
- * — supplied locally here, mirroring daybook.rn.test.tsx.
+ * assertions would fail. <Daybook> self-hosts its BottomSheetModalProvider
+ * (below the store context), so it renders directly with no wrapper.
  */
-function renderDaybook(ui: ReactElement) {
-  return render(<BottomSheetModalProvider>{ui}</BottomSheetModalProvider>);
-}
-
 describe('demo PAE receipt — a second procedure with zero UI changes', () => {
   it('is a distinct, independently-parsed procedure instance', () => {
     expect(demoPae.meta.id).toBe('demo-pae');
@@ -29,7 +20,7 @@ describe('demo PAE receipt — a second procedure with zero UI changes', () => {
   });
 
   it('renders its own procedure copy under the unchanged Daybook', () => {
-    renderDaybook(<Daybook content={demoPae} initialDay={1} statusLabel="Demo Patient · PAE" />);
+    render(<Daybook content={demoPae} initialDay={1} statusLabel="Demo Patient · PAE" />);
     expect(screen.getByText('DAY 1 · MORNING CHECK-IN')).toBeTruthy();
     // PAE-specific hero, not the UFE prototype copy — proves it's rendering THIS content
     expect(screen.getByText(/tender day/)).toBeTruthy();
@@ -39,7 +30,7 @@ describe('demo PAE receipt — a second procedure with zero UI changes', () => {
   });
 
   it('drives a full check-in → page flow with the new content', () => {
-    renderDaybook(<Daybook content={demoPae} initialDay={1} statusLabel="Demo Patient · PAE" />);
+    render(<Daybook content={demoPae} initialDay={1} statusLabel="Demo Patient · PAE" />);
     fireEvent.press(screen.getByLabelText('a good day'));
     fireEvent.press(screen.getByLabelText('Nothing new'));
     // the same question-led chapters render for PAE content...

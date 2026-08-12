@@ -5,11 +5,11 @@ import { ProcedureContentSchema } from '../schema';
  * file, not a code change." This is a SECOND ProcedureContent instance (prostate
  * artery embolization, the male analog the strategy doc names) authored purely as
  * data. It renders under the exact same <Daybook> with ZERO changes to @postpal/ui
- * or apps/web — see packages/ui/src/daybook/demo-pae.test.tsx.
+ * — see packages/ui/src/daybook/demo-pae.rn.test.tsx.
  *
  * Placeholder clinical copy — one day only, enough to exercise every chapter and
- * a sheet. Parsed at load (same gate as avc-ufe): incomplete content fails the
- * build, not just the tests.
+ * a sheet. Parsed at load (same gate as avc-ufe): incomplete content throws on
+ * import, failing the test run / app bundle — not just a soft assertion.
  */
 export const demoPae = ProcedureContentSchema.parse({
   meta: {

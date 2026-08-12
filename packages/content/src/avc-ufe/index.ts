@@ -6,8 +6,9 @@ import { day10 } from './days/day-10';
 import { day20 } from './days/day-20';
 
 // Parsed at module load, not just under Jest: importing @postpal/content (which
-// apps/web does, so `next build` does too) now throws if the content violates
-// the schema's cross-reference refinements. Incomplete content = hard build fail.
+// apps/app and the test suite both do) throws if the content violates the
+// schema's cross-reference refinements. Incomplete content = hard import failure
+// (the app bundle / CI test run fails on load), not a soft runtime check.
 export const avcUfe = ProcedureContentSchema.parse({
   meta: {
     id: 'avc-ufe',

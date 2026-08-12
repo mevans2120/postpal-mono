@@ -7,6 +7,7 @@ import { FaceGlyph } from '../primitives/FaceGlyph';
 import { faceAckKey, faceReceiptText } from '../primitives/faces';
 import { useSettle, settleEntering } from '../primitives/useSettle';
 import { useDaybook } from '../store';
+import { colors } from '../../tokens';
 
 export interface NotedViewProps {
   day: DayContent;
@@ -60,7 +61,7 @@ export function NotedView({ day }: NotedViewProps) {
                 autoFocus
                 accessibilityLabel="Your note"
                 placeholder="A few words is plenty"
-                placeholderTextColor="#a89a88"
+                placeholderTextColor={colors['mut-soft']}
                 value={noteDraft}
                 onChangeText={setNoteDraft}
                 onSubmitEditing={() => submitNote(noteDraft)}

@@ -3,12 +3,12 @@ import { Pressable, Text, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { renderCopy } from '../primitives/renderCopy';
 import { useDaybook } from '../store';
+import { colors } from '../../tokens';
 
-// Mirrors packages/ui/preset.js theme.extend.colors.alert ('#9c3a2a') —
 // react-native-svg props take literal color values, not Tailwind classNames
-// (see FaceGlyph.tsx for the same pattern), so the token value is hardcoded
-// here with this comment as the link back to its source of truth.
-const ALERT = '#9c3a2a';
+// (see FaceGlyph.tsx for the same pattern), so the alert-icon stroke reads the
+// alert color from tokens.js.
+const ALERT = colors.alert;
 
 /**
  * The alert icon (prototype daybook.html line 730) — a small ring-and-bang SVG
@@ -55,7 +55,7 @@ export function InterpreterSheet({ interp, escalated, meta }: InterpreterSheetPr
         <Text className="font-serif text-[18.5px] leading-[24px] text-ink mb-1">
           Here's the line to watch — and what helps right now.
         </Text>
-        <View className="flex-row gap-2.5 items-start bg-clay-soft border border-[#e7cdb6] rounded-xl py-3 px-3.5 mt-3.5">
+        <View className="flex-row gap-2.5 items-start bg-clay-soft border border-clay-soft-line rounded-xl py-3 px-3.5 mt-3.5">
           <AlertIcon />
           <View className="flex-1">
             <Text className="text-[10px] tracking-[1.2px] font-sans-bold text-mut mb-[3px]">
@@ -96,7 +96,7 @@ export function InterpreterSheet({ interp, escalated, meta }: InterpreterSheetPr
     <View>
       <Text className="text-[10.5px] font-sans-bold tracking-[1.68px] text-pine">{interp.tag}</Text>
       <Text className="font-serif text-[21px] leading-[27px] text-ink mt-2 mb-2.5">{renderCopy(interp.head)}</Text>
-      <Text className="font-sans text-[14px] leading-[22px] text-[#5a4d40]">{renderCopy(interp.body)}</Text>
+      <Text className="font-sans text-[14px] leading-[22px] text-ink-soft">{renderCopy(interp.body)}</Text>
       <View className="flex-row gap-2.5 items-start bg-card border border-line rounded-xl py-3 px-3.5 mt-3.5">
         <AlertIcon />
         <View className="flex-1">

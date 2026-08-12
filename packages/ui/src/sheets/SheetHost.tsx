@@ -5,19 +5,15 @@ import type { BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
 import type { ProcedureContent } from '@postpal/content';
 import { useDaybook } from '../store';
 import { SheetBody, SHEET_LABELS } from './SheetBody';
+import { colors } from '../../tokens';
 
 export interface SheetHostProps {
   content: ProcedureContent;
 }
 
-// backgroundStyle/handleIndicatorStyle are plain RN style objects, not
-// NativeWind classNames (@gorhom/bottom-sheet exposes no className prop on
-// these) — they mirror packages/ui/preset.js theme.extend.colors.paper
-// ('#faf6f0') and .line ('#e6ddd1'), hardcoded here with this comment as the
-// link back to their source of truth (same pattern as InterpreterSheet's
-// AlertIcon / FaceGlyph.tsx).
-const PAPER = '#faf6f0';
-const LINE = '#e6ddd1';
+// backgroundStyle/handleIndicatorStyle are plain RN style objects, not NativeWind
+// classNames (@gorhom/bottom-sheet exposes no className prop on these), so the
+// sheet's paper background and line-colored grab handle read from tokens.js.
 
 /**
  * The sheet host: ONE BottomSheetModal (from @gorhom/bottom-sheet), driven by
@@ -67,8 +63,8 @@ export function SheetHost({ content }: SheetHostProps) {
       enablePanDownToClose
       maxDynamicContentSize={windowHeight * 0.82}
       backdropComponent={renderBackdrop}
-      backgroundStyle={{ backgroundColor: PAPER, borderTopLeftRadius: 26, borderTopRightRadius: 26 }}
-      handleIndicatorStyle={{ backgroundColor: LINE, width: 40, height: 4 }}
+      backgroundStyle={{ backgroundColor: colors.paper, borderTopLeftRadius: 26, borderTopRightRadius: 26 }}
+      handleIndicatorStyle={{ backgroundColor: colors.line, width: 40, height: 4 }}
       accessibilityLabel={sheet ? SHEET_LABELS[sheet.kind] : undefined}
     >
       <BottomSheetScrollView>
